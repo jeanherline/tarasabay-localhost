@@ -23,13 +23,13 @@ if (isset($_GET['token'])) {
             // Delete the record from the `user_temp` table
             $sql_delete = "DELETE FROM user_temp WHERE token='$token'";
             $db->query($sql_delete);
-            header("Location: http://carpooling-application-ph.rf.gd/notif/notif-verified.html");
+            header("Location: http://localhost:8080/tarasabay-localhost/notif/notif-verified.html");
             exit;
         } else {
             echo '<div style="text-align: center;"><h5 style="color: red">Error:</h5></div><div style="text-align: center;">' . $sql . "<br>" . $db->error . '</div>';
         }
     } else {
-        header("Location: http://carpooling-application-ph.rf.gd/notif/notif-failed.html");
+        header("Location: http://localhost:8080/tarasabay-localhost/notif/notif-failed.html");
         exit;
     }
 }
