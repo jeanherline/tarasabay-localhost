@@ -8,7 +8,6 @@ use PHPMailer\PHPMailer\Exception;
 
 include('db.php');
 session_start();
-
 ?>
 
 <!DOCTYPE html>
@@ -53,41 +52,55 @@ session_start();
               </div>
 
               <?php
-              if (isset($_POST['sign-in'])) {
-                $email = $_POST['email'];
-                $pswd = $_POST['pswd'];
+              if (isset($_SESSION['user_id'])) {
+                header('Location: profile.php');
+              }
 
-                // Check if username exists in database
+              if (isset($_POST['sign-in'])) {
+                require 'db.php';
+
+                $email = trim($_POST['email']);
+                $pswd = trim($_POST['pswd']);
+
+                // Check if email exists in the database
                 $stmt = $db->prepare("SELECT * FROM user_profile WHERE email = ?");
                 $stmt->bind_param("s", $email);
                 $stmt->execute();
                 $result = $stmt->get_result();
 
                 if ($result->num_rows == 1) {
-                  // Username exists, verify password
                   $user = $result->fetch_assoc();
-                  if (password_verify($pswd, $user['pswd'])) { // Make sure to use the correct column name here
-                    // Password is correct, log user in
-                    $_SESSION['user_id'] = $user['id'];
-                    header('Location: dashboard.php');
-                    exit();
+
+                  // Check if password is correct
+                  if (password_verify($pswd, $user['pswd'])) {
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['first_name'] = $user['first_name'];
+                    $_SESSION['role'] = $user['role'];
+
+                    if($_SESSION['role'] == "admin") {
+                      header('Location: admin.php');
+                    } else {
+                      header('Location: profile.php');
+                    }
+
                   } else {
-                    // Password is incorrect
                     echo '<div style="text-align: center;">
-                        <h5 style="color: red">Invalid password</h5>
-                      </div><br>';
+            <h5 style="color: red">Invalid password</h5>
+          </div><br>';
                   }
                 } else {
-                  // Username doesn't exist
                   echo '<div style="text-align: center;">
-                  <h5 style="color: red">Email not found</h5>
-                </div><br>';
+          <h5 style="color: red">Email not registered</h5>
+        </div><br>';
                 }
               }
               if (isset($_POST['register'])) {
                 $fname = $db->real_escape_string($_POST['fname']);
                 $lname = $db->real_escape_string($_POST['lname']);
                 $email = $db->real_escape_string($_POST['email']);
+                $id = $db->real_escape_string($_POST['id']);
+                $idnum = $db->real_escape_string($_POST['idnum']);
+
                 $pswd = $db->real_escape_string(password_hash($_POST['pswd'], PASSWORD_DEFAULT));
                 $token = bin2hex(random_bytes(16));
 
@@ -102,7 +115,8 @@ session_start();
                         </div><br>';
                 } else {
                   // Insert the user data into the `user_temp` table
-                  $sql = "INSERT INTO user_temp (first_name, last_name, email, pswd, token) VALUES ('$fname', '$lname', '$email', '$pswd', '$token')";
+                  $sql = "INSERT INTO user_temp (first_name, last_name, email, pswd, token, identity_type, user_identity_num) 
+                  VALUES ('$fname', '$lname', '$email', '$pswd', '$token', '$id', '$idnum')";
                   if ($db->query($sql) === TRUE) {
                     $mail = new PHPMailer(true);
 
@@ -163,7 +177,7 @@ session_start();
                                       <p>Dear valued user,</p>
                           <p>Thank you for choosing TaraSabay to find rides or offer your own. To ensure the security of your account, we need to verify your email address before you can start using the app.</p>
                           <p>Please click on the button below to verify your email address and finalize your registration:</p>
-                          <p><a href=\"http://localhost:8080/tarasabay-localhost/verify.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
+                          <p><a href=\"http://localhost/tarasabay-localhost/verify.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
                           <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
                           <p>Best regards,</p>
                           <p>TaraSabay PH Team</p>
@@ -213,12 +227,12 @@ session_start();
 
             <div class="actual-form">
               <div class="input-wrap">
-                <input type="text" id="fname" name="fname" minlength="4" class="input-field" autocomplete="off" required />
+                <input type="text" id="fname" name="fname" class="input-field" autocomplete="off" required />
                 <label id="fname">First Name</label>
               </div>
 
               <div class="input-wrap">
-                <input type="text" id="lname" name="lname" minlength="4" class="input-field" autocomplete="off" required />
+                <input type="text" id="lname" name="lname" class="input-field" autocomplete="off" required />
                 <label id="lname">Last Name</label>
               </div>
 
@@ -228,16 +242,76 @@ session_start();
               </div>
 
               <div class="input-wrap">
+                <select class="input-field" id="id" name="id">
+                  <option value="" disabled selected>Select a Valid ID</option>
+                  <option value="Passport">Passport</option>
+                  <option value="Driver's License">Driver License</option>
+                  <option value="National ID">National ID</option>
+                  <option value="SSS">SSS</option>
+                  <option value="GSIS">GSIS</option>
+                  <option value="Postal ID">Philippine Postal ID</option>
+                  <option value="Voter's ID">Voter's ID</option>
+                </select>
+              </div>
+
+              <style>
+                @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
+
+                .input-wrap {
+                  position: relative;
+                  height: 37px;
+                  margin-bottom: 2rem;
+                }
+
+                .input-field {
+                  position: absolute;
+                  width: 100%;
+                  height: 100%;
+                  background: none;
+                  border: none;
+                  outline: none;
+                  padding: 0;
+                  font-size: 0.95rem;
+                  color: #151111;
+                  transition: 0.4s;
+                  -webkit-appearance: none;
+                  -moz-appearance: none;
+                  appearance: none;
+                }
+
+                .input-field::-ms-expand {
+                  display: none;
+                }
+
+                .input-field option {
+                  color: #333;
+                }
+
+                .input-field:focus {
+                  border-bottom: 1px solid #0077cc;
+                }
+              </style>
+
+
+              <div class="input-wrap">
+                <input type="text" id="idnum" name="idnum" class="input-field" autocomplete="off" required />
+                <label id="idnum">Valid ID Number</label>
+              </div>
+              <p class="text" style="font-size: 10px; color: green; text-align: center; padding-bottom:1%">
+                You may apply as a driver if you input a valid driver's license.
+              </p>
+
+              <div class="input-wrap">
                 <input type="password" id="pswd" name="pswd" minlength="4" class="input-field" autocomplete="off" required />
                 <label id="pswd">Password</label>
               </div>
 
               <input type="submit" id="register" name="register" value="Sign Up" class="sign-btn" />
-              <p class="text">
+              <!-- <p class="text">
                 By signing up, I agree to the
                 <a href="#">Terms of Services</a> and
                 <a href="#">Privacy Policy</a>
-              </p>
+              </p> -->
             </div>
           </form>
 
