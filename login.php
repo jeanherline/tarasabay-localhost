@@ -77,22 +77,17 @@ session_start();
                     $_SESSION['first_name'] = $user['first_name'];
                     $_SESSION['role'] = $user['role'];
 
-                    if($_SESSION['role'] == "admin") {
-                      header('Location: admin.php');
-                    } else {
-                      header('Location: profile.php');
-                    }
-
-                  } else {
-                    echo '<div style="text-align: center;">
-            <h5 style="color: red">Invalid password</h5>
-          </div><br>';
+                    header('Location: user/dashboard.php');
                   }
                 } else {
                   echo '<div style="text-align: center;">
+            <h5 style="color: red">Invalid password</h5>
+          </div><br>';
+                }
+              } else {
+                echo '<div style="text-align: center;">
           <h5 style="color: red">Email not registered</h5>
         </div><br>';
-                }
               }
               if (isset($_POST['register'])) {
                 $fname = $db->real_escape_string($_POST['fname']);
@@ -214,16 +209,17 @@ session_start();
           </form>
 
           <form action="" method="POST" autocomplete="off" class="sign-up-form">
-            <div class="logo">
-              <img src="assets/img/logo.png" alt="easyclass" />
-              <h4>TaraSabay</h4>
-            </div>
+
 
             <div class="heading">
-              <h2>Get Started</h2>
+              <div class="logo">
+                <img src="assets/img/logo.png" alt="easyclass" />
+                <h2>Get Started</h2>
+              </div>
               <h6>Already have an account?</h6>
               <a href="#" class="toggle">Sign in</a>
             </div>
+            <br>
 
             <div class="actual-form">
               <div class="input-wrap">
@@ -240,6 +236,16 @@ session_start();
                 <input type="email" id="email" name="email" class="input-field" autocomplete="off" required />
                 <label id="email">Email</label>
               </div>
+
+
+
+              <div class="input-wrap">
+                <input type="password" id="pswd" name="pswd" minlength="4" class="input-field" autocomplete="off" required />
+                <label id="pswd">Password</label>
+              </div>
+              <p class="text" style="font-size: 11px; color: green; text-align: center; padding-bottom:1%">
+                You may apply as a driver if you input a valid <strong>driver's license.</strong>
+              </p>
 
               <div class="input-wrap">
                 <select class="input-field" id="id" name="id">
@@ -264,6 +270,7 @@ session_start();
                 }
 
                 .input-field {
+                  font-family: "Poppins", sans-serif;
                   position: absolute;
                   width: 100%;
                   height: 100%;
@@ -297,14 +304,7 @@ session_start();
                 <input type="text" id="idnum" name="idnum" class="input-field" autocomplete="off" required />
                 <label id="idnum">Valid ID Number</label>
               </div>
-              <p class="text" style="font-size: 10px; color: green; text-align: center; padding-bottom:1%">
-                You may apply as a driver if you input a valid driver's license.
-              </p>
 
-              <div class="input-wrap">
-                <input type="password" id="pswd" name="pswd" minlength="4" class="input-field" autocomplete="off" required />
-                <label id="pswd">Password</label>
-              </div>
 
               <input type="submit" id="register" name="register" value="Sign Up" class="sign-btn" />
               <!-- <p class="text">

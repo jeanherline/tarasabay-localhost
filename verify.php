@@ -45,6 +45,15 @@ if (isset($_GET['token'])) {
         $stmt->bind_param("s", $token);
         $stmt->execute();
 
+        // Add 10 free tickets to the user
+        $sql_update_tickets = "UPDATE user_profile SET acc_balance = acc_balance + 10 WHERE user_id = ?";
+        $stmt = $db->prepare($sql_update_tickets);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        if ($stmt->error) {
+            die("Error executing query: " . $stmt->error);
+        }
+
         session_start();
         $_SESSION['user_id'] = $user_id;
 
@@ -55,4 +64,3 @@ if (isset($_GET['token'])) {
         exit;
     }
 }
-?>
