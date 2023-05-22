@@ -158,8 +158,9 @@ if (isset($_POST['submit'])) {
 
                                     <tr>
                                         <td colspan="2"><b>Total</b></td>
-                                        <td><?php echo $totalAmount; ?></td>
-                                        <td><?php echo $totalConFee; ?></td>
+                                        <td><?php echo number_format($totalAmount, 2); ?></td>
+                                        <td><?php echo number_format($totalConFee, 2); ?></td>
+
                                     </tr>
                                 </table>
                             </div>

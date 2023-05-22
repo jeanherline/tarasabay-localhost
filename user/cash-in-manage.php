@@ -131,12 +131,11 @@ if (isset($_POST['submit'])) {
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $ret = "SELECT cico.wallet_id, cico.gcash_mobile_number, cico.amount, cico.convenience_fee ,cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.status
-                                     FROM cico
-                                     INNER JOIN user_profile up ON cico.user_id = up.user_id
-                                     WHERE cico.amount > 0 AND cico.transaction_type = 'cash-in'
-                                     ORDER BY CASE WHEN cico.status = 'Pending' THEN 0 ELSE 1 END, cico.created_at DESC";
-
+                                    $ret = "SELECT cico.wallet_id, cico.gcash_mobile_number, cico.amount, cico.convenience_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.status
+                                 FROM cico
+                                 INNER JOIN user_profile up ON cico.user_id = up.user_id
+                                 WHERE cico.amount > 0 AND cico.transaction_type = 'cash-in'
+                                 ORDER BY CASE WHEN cico.status = 'Pending' THEN 0 ELSE 1 END, cico.updated_at ASC";
 
                                     $stmt = $db->prepare($ret);
                                     $stmt->execute();

@@ -15,15 +15,26 @@ if (isset($_GET['wallet_id']) && isset($_GET['amount'])) {
     $userId = $row['user_id'];
 
     $status = "Approved";
+    $conversionRate = 0;
 
-    // Update the status of cico table
-    $stmt = $db->prepare("UPDATE cico SET status = ?, convenience_fee = ? WHERE wallet_id = ?");
-    $stmt->bind_param("ssi", $status, $confee, $walletId);
+    if ($amount == 50) {
+        $conversionRate = 40;
+    } elseif ($amount == 100) {
+        $conversionRate = 80;
+    } elseif ($amount == 250) {
+        $conversionRate = 200;
+    } elseif ($amount == 500) {
+        $conversionRate = 450;
+    }
+
+    // Update the status and convenience_fee of cico table
+    $stmt = $db->prepare("UPDATE cico SET status = ? WHERE wallet_id = ?");
+    $stmt->bind_param("si", $status, $walletId);
     $stmt->execute();
 
-    // Update the acc_balance of user_profile table
+    // Update the acc_balance and ticket_balance of user_profile table
     $stmt = $db->prepare("UPDATE user_profile SET acc_balance = acc_balance + ? WHERE user_id = ?");
-    $stmt->bind_param("di", $amount, $userId);
+    $stmt->bind_param("di", $conversionRate, $userId);
     $result = $stmt->execute();
 
     if ($result) {
@@ -32,4 +43,3 @@ if (isset($_GET['wallet_id']) && isset($_GET['amount'])) {
         echo '<div style="text-align: center;"><h5 style="color: red">Failed</h5></div>';
     }
 }
-?>

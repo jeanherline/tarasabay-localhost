@@ -125,13 +125,24 @@ $userid = $_SESSION['user_id'];
                             if (isset($_POST['submit'])) {
                                 $reference = $_POST['reference'];
                                 $mobileNo = $_POST['mobile_no'];
-                                $confee = "";
-                                $tickets = $_POST['tickets'];
+                                $amount = $_POST['amount'];
                                 $status = 'Pending'; // Set initial status as 'Pending'
 
+                                // Calculate convenience fee based on amount
+                                $confee = "";
+                                if ($amount == 500) {
+                                    $confee = 50.00;
+                                } elseif ($amount == 250) {
+                                    $confee = 50.00;
+                                } elseif ($amount == 100) {
+                                    $confee = 20.00;
+                                } elseif ($amount == 50) {
+                                    $confee = 10.00;
+                                }
+
                                 $stmt = $db->prepare("INSERT INTO cico (user_id, transaction_type, gcash_mobile_number, amount, processing_fee, convenience_fee, reference_number, status, created_at, updated_at)
-                         VALUES (?, 'cash-in', ?, ?, 0.0, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-                                $stmt->bind_param("isisds", $userid, $mobileNo, $tickets, $confee, $reference, $status);
+                 VALUES (?, 'cash-in', ?, ?, 0.0, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+                                $stmt->bind_param("isisds", $userid, $mobileNo, $amount, $confee, $reference, $status);
 
                                 $result = $stmt->execute();
 
@@ -147,6 +158,7 @@ $userid = $_SESSION['user_id'];
                         </form>
                         <!-- End Form-->
                     </div>
+
                 </div>
 
                 <hr>
