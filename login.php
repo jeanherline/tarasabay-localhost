@@ -76,6 +76,7 @@ session_start();
                         $_SESSION['user_id'] = $user['user_id'];
                         $_SESSION['first_name'] = $user['first_name'];
                         $_SESSION['role'] = $user['role'];
+                        $_SESSION['email'] = $user['email'];
             
                         header('Location: user/dashboard.php');
                         exit();

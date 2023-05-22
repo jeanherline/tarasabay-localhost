@@ -38,7 +38,6 @@ if (isset($_GET['owner_id'])) {
             $stmt->bind_param("di", $new_acc_balance, $id);
             $stmt->execute();
             $stmt->close();
-
         }
 
         header('Location: user/pendingCars.php');

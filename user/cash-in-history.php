@@ -142,18 +142,16 @@ if (isset($_POST['submit'])) {
                                         $result = $stmt->get_result();
                                         $totalAmount = 0;
                                         $totalConvenienceFee = 0;
-                                        $count = 1;
 
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
-                                            echo "<td>" . $count . "</td>";
+                                            echo "<td>" . $row['wallet_id'] . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
                                             echo "<td>" . number_format($row['amount'], 2) . "</td>";
                                             echo "<td>" . number_format($row['convenience_fee'], 2) . "</td>";
                                             echo "</tr>";
                                             $totalAmount += $row['amount'];
                                             $totalConvenienceFee += $row['convenience_fee'];
-                                            $count++;
                                         }
                                         ?>
                                     </tbody>
