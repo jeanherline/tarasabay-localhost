@@ -133,36 +133,43 @@ if (isset($_POST['submit'])) {
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $ret = "SELECT c.wallet_id, up.first_name, up.last_name, c.amount, c.convenience_fee
-                                                FROM cico c
-                                                INNER JOIN user_profile up ON c.wallet_id = up.user_id
-                                                WHERE c.transaction_type = 'cash-out'
-                                                ORDER BY c.wallet_id";
-                                        $stmt = $db->prepare($ret);
+                                        $query = "SELECT cico.wallet_id, cico.gcash_mobile_number, cico.amount, cico.processing_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.status
+                                                    FROM cico
+                                                    INNER JOIN user_profile up ON cico.user_id = up.user_id
+                                                    WHERE cico.amount > 0 AND cico.transaction_type = 'cash-out'
+                                                    AND cico.status = 'Approved'
+                                                    ORDER BY cico.created_at ASC";
+                                        $stmt = $db->prepare($query);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
                                         $totalAmount = 0;
-                                        $totalProFee = 0;
-                                        $counter = 1;
+                                        $totalProcessingFee = 0;
+                                        $count = 1; // Add a count variable to display an incrementing number
+
                                         while ($row = $result->fetch_assoc()) {
+                                            echo "<tr>";
                                             echo "<tr>";
                                             echo "<td>" . $row['wallet_id'] . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td>" . $row['amount'] . "</td>";
-                                            echo "<td>" . $row['convenience_fee'] . "</td>";
+                                            echo "<td>" . number_format($row['amount'], 2) . "</td>";
+                                            echo "<td>" . number_format($row['processing_fee'], 2) . "</td>";
+                                            echo "</tr>";
                                             echo "</tr>";
                                             $totalAmount += $row['amount'];
-                                            $totalProFee += $row['convenience_fee'];
-                                            $counter++;
+                                            $totalProcessingFee += $row['processing_fee'];
+                                            $count++; // Increment the count variable
                                         }
                                         ?>
+
+
                                     </tbody>
                                     <tr>
                                         <td colspan="2"><b>Total</b></td>
-                                        <td><?php echo $totalAmount; ?></td>
-                                        <td><?php echo $totalProFee; ?></td>
+                                        <td><?php echo number_format($totalAmount, 2); ?></td>
+                                        <td><?php echo number_format($totalProcessingFee, 2); ?></td>
                                     </tr>
                                 </table>
+
                             </div>
                         </div>
                     </div>
@@ -171,7 +178,7 @@ if (isset($_POST['submit'])) {
                     <div class="card-footer small text-muted">
                         <?php
                         date_default_timezone_set("Africa/Nairobi");
-                        echo "Total: " . $totalAmount . " " . $totalProFee;
+                        echo "Generated: " . date("h:i:sa");
                         ?>
                     </div>
             </div>
@@ -202,32 +209,35 @@ if (isset($_POST['submit'])) {
                                 <?php
                                 $user_id = $userid; // Replace with the desired user ID
 
-                                $ret = "SELECT c.wallet_id, up.first_name, up.last_name, c.amount, c.convenience_fee, c.status, c.gcash_mobile_number, c.reference_number, c.created_at, c.status
+                                $stmt = $db->prepare("SELECT c.wallet_id, up.first_name, up.last_name, c.amount, c.convenience_fee, c.status, c.gcash_mobile_number, c.reference_number, c.created_at
                                                 FROM cico c
-                                                INNER JOIN user_profile up ON c.wallet_id = up.user_id
-                                                WHERE c.wallet_id = ? AND c.transaction_type = 'cash-out'
-                                                ORDER BY c.wallet_id";
+                                                INNER JOIN user_profile up ON c.user_id = up.user_id
+                                                WHERE c.user_id = ? AND c.transaction_type = 'cash-out'
+                                                ORDER BY c.wallet_id");
 
-                                $stmt = $db->prepare($ret);
                                 $stmt->bind_param("i", $user_id);
                                 $stmt->execute();
                                 $result = $stmt->get_result();
+                                $count = 1; // Initialize the count variable
+
                                 while ($row = $result->fetch_assoc()) {
                                     echo "<tr>";
-                                    echo "<td>" . $row['transaction_id'] . "</td>";
+                                    echo "<td>" . $count . "</td>"; // Display the incrementing number
                                     echo "<td>" . $row['gcash_mobile_number'] . "</td>";
-                                    echo "<td>" . $row['amount'] . "</td>";
-                                    echo "<td>" . $row['status'] . "</td>";
+                                    echo "<td>" . number_format($row['amount'], 2) . "</td>";
                                     echo "<td>" . $row['reference_number'] . "</td>";
                                     echo "<td>" . $row['created_at'] . "</td>";
                                     echo "<td>";
                                     if ($row['status'] == "Pending") {
                                         echo '<span class="badge badge-warning">' . $row['status'] . '</span>';
-                                    } else {
+                                    } elseif ($row['status'] == "Approved") {
                                         echo '<span class="badge badge-success">' . $row['status'] . '</span>';
+                                    } elseif ($row['status'] == "Declined") {
+                                        echo '<span class="badge badge-danger">' . $row['status'] . '</span>';
                                     }
                                     echo "</td>";
                                     echo "</tr>";
+                                    $count++; // Increment the count variable
                                 }
                                 ?>
                             </tbody>

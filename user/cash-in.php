@@ -75,7 +75,7 @@ $userid = $_SESSION['user_id'];
                                 $result = $db->query("SELECT acc_balance FROM user_profile WHERE user_id = '$userid'");
                                 $ticketBalance = $result->fetch_row()[0];
                                 ?>
-                                <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $ticketBalance; ?></span> Ticket Balance</div>
+                                <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fa fa-ticket"></i>&nbsp;&nbsp;<?php echo $ticketBalance; ?></span> Ticket Balance</div>
                             </div>
                         </div>
                     </div>
@@ -120,6 +120,16 @@ $userid = $_SESSION['user_id'];
                                     });
                                 });
                             </script>
+                            <!-- <br>
+                            <div id="emailHelp" class="form-text">
+                                <b>Note:</b> Selling of Ticket Currency<br><br>
+                                <em>Conversion of Peso to Ticket currency</em><br><br>
+                                • 50 pesos = 40 tickets<br>
+                                • 100 pesos = 80 tickets<br>
+                                • 250 pesos = 200 tickets<br>
+                                • 500 pesos = 450 tickets<br>
+                            </div> -->
+                            
                             <br><br>
                             <?php
                             if (isset($_POST['submit'])) {
@@ -141,7 +151,7 @@ $userid = $_SESSION['user_id'];
                                 }
 
                                 $stmt = $db->prepare("INSERT INTO cico (user_id, transaction_type, gcash_mobile_number, amount, processing_fee, convenience_fee, reference_number, status, created_at, updated_at)
-                 VALUES (?, 'cash-in', ?, ?, 0.0, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+                                VALUES (?, 'cash-in', ?, ?, 0.0, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
                                 $stmt->bind_param("isisds", $userid, $mobileNo, $amount, $confee, $reference, $status);
 
                                 $result = $stmt->execute();

@@ -53,42 +53,43 @@ session_start();
 
               <?php
               if (isset($_SESSION['user_id'])) {
-                header('Location: profile.php');
+                header('Location: login.php');
               }
 
               if (isset($_POST['sign-in'])) {
                 require 'db.php';
-
+            
                 $email = trim($_POST['email']);
                 $pswd = trim($_POST['pswd']);
-
+            
                 // Check if email exists in the database
                 $stmt = $db->prepare("SELECT * FROM user_profile WHERE email = ?");
                 $stmt->bind_param("s", $email);
                 $stmt->execute();
                 $result = $stmt->get_result();
-
+            
                 if ($result->num_rows == 1) {
-                  $user = $result->fetch_assoc();
-
-                  // Check if password is correct
-                  if (password_verify($pswd, $user['pswd'])) {
-                    $_SESSION['user_id'] = $user['user_id'];
-                    $_SESSION['first_name'] = $user['first_name'];
-                    $_SESSION['role'] = $user['role'];
-
-                    header('Location: user/dashboard.php');
-                  }
+                    $user = $result->fetch_assoc();
+            
+                    // Check if password is correct
+                    if (password_verify($pswd, $user['pswd'])) {
+                        $_SESSION['user_id'] = $user['user_id'];
+                        $_SESSION['first_name'] = $user['first_name'];
+                        $_SESSION['role'] = $user['role'];
+            
+                        header('Location: user/dashboard.php');
+                        exit();
+                    } else {
+                        echo '<div style="text-align: center;">
+                            <h5 style="color: red">Invalid password</h5>
+                        </div><br>';
+                    }
                 } else {
-                  echo '<div style="text-align: center;">
-            <h5 style="color: red">Invalid password</h5>
-          </div><br>';
+                    echo '<div style="text-align: center;">
+                        <h5 style="color: red">Invalid email</h5>
+                    </div><br>';
                 }
-              } else {
-                echo '<div style="text-align: center;">
-          <h5 style="color: red">Email not registered</h5>
-        </div><br>';
-              }
+            }
               if (isset($_POST['register'])) {
                 $fname = $db->real_escape_string($_POST['fname']);
                 $lname = $db->real_escape_string($_POST['lname']);
@@ -172,7 +173,7 @@ session_start();
                                       <p>Dear valued user,</p>
                           <p>Thank you for choosing TaraSabay to find rides or offer your own. To ensure the security of your account, we need to verify your email address before you can start using the app.</p>
                           <p>Please click on the button below to verify your email address and finalize your registration:</p>
-                          <p><a href=\"http://localhost/tarasabay-localhost/verify.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
+                          <p><a href=\"http://localhost:8080/tarasabay-localhost/verify.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
                           <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
                           <p>Best regards,</p>
                           <p>TaraSabay PH Team</p>

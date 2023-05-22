@@ -126,37 +126,43 @@ if (isset($_POST['submit'])) {
                                         <th>Mobile Number</th>
                                         <th>Reference Number</th>
                                         <th>Date</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $ret = "SELECT cico.wallet_id, cico.gcash_mobile_number, cico.amount, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.status
-                                  FROM cico
-                                  INNER JOIN user_profile up ON cico.user_id = up.user_id
-                                  WHERE cico.amount > 0 AND cico.transaction_type = 'cash-out'
-                                  ORDER BY CASE WHEN cico.status = 'Pending' THEN 0 ELSE 1 END, cico.created_at DESC";
+                                    $ret = "SELECT cico.wallet_id, cico.gcash_mobile_number, cico.amount, cico.convenience_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.status
+                                    FROM cico
+                                    INNER JOIN user_profile up ON cico.user_id = up.user_id
+                                    WHERE cico.amount > 0 AND cico.transaction_type = 'cash-out' AND (cico.status = 'Pending' OR cico.status = 'Approved' OR cico.status = 'Declined')
+                                    ORDER BY cico.created_at DESC";
+
                                     $stmt = $db->prepare($ret);
                                     $stmt->execute();
                                     $result = $stmt->get_result();
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "<td>" . $row['transaction_id'] . "</td>";
+                                        echo "<td>" . $row['wallet_id'] . "</td>";
                                         echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                        echo "<td>" . $row['ticket_amount'] . "</td>";
+                                        echo "<td>" . number_format($row['amount'], 2) . "</td>";
                                         echo "<td>" . $row['gcash_mobile_number'] . "</td>";
+                                        echo "<td>" . $row['reference_number'] . "</td>";
                                         echo "<td>" . $row['created_at'] . "</td>";
+
                                         echo "<td>";
-                                        if ($row['transaction_status'] == "Pending") {
-                                            echo '<span class="badge badge-warning">' . $row['transaction_status'] . '</span>';
-                                        } else {
-                                            echo '<span class="badge badge-success">' . $row['transaction_status'] . '</span>';
+                                        if ($row['status'] == "Pending") {
+                                            echo '<span class="badge badge-warning">Pending</span>';
+                                        } elseif ($row['status'] == "Approved") {
+                                            echo '<span class="badge badge-success">Approved</span>';
+                                        } elseif ($row['status'] == "Declined") {
+                                            echo '<span class="badge badge-danger">Declined</span>';
                                         }
                                         echo "</td>";
                                         echo "<td>
-                        <a href='admin-approve-booking.php?u_id=" . $row['wallet_id'] . "' class='badge badge-success'><i class='fa fa-check'></i> Approve</a>
-                        <a href='admin-delete-booking.php?u_id=" . $row['wallet_id'] . "' class='badge badge-danger'><i class='fa fa-trash'></i> Delete</a>
-                    </td>";
+                                        <a href='approveCashout.php?wallet_id=" . $row['wallet_id'] . "&amount=" . $row['amount'] . "' class='badge badge-success'><i class='fa fa-check'></i> Approve</a>
+                                        <a href='../declineCashout.php?wallet_id=" . $row['wallet_id'] . "&amount=" . $row['amount'] . "' class='badge badge-danger'><i class='fa fa-ban'></i> Decline</a>
+                                        </td>";
                                         echo "</tr>";
                                     }
                                     ?>

@@ -132,10 +132,10 @@ if (isset($_POST['submit'])) {
                                 <tbody>
                                     <?php
                                     $ret = "SELECT cico.wallet_id, cico.gcash_mobile_number, cico.amount, cico.convenience_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.status
-                                 FROM cico
-                                 INNER JOIN user_profile up ON cico.user_id = up.user_id
-                                 WHERE cico.amount > 0 AND cico.transaction_type = 'cash-in'
-                                 ORDER BY CASE WHEN cico.status = 'Pending' THEN 0 ELSE 1 END, cico.updated_at ASC";
+                                    FROM cico
+                                    INNER JOIN user_profile up ON cico.user_id = up.user_id
+                                    WHERE cico.amount > 0 AND cico.transaction_type = 'cash-in' AND (cico.status = 'Pending' OR cico.status = 'Approved' OR cico.status = 'Declined')
+                                    ORDER BY cico.created_at DESC";
 
                                     $stmt = $db->prepare($ret);
                                     $stmt->execute();
@@ -148,27 +148,20 @@ if (isset($_POST['submit'])) {
                                         echo "<td>" . $row['gcash_mobile_number'] . "</td>";
                                         echo "<td>" . $row['reference_number'] . "</td>";
                                         echo "<td>" . $row['created_at'] . "</td>";
+
                                         echo "<td>";
                                         if ($row['status'] == "Pending") {
-                                            echo '<span class="badge badge-warning">' . $row['status'] . '</span>';
+                                            echo '<span class="badge badge-warning">Pending</span>';
                                         } elseif ($row['status'] == "Approved") {
-                                            echo '<span class="badge badge-success">' . $row['status'] . '</span>';
-                                        } elseif ($row['status'] == "Denied") {
-                                            echo '<span class="badge badge-danger">' . $row['status'] . '</span>';
+                                            echo '<span class="badge badge-success">Approved</span>';
+                                        } elseif ($row['status'] == "Declined") {
+                                            echo '<span class="badge badge-danger">Declined</span>';
                                         }
                                         echo "</td>";
-
-                                        if ($row['status'] == "Pending") {
-                                            echo "<td>
-                                            <a href='../approveCashin.php?wallet_id=" . $row['wallet_id'] . "&amount=" . $row['amount'] . "' class='badge badge-success'><i class='fa fa-check'></i> Approve</a>
-                                            <a href='../declineCashin.php?wallet_id=" . $row['wallet_id'] . "&amount=" . $row['amount'] . "' class='badge badge-danger'><i class='fa fa-trash'></i> Delete</a>
+                                        echo "<td>
+                                        <a href='../approveCashin.php?wallet_id=" . $row['wallet_id'] . "&amount=" . $row['amount'] . "' class='badge badge-success'><i class='fa fa-check'></i> Approve</a>
+                                        <a href='../declineCashin.php?wallet_id=" . $row['wallet_id'] . "&amount=" . $row['amount'] . "' class='badge badge-danger'><i class='fa fa-ban'></i> Decline</a>
                                         </td>";
-                                        } elseif ($row['status'] == "Approved") {
-                                            echo "<td>
-                                            <a href='../declineCashin.php?wallet_id=" . $row['wallet_id'] . "&amount=" . $row['amount'] . "' class='badge badge-danger'><i class='fa fa-trash'></i> Delete</a>
-                                        </td>";
-                                        }
-                                        echo "</td>";
                                         echo "</tr>";
                                     }
                                     ?>

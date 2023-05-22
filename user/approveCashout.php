@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-  header('Location: ../login.php');
+    header('Location: ../login.php');
 }
 
 include('../db.php');
@@ -10,10 +10,9 @@ include('../db.php');
 $userid = $_SESSION['user_id'];
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-<title>View Profile</title>
+<title>Add Reference Number</title>
 
 <link rel="icon" href="../assets/img/logo.png" type="images" />
 
@@ -56,73 +55,83 @@ $userid = $_SESSION['user_id'];
                 <!-- Breadcrumbs-->
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="#">Profile</a>
+                        <a href="#">Manage Wallets</a>
                     </li>
-                    <li class="breadcrumb-item active">Change Password</li>
+                    <li class="breadcrumb-item active">Cash-Outs</li>
                 </ol>
                 <hr>
                 <div class="card">
                     <div class="card-header">
-                        <b>Change Password</b>
+                        <b>Add Reference Number</b>
                     </div>
                     <div class="card-body">
-                        <!--Add User Form-->
+                        <!-- Add User Form -->
                         <form method="POST">
                             <div class="form-group">
-                                <label for="current">Current Password</label>
-                                <input type="password" class="form-control" placeholder="Type current password" id="current" name="current" required><br>
-                            </div>
-                            <div class="form-group">
-                                <label for="new">New Password</label>
-                                <input type="password" class="form-control" placeholder="Type new password" name="new" id="new" required><br>
-                            </div>
-                            <div class="form-group">
-                                <label for="retype">Retype New Password</label>
-                                <input type="password" class="form-control" placeholder="Confirm Password" name="retype" id="retype" required><br>
+                                <label for="reference_number">Reference Number</label>
+                                <input type="text" class="form-control" name="reference_number" placeholder="Enter Reference Number" required><br>
                             </div>
                             <?php
-                            $stmt = $db->prepare("SELECT * FROM user_profile WHERE user_id = ?");
-                            $stmt->bind_param("i", $userid);
-                            $stmt->execute();
-                            $result = $stmt->get_result();
-
-                            if ($result->num_rows == 1) {
-                                $row = $result->fetch_assoc();
-                                $currentPassword = $row['pswd'];
-                            }
-
                             if (isset($_POST['submit'])) {
-                                $currentPasswordInput = $db->real_escape_string($_POST['current']);
-                                $newPassword = $db->real_escape_string($_POST['new']);
-                                $retypePassword = $db->real_escape_string($_POST['retype']);
+                                if (isset($_GET['wallet_id']) && isset($_GET['amount'])) {
+                                    $walletId = $_GET['wallet_id'];
+                                    $amount = $_GET['amount'];
 
-                                if (password_verify($currentPasswordInput, $currentPassword)) {
-                                    if ($newPassword === $retypePassword) {
-                                        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                                    // Retrieve the user_id, acc_balance, and processing_fee associated with the wallet_id
+                                    $stmt = $db->prepare("SELECT up.user_id, up.acc_balance, c.processing_fee FROM cico c INNER JOIN user_profile up ON c.user_id = up.user_id WHERE c.wallet_id = ?");
+                                    $stmt->bind_param("i", $walletId);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    $row = $result->fetch_assoc();
+                                    $userId = $row['user_id'];
+                                    $accBalance = $row['acc_balance'];
+                                    $processingFee = $row['processing_fee'];
 
-                                        $stmt = $db->prepare("UPDATE user_profile SET pswd = ? WHERE user_id = ?");
-                                        $stmt->bind_param("si", $hashedPassword, $userid);
+                                    // Calculate the total amount including processing fee
+                                    $totalAmount = $amount + $processingFee;
+
+                                    // Check if the acc_balance is sufficient
+                                    if ($accBalance >= $totalAmount) {
+                                        $status = "Approved";
+
+                                        // Update the status and reference_number of cico table
+                                        $stmt = $db->prepare("UPDATE cico SET status = ?, reference_number = ? WHERE wallet_id = ?");
+                                        $stmt->bind_param("ssi", $status, $_POST['reference_number'], $walletId);
+                                        $stmt->execute();
+
+                                        // Update the acc_balance of user_profile table
+                                        $newBalance = $accBalance - $totalAmount;
+                                        $stmt = $db->prepare("UPDATE user_profile SET acc_balance = ? WHERE user_id = ?");
+                                        $stmt->bind_param("di", $newBalance, $userId);
                                         $result = $stmt->execute();
 
                                         if ($result) {
-                                            echo '<div style="text-align: center;"><h5 style="color: green; font-size:16px;">Password Changed</h5></div>';
+                            ?>
+                                            <script>
+                                                window.location.href = '../user/cash-out-manage.php';
+                                            </script>
+                            <?php
                                         } else {
-                                            echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Password Change Failed</h5></div>';
+                                            echo '<div style="text-align: center;"><h5 style="color: red; font-size: 18px;">Failed</h5></div>';
                                         }
                                     } else {
-                                        echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">New Passwords do not match</h5></div>';
+                                        echo '<div style="text-align: center;"><h5 style="color: red; font-size: 18px;">Insufficient balance</h5></div>';
                                     }
-                                } else {
-                                    echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Current Password is Incorrect</h5></div>';
                                 }
                             }
                             ?>
-                            <button type="submit" name="submit" class="btn btn-success">Save Changes</button>
+                            <button type="submit" name="submit" class="btn btn-success">Add & Approve</button>
                         </form>
-                        <!-- End Form-->
+
+
+                        <!-- End Form -->
                     </div>
+
                 </div>
+
                 <hr>
+
+
                 <!-- Sticky Footer -->
                 <?php include("vendor/inc/footer.php"); ?>
 

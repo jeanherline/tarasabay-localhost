@@ -8,6 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 include('../db.php');
 
 $userid = $_SESSION['user_id'];
+$role = $_SESSION['role'];
 
 $stmt = $db->prepare("SELECT * FROM user_profile WHERE user_id = ?");
 $stmt->bind_param("s", $userid);

@@ -77,7 +77,7 @@ $userid = $_SESSION['user_id'];
                                 $result = $db->query("SELECT acc_balance FROM user_profile WHERE user_id = '$userid'");
                                 $ticketBalance = $result->fetch_row()[0];
                                 ?>
-                                <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $ticketBalance; ?></span> Ticket Balance</div>
+                                <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fa fa-ticket"></i>&nbsp;&nbsp;<?php echo $ticketBalance; ?></span> Ticket Balance</div>
                             </div>
                         </div>
                     </div>
@@ -85,83 +85,94 @@ $userid = $_SESSION['user_id'];
 
                 <div class="card">
                     <div class="card-header">
-                        <b>GCash: </b><em>Cash-Out</em>
+                        <b>GCash:</b> <em>Cash-Out</em>
                     </div>
                     <div class="card-body">
-                        <!-- Add User Form -->
+                        <!-- Cash-Out Form -->
                         <form method="POST">
-                            <label for="mobile_no" class="form-label"> GCash Mobile Number <span class="text-danger">*</span></label>
+                            <label for="mobile_no" class="form-label">GCash Mobile Number <span class="text-danger">*</span></label>
                             <input type="text" name="mobile_no" id="mobile_no" minlength="11" maxlength="11" class="form-control" required>
                             <br>
                             <label for="amount" class="form-label">Amount <span class="text-danger">*</span></label>
                             <input type="number" name="amount" id="amount" class="form-control" required>
                             <br>
                             <div id="emailHelp" class="form-text">
-                                <b>Note:</b> 1 Ticket = 1 Peso<br><br>
-                                Only ₱20.00 fee for every ₱1000.00 Cash Out transaction.<br><br>
-                                <em>Example: 2100 tickets = 2100 pesos with Processing fee of 60 tickets.</em>
+                                <b>Note:</b> 1 ticket = 1 peso<br><br>
+                                <em>Processing fee: 20 tickets for every 1000 pesos Cash Out</em><br><br>
+                                Ex: 2100 tickets = 2100 pesos with a processing fee of 60 tickets.<br>
+                                The driver needs to have 2160 tickets to proceed with the Cash Out.
                             </div>
                             <br><br>
                             <?php
                             if (isset($_POST['submit'])) {
+                                // Retrieve the user's account balance
+                                $availableBalance = 0.00; // Default value
+                                if (isset($userid)) {
+                                    $stmt = $db->prepare("SELECT acc_balance, role FROM user_profile WHERE user_id = ?");
+                                    $stmt->bind_param("i", $userid);
+                                    $stmt->execute();
+                                    $stmt->bind_result($accBalance, $role);
+
+                                    if ($stmt->fetch()) {
+                                        $availableBalance = $accBalance;
+                                    }
+
+                                    $stmt->close();
+                                }
+
+                                // Calculate the processing fee based on the cash-out amount
+                                $amount = $_POST['amount'] ?? 0; // Retrieve the entered amount
+                                $processingFee = ceil($amount / 1000) * 20;
+
+                                echo '<div style="text-align: center; margin-bottom: 20px;">';
+                                echo '<div><strong>Amount:</strong> ' . $amount . '</div>';
+                                echo '<div><strong>Processing Fee:</strong> ' . $processingFee . '</div>';
+                                echo '</div>';
+
+                                // Convert the account balance to available tickets
+                                $ticketValue = 1; // 1 ticket = 1 peso
+                                $availableTickets = floor($availableBalance / $ticketValue);
+
                                 $mobileNo = $_POST['mobile_no'];
-                                $amount = $_POST['amount'];
-                                $processingFee = ceil($amount / 1000) * 20; // Calculate processing fee based on amount
+                                $reference = ""; // Define the reference number
+                                $status = 'Pending'; // Set initial status as 'Pending'
 
-                                // Perform necessary validation and sanitization of the input data
-                                // ...
+                                if ($role === 'driver') {
+                                    if ($amount + $processingFee > $availableTickets) {
+                                        echo '<div style="text-align: center;">
+                                            <h5 style="color: red; font-size:16px;">Insufficient ticket balance for cash-out!</h5>
+                                        </div>';
+                                    } else {
+                                        $stmt = $db->prepare("INSERT INTO cico (user_id, transaction_type, gcash_mobile_number, amount, processing_fee, convenience_fee, reference_number, status, created_at, updated_at)
+                                                 VALUES (?, 'cash-out', ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 
-                                // Cash out process for driver
-                                $transactionType = 'cash-out';
-                                $ticketAmount = $amount + $processingFee;
+                                        $convenienceFee = 0.00;
 
-                                // Check if the driver has enough tickets for cash out
-                                if ($ticketBalance >= $ticketAmount) {
-                                    // Insert the transaction record into the cico table
-                                    $stmt = $db->prepare("INSERT INTO cico (wallet_id, user_id, transaction_type, amount, processing_fee, reference_number, status, created_at, updated_at) VALUES (NULL, ?, ?, ?, ?, '', 'Pending', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-                                    $stmt->bind_param("isdd", $userid, $transactionType, $amount, $processingFee);
-                                    $result = $stmt->execute();
+                                        $stmt->bind_param("isdddss", $userid, $mobileNo, $amount, $processingFee, $convenienceFee, $reference, $status);
 
-                                    if ($result) {
-                                        $walletId = $stmt->insert_id;
-
-                                        // Update the user's ticket balance in the user_profile table
-                                        $stmt = $db->prepare("UPDATE user_profile SET acc_balance = acc_balance - ? WHERE user_id = ?");
-                                        $stmt->bind_param("ii", $ticketAmount, $userid);
                                         $result = $stmt->execute();
 
                                         if ($result) {
-                                            // Insert the transaction record into the transaction table
-                                            $stmt = $db->prepare("INSERT INTO transaction (transaction_id, wallet_id, gcash_mobile_number, ticket_amount, peso_amount, transaction_status, created_at, updated_at) VALUES (NULL, ?, ?, ?, ?, 'success', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-                                            $stmt->bind_param("isis", $walletId, $mobileNo, $ticketAmount, $amount);
-                                            $result = $stmt->execute();
-
-                                            if ($result) {
-                                                // Cash out process is successful
-                                                echo '<div style="text-align: center;"><h5 style="color: green; font-size:16px;">Cash Out Successful</h5></div>';
-                                            } else {
-                                                // Failed to insert into transaction table
-                                                echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Cash Out Failed</h5></div>';
-                                            }
+                                            echo '<div style="text-align: center;">
+                                            <h5 style="color: green; font-size:16px;">Cash-out transaction pending!</h5>
+                                        </div>';
                                         } else {
-                                            // Failed to update ticket balance in user_profile table
-                                            echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Cash Out Failed</h5></div>';
+                                            echo "Error: " . $stmt->error;
                                         }
-                                    } else {
-                                        // Failed to insert into cico table
-                                        echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Cash Out Failed</h5></div>';
+                                        $stmt->close();
                                     }
-                                } else {
-                                    // Insufficient ticket balance for cash out
-                                    echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Insufficient Ticket Balance for Cash Out</h5></div>';
                                 }
                             }
                             ?>
+
                             <button type="submit" name="submit" class="btn btn-success">Cash Out</button>
                         </form>
-                        <!-- End Form-->
+
+                        <!-- End Cash-Out Form -->
                     </div>
+
                 </div>
+
 
                 <hr>
                 <!-- Sticky Footer -->
