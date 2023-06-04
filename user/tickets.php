@@ -20,7 +20,7 @@ if ($result->num_rows == 1) {
     $first_name = $row['first_name'];
     $last_name = $row['last_name'];
     $email = $row['email'];
-    $pswd = $row['pswd'];
+    $pswd = $row['password'];
 }
 
 $stmt = $db->prepare("SELECT * FROM user_identification WHERE user_id = ?");
@@ -127,7 +127,7 @@ if (isset($_POST['submit'])) {
                                 <tbody>
                                     <?php
                                     $ret = "SELECT up.user_id, up.first_name, up.last_name, up.acc_balance
-        FROM user_profile up";
+                                    FROM user_profile up";
                                     $stmt = $db->prepare($ret);
                                     $stmt->execute();
                                     $result = $stmt->get_result();

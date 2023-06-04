@@ -73,31 +73,108 @@ $userid = $_SESSION['user_id'];
                         <b>Car Registration</b>
                     </div>
                     <div class="card-body">
-                        <!--Add User Form-->
-                        <form method="POST">
+                        <form method="POST" autocomplete="on" enctype="multipart/form-data">
+                            <div id="emailHelp" class="form-text">
+                                <b>Vehicle Ownership</b><br><br>
+                                <em>You must sign up with the car that you own.</em><br><br>
+                            </div>
+                            <br>
                             <div class="form-group">
-                                <label for="brand">Brand<span class="text-danger"> *</span></label>
-                                <input type="text" class="form-control" placeholder="Enter Car Brand" name="brand" required><br>
+                                <label for="car_photo">Vehicle Photo<span class="text-danger"> *</span></label>
+                                <input type="file" class="form-control" id="car_photo" name="car_photo" accept=".jpg,.jpeg,.png" required>
+                                <br>
                             </div>
 
                             <div class="form-group">
-                                <label for="model">Model<span class="text-danger"> *</span></label>
+                                <label for="brand">Vehicle Brand<span class="text-danger"> *</span></label>
+                                <input type="text" class="form-control" placeholder="Enter Car Brand" name="brand" required>
+                                <br>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="model">Vehicle Model<span class="text-danger"> *</span></label>
                                 <input type="text" class="form-control" placeholder="Enter Car Model" name="model" required><br>
                             </div>
 
                             <div class="form-group">
-                                <label for="color">Color<span class="text-danger"> *</span></label>
+                                <label for="color">Vehicle Color<span class="text-danger"> *</span></label>
                                 <input type="text" class="form-control" placeholder="Enter Car Color" name="color" required><br>
                             </div>
 
                             <div class="form-group">
-                                <label for="seat_count">Seat Count<span class="text-danger"> *</span></label>
-                                <input type="number" class="form-control" placeholder="Enter Seat Count" name="seat_count" required><br>
+                                <label for="type">Vehicle Type<span class="text-danger"> *</span></label>
+                                <select class="form-control" name="type" id="type" required>
+                                    <option value="" selected disabled>Select Car Type</option>
+                                    <option value="Sedan" data-seats="4">Sedan</option>
+                                    <option value="Hatchback" data-seats="4">Hatchback</option>
+                                    <option value="Coupe" data-seats="2">Coupe</option>
+                                    <option value="Convertible" data-seats="2">Convertible</option>
+                                    <option value="Wagon" data-seats="5">Wagon</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <br>
+                            </div>
+
+                            <div class="form-group" id="otherTypeContainer" style="display: none;">
+                                <label for="otherType">Indicate Other Type</label>
+                                <input type="text" class="form-control" name="otherType" id="otherType">
+                            </div>
+
+                            <div class="form-group" id="seatCountContainer" style="display: none;">
+                                <label for="seatCount">Seat Count<span class="text-danger"> *</span></label>
+                                <select class="form-control" name="seatCount" id="seatCount" required>
+                                    <option value="" selected disabled>Select Seat Count</option>
+                                </select>
+                                <br>
+                            </div>
+
+                            <div class="form-group" id="otherSeatCountContainer" style="display: none;">
+                                <label for="otherSeatCount">Indicate Seat Count<span class="text-danger"> *</span></label>
+                                <input type="number" class="form-control" name="otherSeatCount" id="otherSeatCount" required>
+                                <br>
+                            </div>
+
+                            <script>
+                                document.getElementById('type').addEventListener('change', function() {
+                                    var selectedValue = this.value;
+                                    var otherTypeContainer = document.getElementById('otherTypeContainer');
+                                    var seatCountContainer = document.getElementById('seatCountContainer');
+                                    var otherSeatCountContainer = document.getElementById('otherSeatCountContainer');
+                                    var seatCountSelect = document.getElementById('seatCount');
+
+                                    if (selectedValue === 'Other') {
+                                        otherTypeContainer.style.display = 'block';
+                                        seatCountContainer.style.display = 'none';
+                                        otherSeatCountContainer.style.display = 'block';
+                                        seatCountSelect.innerHTML = '<option value="" selected disabled>Select Seat Count</option>';
+                                    } else {
+                                        otherTypeContainer.style.display = 'none';
+                                        seatCountContainer.style.display = 'block';
+                                        otherSeatCountContainer.style.display = 'none';
+
+                                        var selectedOption = this.options[this.selectedIndex];
+                                        var seatCount = selectedOption.dataset.seats;
+
+                                        seatCountSelect.innerHTML = '<option value="' + seatCount + '" selected>' + seatCount + ' Seats</option>';
+                                    }
+                                });
+                            </script>
+
+                            <div class="form-group">
+                                <label for="or_photo">Upload LTO Official Receipt (OR)<span class="text-danger"> *</span></label>
+                                <input type="file" class="form-control" id="or_photo" name="or_photo" accept=".jpg,.jpeg,.png" required>
+                                <br>
                             </div>
 
                             <div class="form-group">
-                                <label for="car_identity_num">License Plate Number<span class="text-danger"> *</span></label>
-                                <input type="text" class="form-control" placeholder="Enter Plate Number" name="car_identity_num" required><br>
+                                <label for="or_number">LTO Official Receipt (OR) Number<span class="text-danger"> *</span></label>
+                                <input type="text" class="form-control" placeholder="Enter OR Number" name="or_number" required><br>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cr_photo">Upload LTO Certificate of Registration (CR)<span class="text-danger"> *</span></label>
+                                <input type="file" class="form-control" id="cr_photo" name="cr_photo" accept=".jpg,.jpeg,.png" required>
+                                <br>
                             </div>
 
                             <div class="form-group">
@@ -106,147 +183,116 @@ $userid = $_SESSION['user_id'];
                             </div>
 
                             <div class="form-group">
-                                <label for="or_number">LTO Official Receipt (OR) Number<span class="text-danger"> *</span></label>
-                                <input type="text" class="form-control" placeholder="Enter OR number" name="or_number" required><br>
+                                <label for="sales_invoice">Vehicle Sale Invoice and Delivery Receipt<span class="text-success"> (Optional)</span></label>
+                                <input type="file" class="form-control" id="sales_invoice" name="sales_invoice" accept=".jpg,.jpeg,.png">
+                                <br>
                             </div>
 
                             <div class="form-group">
-                                <label for="reg_exp_date">Registration Expiration Date<span class="text-danger"> *</span></label>
-                                <input type="date" class="form-control" placeholder="Enter Registration Expiration Date" name="reg_exp_date" required><br>
+                                <label for="plate_number">License Plate Number<span class="text-danger"> *</span></label>
+                                <input type="text" class="form-control" placeholder="Enter License Plate Number" name="plate_number" required><br>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="plate_expiration">Registration Expiration Date<span class="text-danger"> *</span></label>
+                                <input type="date" class="form-control" name="plate_expiration" required><br>
                             </div>
 
                             <?php
-
                             if (isset($_POST['submit'])) {
-                                include('../db.php');
 
-                                // Get form data
                                 $brand = $_POST["brand"];
                                 $model = $_POST["model"];
                                 $color = $_POST["color"];
-                                $seat_count = $_POST["seat_count"];
 
-                                $car_identity_num = $_POST["car_identity_num"];
+                                if ($_POST['type'] == 'Other') {
+                                    $type = isset($_POST['otherType']) ? $_POST['otherType'] : '';
+                                    $seat_count = isset($_POST['otherSeatCount']) ? $_POST['otherSeatCount'] : '';
+                                } else {
+                                    $type = $_POST['type'];
+                                    $seat_count = $_POST['seatCount'];
+                                }
 
-                                $cr_number = !empty($_POST["cr_number"]) ? $_POST["cr_number"] : "";
+                                // Process and move uploaded files
+                                $car_photo_path = $_FILES["car_photo"]["tmp_name"];
+                                $car_photo_filename = $_FILES["car_photo"]["name"];
+                                $car_photo_destination = "../assets/img/photos/" . $car_photo_filename;
+                                move_uploaded_file($car_photo_path, $car_photo_destination);
 
+                                $or_photo_path = $_FILES["or_photo"]["tmp_name"];
+                                $or_photo_filename = $_FILES["or_photo"]["name"];
+                                $or_photo_destination = "../assets/img/photos/" . $or_photo_filename;
+                                move_uploaded_file($or_photo_path, $or_photo_destination);
 
+                                $cr_photo_path = $_FILES["cr_photo"]["tmp_name"];
+                                $cr_photo_filename = $_FILES["cr_photo"]["name"];
+                                $cr_photo_destination = "../assets/img/photos/" . $cr_photo_filename;
+                                move_uploaded_file($cr_photo_path, $cr_photo_destination);
+
+                                // Retrieve other form data
                                 $or_number = $_POST["or_number"];
-                                $reg_exp_date = $_POST["reg_exp_date"];
+                                $cr_number = $_POST["cr_number"];
+                                $sales_invoice = isset($_FILES["sales_invoice"]["name"]) ? $_FILES["sales_invoice"]["name"] : '';
+                                $plate_number = $_POST["plate_number"];
+                                $plate_expiration = $_POST["plate_expiration"];
 
-                                // Insert user_identification data
-                                // Insert car data
-                                $sql = "INSERT INTO car (owner_id, brand, model, color, seat_count)
-                                VALUES ('{$_SESSION['user_id']}', '$brand', '$model', '$color', '$seat_count')";
-                                if ($db->query($sql) === TRUE) {
+                                // Insert car data into the database
+                                $car_sql = "INSERT INTO car (user_id, car_photo, brand, model, color, type, seat_count, car_status)
+                                        VALUES ('{$_SESSION['user_id']}', '$car_photo_filename', '$brand', '$model', '$color', '$type', '$seat_count', 'Pending')";
+                                if ($db->query($car_sql) === TRUE) {
                                     $last_car_id = $db->insert_id;
 
-                                    // Insert car_identification data
-                                    $sql = "INSERT INTO car_identification (car_id, car_identity_num, cr_number, or_number, reg_exp_date) 
-                                    VALUES ('$last_car_id', '$car_identity_num', '$cr_number', '$or_number', '$reg_exp_date')";
-                                    if ($db->query($sql) === TRUE) {
-                                        $mail = new PHPMailer(true);
-
+                                    // Insert car identification data into the database
+                                    $identification_sql = "INSERT INTO car_identification (car_id, or_photo, or_number, cr_photo, cr_number, sales_invoice, plate_number, plate_expiration)
+                                                        VALUES ('$last_car_id', '$or_photo_filename', '$or_number', '$cr_photo_filename', '$cr_number', '$sales_invoice_filename', '$plate_number', '$plate_expiration')";
+                                    if ($db->query($identification_sql) === TRUE) {
+                                        // Send verification email
                                         $email = $_SESSION['email'];
+                                        $verification_message = "Dear valued user,\n\nThank you for choosing our service. To ensure the security of your account, we need to verify your email address before you can start using our app.\n\nPlease follow the instructions provided in the verification email to complete the process.\n\nBest regards,\nYour App Team";
 
-                                        try {
+                                        // Additional email sending logic goes here
 
-                                            $mail->SMTPDebug = 0;
-                                            $mail->isSMTP();
-                                            $mail->Host = 'smtp.gmail.com';
-                                            $mail->SMTPAuth = true;
-                                            $mail->Username = 'carpoolapp01@gmail.com';
-                                            $mail->Password = 'wzspvmmnnxhtbuxd';
-                                            $mail->SMTPSecure = 'tls';
-                                            $mail->Port = 587;
-
-                                            $mail->setFrom('noreply@tarasabay.com', 'TaraSabay PH');
-                                            $mail->addAddress($email);
-                                            $mail->addCustomHeader('X-Priority', '1');
-                                            $mail->addCustomHeader('Importance', 'High');
-
-                                            $mail->isHTML(true);
-                                            $mail->Subject = 'Email Verification';
-                                            $mail->Body = "
-                                                <html>
-                                                <head>
-                                                <style>
-                                                    body {
-                                                    font-family: Arial, sans-serif;
-                                                    font-size: 16px;
-                                                    line-height: 1.6;
-                                                    color: #444;
-                                                    }
-                                                    h1 {
-                                                    font-size: 24px;
-                                                    font-weight: bold;
-                                                    color: #333;
-                                                    margin: 0 0 30px;
-                                                    text-align: center;
-                                                    }
-                                                    p {
-                                                    margin: 0 0 20px;
-                                                    }
-                                                    a {
-                                                    color: #0072C6;
-                                                    text-decoration: none;
-                                                    }
-                                                    a:hover {
-                                                    text-decoration: underline;
-                                                    }
-                                                    .container {
-                                                    max-width: 600px;
-                                                    margin: 0 auto;
-                                                    }
-                                                </style>
-                                                </head>
-                                                <body>
-                                                <div class=\"container\">
-                                                <h1>Car Verification Required for Your TaraSabay App</h1>
-                                                <p>Dear valued user,</p>
-                                                <p>Thank you for choosing TaraSabay to find rides or offer your own. To ensure the security of your account, we need to verify your email address before you can start using the app.</p>
-                                                <p>Please go to this certain location: Location$213@12 on May 10, 2023 at 10:00 AM to deliver the necessary documents as verification listed below: </p><br>
-                                                <ul>
+                                        echo "<div style=\"text-align: center; font-family: 'Poppins', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;\">
+                                            <h5 style=\"color: #4CAF50; font-size: 24px; margin-bottom: 20px;\">Car registration successful!</h5>
+                                            <p style=\"color: #333333; font-size: 16px; margin-bottom: 20px;\">An email has been sent to your email address to verify your car registration.</p>
+                                            <p style=\"color: #333333; font-size: 16px; margin-bottom: 10px;\">Please bring the following documents for car registration:</p>
+                                            <ul style=\"list-style: disc; margin-left: 30px; color: #333333; font-size: 16px;\">
                                                 <li>Original copy of the Certificate of Registration (CR)</li>
                                                 <li>Original copy of the Official Receipt (OR)</li>
                                                 <li>Photocopy of the driver's valid government-issued ID</li>
                                                 <li>Photocopy of the TIN (Tax Identification Number) ID</li>
-                                                </ul>
-                                                <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
-                                                <p>Best regards,</p>
-                                                <p>TaraSabay PH Team</p>
-                                                </div>
-                                                </body>
-                            
-                                                </html>";
-                                            $mail->send();
-                                            echo "<div style=\"text-align: center; font-family: 'Poppins', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;\">
-                                                <h5 style=\"color: #4CAF50; font-size: 24px; margin-bottom: 20px;\">Car registration successful!</h5>
-                                                <p style=\"color: #333333; font-size: 16px; margin-bottom: 20px;\">An email has been sent to your email address to verify your car registration.</p>
-                                                <p style=\"color: #333333; font-size: 16px; margin-bottom: 10px;\">Please bring the following documents for car registration:</p>
-                                                <ul style=\"list-style: disc; margin-left: 30px; color: #333333; font-size: 16px;\">
-                                                    <li>Original copy of the Certificate of Registration (CR)</li>
-                                                    <li>Original copy of the Official Receipt (OR)</li>
-                                                    <li>Photocopy of the driver's valid government-issued ID</li>
-                                                    <li>Photocopy of the TIN (Tax Identification Number) ID</li>
-                                                </ul>
-                                            </div>";
-                                        } catch (Exception $e) {
-                                            echo '<div style="text-align: center;">
-                                            <h5 style="color: red">Error sending verification email: </h5>' . $mail->ErrorInfo . '
-                                            </div>';
-                                        }
+                                                <li>Photocopy of Owner's Government ID with 3 Original Specimen Signatures</li>
+                                                <li>Vehicle Official Receipt</li>
+                                                <li>Vehicle Certificate of Registration</li>
+                                                <li>Vehicle Sale Invoice and Delivery Receipt (Optional)</li>
+                                                <li>LTFRB Documents (If applicable):
+                                                    <ul>
+                                                        <li>Provision Authority (PA)</li>
+                                                        <li>Certificate of Public Convenience (CPC)</li>
+                                                        <li>Motion for extension of PA</li>
+                                                    </ul>
+                                                    If any of the above, please provide the following of the Document:
+                                                    <ul>
+                                                        <li>Page 1</li>
+                                                        <li>Page 2</li>
+                                                    </ul>
+                                                </li>
+                                                <li>PAMI (Optional)</li>
+                                            </ul>
+                                        </div>";
                                     } else {
-                                        echo "Error: " . $sql . "<br>" . $db->error;
+                                        echo "Error: " . $identification_sql . "<br>" . $db->error;
                                     }
                                 } else {
-                                    echo "Error: " . $sql . "<br>" . $db->error;
+                                    echo "Error: " . $car_sql . "<br>" . $db->error;
                                 }
+                                // Close database connection
                                 $db->close();
                             }
                             ?>
                             <button type="submit" name="submit" class="btn btn-success">Register</button>
                         </form>
+
                         <!-- End Form-->
                     </div>
                 </div>

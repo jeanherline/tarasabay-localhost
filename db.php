@@ -1,6 +1,6 @@
 <?php
 
-$db = new mysqli('localhost', 'root', '', 'carpool');
+$db = new mysqli('localhost', 'root', '', 'cp_trasbay');
 
 if ($db->connect_error) {
     die("Connection failed: " . $db->connect_error);

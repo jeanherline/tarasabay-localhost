@@ -20,7 +20,7 @@ if ($result->num_rows == 1) {
     $first_name = $row['first_name'];
     $last_name = $row['last_name'];
     $email = $row['email'];
-    $pswd = $row['pswd'];
+    $pswd = $row['password'];
 }
 
 $stmt = $db->prepare("SELECT * FROM user_identification WHERE user_id = ?");

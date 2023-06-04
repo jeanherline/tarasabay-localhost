@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-  header('Location: ../login.php');
+    header('Location: ../login.php');
 }
 
 include('../db.php');
@@ -16,6 +16,24 @@ $userid = $_SESSION['user_id'];
 <title>View Profile</title>
 
 <link rel="icon" href="../assets/img/logo.png" type="images" />
+<!-- Include Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
+
+<!-- JavaScript code to toggle password visibility -->
+<script>
+    function togglePasswordVisibility(inputId) {
+        var input = document.getElementById(inputId);
+        var button = document.querySelector('[onclick="togglePasswordVisibility(\'' + inputId + '\')"]');
+
+        if (input.type === "password") {
+            input.type = "text";
+            button.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        } else {
+            input.type = "password";
+            button.innerHTML = '<i class="fas fa-eye"></i>';
+        }
+    }
+</script>
 
 <?php include('vendor/inc/head.php'); ?>
 
@@ -70,16 +88,40 @@ $userid = $_SESSION['user_id'];
                         <form method="POST">
                             <div class="form-group">
                                 <label for="current">Current Password</label>
-                                <input type="password" class="form-control" placeholder="Type current password" id="current" name="current" required><br>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" placeholder="Type current password" id="current" name="current" required>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary show-password" type="button" onclick="togglePasswordVisibility('current')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+                            <br>
                             <div class="form-group">
                                 <label for="new">New Password</label>
-                                <input type="password" class="form-control" placeholder="Type new password" name="new" id="new" required><br>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" placeholder="Type new password" name="new" id="new" required>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary show-password" type="button" onclick="togglePasswordVisibility('new')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+                            <br>
                             <div class="form-group">
                                 <label for="retype">Retype New Password</label>
-                                <input type="password" class="form-control" placeholder="Confirm Password" name="retype" id="retype" required><br>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" placeholder="Confirm Password" name="retype" id="retype" required>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary show-password" type="button" onclick="togglePasswordVisibility('retype')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+                            <br>
                             <?php
                             $stmt = $db->prepare("SELECT * FROM user_profile WHERE user_id = ?");
                             $stmt->bind_param("i", $userid);
@@ -88,7 +130,7 @@ $userid = $_SESSION['user_id'];
 
                             if ($result->num_rows == 1) {
                                 $row = $result->fetch_assoc();
-                                $currentPassword = $row['pswd'];
+                                $currentPassword = $row['password'];
                             }
 
                             if (isset($_POST['submit'])) {
@@ -100,7 +142,7 @@ $userid = $_SESSION['user_id'];
                                     if ($newPassword === $retypePassword) {
                                         $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-                                        $stmt = $db->prepare("UPDATE user_profile SET pswd = ? WHERE user_id = ?");
+                                        $stmt = $db->prepare("UPDATE user_profile SET password = ? WHERE user_id = ?");
                                         $stmt->bind_param("si", $hashedPassword, $userid);
                                         $result = $stmt->execute();
 
@@ -117,7 +159,7 @@ $userid = $_SESSION['user_id'];
                                 }
                             }
                             ?>
-                            <button type="submit" name="submit" class="btn btn-success">Save Changes</button>
+                            <button type="submit" name="submit" style="float:right; margin-right: 1%;" class="btn btn-success">Save Changes</button>
                         </form>
                         <!-- End Form-->
                     </div>

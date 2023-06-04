@@ -5,18 +5,18 @@ ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 ini_set('error_log', 'error.log');
 
-if (isset($_GET['owner_id'])) {
-    $id = $_GET['owner_id'];
+if (isset($_GET['user_id'])) {
+    $id = $_GET['user_id'];
 
     // Update the car status to "Approved"
     $status = "Approved";
-    $stmt = $db->prepare("UPDATE car SET status = ? WHERE owner_id = ?");
+    $stmt = $db->prepare("UPDATE car SET status = ? WHERE user_id = ?");
     $stmt->bind_param("si", $status, $id);
 
     if ($stmt->execute()) {
 
         // Check if this is the first approved car registration for the user
-        $stmt = $db->prepare("SELECT COUNT(*) FROM car WHERE owner_id = ? AND status = 'Approved'");
+        $stmt = $db->prepare("SELECT COUNT(*) FROM car WHERE user_id = ? AND status = 'Approved'");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $stmt->bind_result($carCount);

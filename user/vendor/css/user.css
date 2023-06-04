@@ -1,0 +1,36 @@
+.profile-photo {
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    border: 2px solid #ccc; /* Add border style */
+}
+
+.photo-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    
+}
+
+.vax-card {
+    width: 500px;
+    height: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    border: 2px solid #ccc; /* Add border style */
+}
+
+.card-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

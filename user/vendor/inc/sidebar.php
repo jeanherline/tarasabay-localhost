@@ -20,28 +20,56 @@
   </li>
 
   <?php
-  if ($_SESSION['role'] == "driver") {
+  if ($_SESSION['identity_type'] == "Driver's License" && $_SESSION['role'] == "Passenger") {
+  ?>
+    <?php
+    $user_id = $_SESSION['user_id'];
+    $query = "SELECT * FROM driver_identification WHERE user_id = $user_id AND driver_stat = 'Pending'";
+    $result = mysqli_query($db, $query);
+
+    if (mysqli_num_rows($result) > 0) {
+      $car = mysqli_fetch_assoc($result);
+    ?>
+      <li class="nav-item">
+        <a class="nav-link" href="apply-as-driver.php">
+          <i class="fas fa-fw fa-exchange-alt"></i>
+          <span>Apply As A Driver</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="addCar.php">
+          <i class="fas fa-fw fa-car"></i>
+          <span>Register A Car</span></a>
+      </li>
+    <?php
+    } else {
+      // User does not have a car, show the option to apply as a driver
+    ?>
+      <li class="nav-item">
+        <a class="nav-link" href="apply-as-driver.php">
+          <i class="fas fa-fw fa-exchange-alt"></i>
+          <span>Apply As A Driver</span></a>
+      </li>
+  <?php
+    }
+  }
+  ?>
+
+  <?php
+  if ($_SESSION['role'] == "Driver") {
   ?>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-fw fa-id-card"></i>
-        <span>Apply</span>
+        <span>Driver</span>
       </a>
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-        <h6 class="dropdown-header">Registration</h6>
+        <h6 class="dropdown-header">Cars</h6>
         <a class="dropdown-item" href="addCar.php">Add Car</a>
         <a class="dropdown-item" href="registeredCars.php">Registered Cars</a>
         <a class="dropdown-item" href="pendingCars.php">Pending Cars</a>
         <a class="dropdown-item" href="declinedCars.php">Declined Cars</a>
       </div>
     </li>
-  <?php
-  }
-  ?>
-
-  <?php
-  if ($_SESSION['role'] == "driver") {
-  ?>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-fw fa-bus"></i>
@@ -54,62 +82,46 @@
         <a class="dropdown-item" href="cash-out.php">Cash-Out</a>
       </div>
     </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-fw fa-exchange-alt"></i> <!-- Change the icon class here -->
+        <span>History</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Wallet</h6>
+        <a class="dropdown-item" href="cash-in-history.php">Cash-In</a>
+        <a class="dropdown-item" href="cash-out-history.php">Cash-Out</a>
+      </div>
+    </li>
   <?php
-  } else if ($_SESSION['role'] == "passenger") {
+  }
+  ?>
+
+
+  <?php
+  if ($_SESSION['role'] == "Passenger") {
   ?>
     <li class="nav-item">
       <a class="nav-link" href="cash-in.php">
         <i class="fas fa-fw fa-bus"></i>
         <span>Cash-In</span></a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" href="cash-in-history.php">
+        <i class="fas fa-fw fa-exchange-alt"></i>
+        <span>History</span></a>
+    </li>
   <?php
   }
   ?>
 
   <?php
-  if ($_SESSION['role'] == "driver") {
+  if ($_SESSION['role'] == "admin") {
   ?>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-fw fa-exchange-alt"></i> <!-- Change the icon class here -->
-        <span>Transactions</span>
-      </a>
-      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-        <h6 class="dropdown-header">Wallet</h6>
-        <a class="dropdown-item" href="cash-in-history.php">Cash-In History</a>
-        <a class="dropdown-item" href="cash-out-history.php">Cash-Out History</a>
-      </div>
-    </li>
-  <?php
-  } else if ($_SESSION['role'] == "passenger") {
-  ?>
-    <li class="nav-item">
-      <a class="nav-link" href="cash-in-history.php">
-        <i class="fas fa-fw fa fa-history"></i>
-        <span>Transactions</span></a>
-    </li>
-  <?php
-  } else {
-  ?>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-fw fa-car"></i> <!-- Change the icon class here -->
-        <span>Car Registrants</span>
-      </a>
-      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-        <h6 class="dropdown-header">Table</h6>
-        <a class="dropdown-item" href="pendingCars.php">Pending</a>
-        <a class="dropdown-item" href="registeredCars.php">Approved</a>
-        <a class="dropdown-item" href="declinedCars.php">Declined</a>
-      </div>
-    </li>
-    <?php
-    ?>
-
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-fw fa-book"></i> <!-- Change the icon class here -->
-        <span>Manage Wallets</span>
+        <span>Wallet</span>
       </a>
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
         <h6 class="dropdown-header">Users</h6>
@@ -117,27 +129,15 @@
         <a class="dropdown-item" href="cash-out-manage.php">Cash-Out</a>
       </div>
     </li>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-fw fa-exchange-alt"></i> <!-- Change the icon class here -->
-        <span>Transactions</span>
-      </a>
-      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-        <h6 class="dropdown-header">Table</h6>
-        <a class="dropdown-item" href="cash-in-history.php">CI Table</a>
-        <a class="dropdown-item" href="cash-out-history.php">CO Table</a>
-      </div>
-    </li>
-
     <li class="nav-item">
       <a class="nav-link" href="tickets.php">
         <i class="fa fa-ticket"></i>
         <span>Tickets</span></a>
     </li>
-
   <?php
   }
   ?>
+
 
 
 

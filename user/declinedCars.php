@@ -89,7 +89,7 @@ $userid = $_SESSION['user_id'];
                                     $ret = "SELECT c.brand, c.model, c.color, c.seat_count, ci.car_identity_num, ci.cr_number, ci.or_number, ci.reg_exp_date, c.created_at, c.status, up.first_name, up.last_name
                 FROM car c
                 JOIN car_identification ci ON c.car_id = ci.car_id
-                JOIN user_profile up ON c.owner_id = up.user_id
+                JOIN user_profile up ON c.user_id = up.user_id
                 WHERE c.status = 'declined'";
                                     $stmt = $db->prepare($ret);
                                     $stmt->execute();
@@ -161,7 +161,7 @@ $userid = $_SESSION['user_id'];
                                         $ret = "SELECT c.brand, c.model, c.color, c.seat_count, ci.car_identity_num, ci.cr_number, ci.or_number, ci.reg_exp_date, c.created_at, c.status
                             FROM car c
                             JOIN car_identification ci ON c.car_id = ci.car_id
-                            JOIN user_profile up ON c.owner_id = up.user_id
+                            JOIN user_profile up ON c.user_id = up.user_id
                             WHERE up.user_id = $userid
                             AND c.status = 'declined'";
                                         $stmt = $db->prepare($ret);

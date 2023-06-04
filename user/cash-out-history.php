@@ -20,7 +20,7 @@ if ($result->num_rows == 1) {
     $first_name = $row['first_name'];
     $last_name = $row['last_name'];
     $email = $row['email'];
-    $pswd = $row['pswd'];
+    $pswd = $row['password'];
 }
 
 $stmt = $db->prepare("SELECT * FROM user_identification WHERE user_id = ?");
@@ -113,7 +113,7 @@ if (isset($_POST['submit'])) {
 
                 <!--Bookings-->
                 <?php
-                if ($_SESSION['role'] == "admin") {
+                if ($_SESSION['role'] == "Admin") {
                 ?>
                     <div class="card mb-3">
                         <div class="card-header">
@@ -133,7 +133,7 @@ if (isset($_POST['submit'])) {
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $query = "SELECT cico.wallet_id, cico.gcash_mobile_number, cico.amount, cico.processing_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.status
+                                        $query = "SELECT cico.cico_id, cico.gcash_mobile_number, cico.amount, cico.processing_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.status
                                                     FROM cico
                                                     INNER JOIN user_profile up ON cico.user_id = up.user_id
                                                     WHERE cico.amount > 0 AND cico.transaction_type = 'cash-out'
@@ -149,7 +149,7 @@ if (isset($_POST['submit'])) {
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
                                             echo "<tr>";
-                                            echo "<td>" . $row['wallet_id'] . "</td>";
+                                            echo "<td>" . $row['cico_id'] . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
                                             echo "<td>" . number_format($row['amount'], 2) . "</td>";
                                             echo "<td>" . number_format($row['processing_fee'], 2) . "</td>";
@@ -209,11 +209,11 @@ if (isset($_POST['submit'])) {
                                 <?php
                                 $user_id = $userid; // Replace with the desired user ID
 
-                                $stmt = $db->prepare("SELECT c.wallet_id, up.first_name, up.last_name, c.amount, c.convenience_fee, c.status, c.gcash_mobile_number, c.reference_number, c.created_at
-                                                FROM cico c
-                                                INNER JOIN user_profile up ON c.user_id = up.user_id
-                                                WHERE c.user_id = ? AND c.transaction_type = 'cash-out'
-                                                ORDER BY c.wallet_id");
+                                $stmt = $db->prepare("SELECT c.cico_id, up.first_name, up.last_name, c.peso_amount, c.ticket_amount, c.convenience_fee, c.status, c.gcash_mobile_number, c.reference_number, c.created_at
+                                        FROM cico c
+                                        INNER JOIN user_profile up ON c.user_id = up.user_id
+                                        WHERE c.user_id = ? AND c.transaction_type = 'Cash-out'
+                                        ORDER BY c.cico_id");
 
                                 $stmt->bind_param("i", $user_id);
                                 $stmt->execute();
@@ -224,7 +224,8 @@ if (isset($_POST['submit'])) {
                                     echo "<tr>";
                                     echo "<td>" . $count . "</td>"; // Display the incrementing number
                                     echo "<td>" . $row['gcash_mobile_number'] . "</td>";
-                                    echo "<td>" . number_format($row['amount'], 2) . "</td>";
+                                    echo "<td>" . number_format($row['peso_amount'], 2) . "</td>";
+                                    echo "<td>" . $row['ticket_amount'] . "</td>";
                                     echo "<td>" . $row['reference_number'] . "</td>";
                                     echo "<td>" . $row['created_at'] . "</td>";
                                     echo "<td>";
@@ -241,6 +242,7 @@ if (isset($_POST['submit'])) {
                                 }
                                 ?>
                             </tbody>
+
                         </table>
                     </div>
                 </div>

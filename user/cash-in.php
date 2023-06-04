@@ -72,7 +72,7 @@ $userid = $_SESSION['user_id'];
                                 </div>
                                 <?php
                                 // Code for counting the ticket balance by user ID
-                                $result = $db->query("SELECT acc_balance FROM user_profile WHERE user_id = '$userid'");
+                                $result = $db->query("SELECT ticket_balance FROM user_profile WHERE user_id = '$userid'");
                                 $ticketBalance = $result->fetch_row()[0];
                                 ?>
                                 <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fa fa-ticket"></i>&nbsp;&nbsp;<?php echo $ticketBalance; ?></span> Ticket Balance</div>
@@ -120,23 +120,13 @@ $userid = $_SESSION['user_id'];
                                     });
                                 });
                             </script>
-                            <!-- <br>
-                            <div id="emailHelp" class="form-text">
-                                <b>Note:</b> Selling of Ticket Currency<br><br>
-                                <em>Conversion of Peso to Ticket currency</em><br><br>
-                                • 50 pesos = 40 tickets<br>
-                                • 100 pesos = 80 tickets<br>
-                                • 250 pesos = 200 tickets<br>
-                                • 500 pesos = 450 tickets<br>
-                            </div> -->
-                            
                             <br><br>
                             <?php
                             if (isset($_POST['submit'])) {
                                 $reference = $_POST['reference'];
                                 $mobileNo = $_POST['mobile_no'];
                                 $amount = $_POST['amount'];
-                                $status = 'Pending'; // Set initial status as 'Pending'
+                                $status = 'Successful'; // Set initial status as 'Pending'
 
                                 // Calculate convenience fee based on amount
                                 $confee = "";
@@ -150,20 +140,40 @@ $userid = $_SESSION['user_id'];
                                     $confee = 10.00;
                                 }
 
-                                $stmt = $db->prepare("INSERT INTO cico (user_id, transaction_type, gcash_mobile_number, amount, processing_fee, convenience_fee, reference_number, status, created_at, updated_at)
-                                VALUES (?, 'cash-in', ?, ?, 0.0, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-                                $stmt->bind_param("isisds", $userid, $mobileNo, $amount, $confee, $reference, $status);
+                                // Calculate ticket amount based on amount
+                                $ticketAmount = "";
+                                if ($amount == 500) {
+                                    $ticketAmount = 450;
+                                } elseif ($amount == 250) {
+                                    $ticketAmount = 200;
+                                } elseif ($amount == 100) {
+                                    $ticketAmount = 80;
+                                } elseif ($amount == 50) {
+                                    $ticketAmount = 40;
+                                }
 
+                                $processing_fee = 0;
+                                $methodType = "GCash";
+                                $stmt = $db->prepare("INSERT INTO cico (user_id, trans_type, gcash_mobile_number, processing_fee, convenience_fee, reference_number, trans_stat, peso_amount, ticket_amount, method_type)
+                                VALUES (?, 'Cash-In', ?, ?, ?, ?, ?, ?, ?, ?)");
+                                $stmt->bind_param("isddssdds", $userid, $mobileNo, $processing_fee, $confee, $reference, $status, $amount, $ticketAmount, $methodType);
                                 $result = $stmt->execute();
 
                                 if ($result) {
-                                    echo '<div style="text-align: center;"><h5 style="color: green; font-size:16px;">Cash-in transaction pending!</h5></div>';
+                                    $sql_update_tickets = "UPDATE user_profile SET ticket_balance = ticket_balance + $ticketAmount WHERE user_id = ?";
+                                    $stmt7 = $db->prepare($sql_update_tickets);
+                                    $stmt7->bind_param("i", $userid);
+                                    $stmt7->execute();
+                                    if ($stmt7->error) {
+                                        die("Error updating ticket balance for referrer: " . $stmt7->error);
+                                    }
+
+                                    echo '<div style="text-align: center;"><h5 style="color: green; font-size:16px;">Cash-In Successful!</h5></div>';
                                 } else {
                                     echo "Error: " . $stmt->error;
                                 }
                             }
                             ?>
-
                             <button type="submit" name="submit" class="btn btn-success">Cash In</button>
                         </form>
                         <!-- End Form-->

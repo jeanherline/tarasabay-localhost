@@ -20,7 +20,7 @@ if ($result->num_rows == 1) {
     $first_name = $row['first_name'];
     $last_name = $row['last_name'];
     $email = $row['email'];
-    $pswd = $row['pswd'];
+    $pswd = $row['password'];
 }
 
 $stmt = $db->prepare("SELECT * FROM user_identification WHERE user_id = ?");
@@ -189,22 +189,23 @@ if (isset($_POST['submit'])) {
                                         <tr>
                                             <th>Transaction #</th>
                                             <th>GCash Mobile Number</th>
-                                            <th>Amount</th>
+                                            <th>From Peso</th>
+                                            <th>To Ticket</th>
                                             <th>Conv. Fee</th>
                                             <th>Reference Number</th>
-                                            <th>Created At</th>
-                                            <th>Status</th>
+                                            <th>Method Type</th>
+                                            <th>Date and Time</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $user_id = $userid; // Replace with the desired user ID
 
-                                        $stmt = $db->prepare("SELECT c.wallet_id, up.first_name, up.last_name, c.amount, c.convenience_fee, c.status, c.gcash_mobile_number, c.reference_number, c.created_at
+                                        $stmt = $db->prepare("SELECT c.cico_id, c.gcash_mobile_number, c.peso_amount, c.ticket_amount, c.convenience_fee, c.reference_number, c.method_type, c.created_at, c.trans_stat
                                                 FROM cico c
                                                 INNER JOIN user_profile up ON c.user_id = up.user_id
-                                                WHERE c.user_id = ? AND c.transaction_type = 'cash-in'
-                                                ORDER BY c.wallet_id");
+                                                WHERE c.user_id = ? AND c.trans_type = 'cash-in'
+                                                ORDER BY c.cico_id");
 
                                         $stmt->bind_param("i", $user_id);
                                         $stmt->execute();
@@ -215,30 +216,22 @@ if (isset($_POST['submit'])) {
                                             echo "<tr>";
                                             echo "<td>" . $count . "</td>"; // Display the incrementing number
                                             echo "<td>" . $row['gcash_mobile_number'] . "</td>";
-                                            echo "<td>" . number_format($row['amount'], 2) . "</td>";
-                                            echo "<td>" . number_format($row['convenience_fee'], 2) . "</td>";
+                                            echo "<td>₱ " . number_format($row['peso_amount'], 2) . "</td>";
+                                            echo "<td>" . $row['ticket_amount'] . "</td>";
+                                            echo "<td>₱ " . number_format($row['convenience_fee'], 2) . "</td>";
                                             echo "<td>" . $row['reference_number'] . "</td>";
+                                            echo "<td>" . $row['method_type'] . "</td>";
                                             echo "<td>" . $row['created_at'] . "</td>";
-                                            echo "<td>";
-                                            if ($row['status'] == "Pending") {
-                                                echo '<span class="badge badge-warning">' . $row['status'] . '</span>';
-                                            } elseif ($row['status'] == "Approved") {
-                                                echo '<span class="badge badge-success">' . $row['status'] . '</span>';
-                                            } elseif ($row['status'] == "Denied") {
-                                                echo '<span class="badge badge-danger">' . $row['status'] . '</span>';
-                                            }
-                                            echo "</td>";
                                             echo "</tr>";
                                             $count++; // Increment the count variable
                                         }
                                         ?>
-
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-
                     </div>
+
 
 
                     <div class="card-footer small text-muted">

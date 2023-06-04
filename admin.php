@@ -110,10 +110,10 @@ $userid = $_SESSION['user_id'];
         <hr>
         <br>
         <?php
-        $stmt = $db->prepare("SELECT c.car_id, c.owner_id, c.brand, c.model, ci.car_identity_num, ci.cr_number, ci.or_number, ci.reg_exp_date, c.status, c.color, c.seat_count, c.created_at, up.first_name, up.last_name, up.email, up.role
+        $stmt = $db->prepare("SELECT c.car_id, c.user_id, c.brand, c.model, ci.car_identity_num, ci.cr_number, ci.or_number, ci.reg_exp_date, c.status, c.color, c.seat_count, c.created_at, up.first_name, up.last_name, up.email, up.role
         FROM car c
         JOIN car_identification ci ON c.car_id = ci.car_id
-        JOIN user_profile up ON c.owner_id = up.user_id
+        JOIN user_profile up ON c.user_id = up.user_id
         WHERE up.role IN ('user', 'driver')
         AND c.status = 'pending'");
         $stmt->execute();
@@ -140,7 +140,7 @@ $userid = $_SESSION['user_id'];
                 <tbody>
                 <?php
                     while ($row = $result->fetch_assoc()) {
-                        $id = $row['owner_id'];
+                        $id = $row['user_id'];
                         echo "<tr>";
                         echo "<td>" . $row['first_name'] . "</td>";
                         echo "<td>" . $row['last_name'] . "</td>";
@@ -156,8 +156,8 @@ $userid = $_SESSION['user_id'];
                         echo "<td>" . $row['created_at'] . "</td>";
                     ?>
                         <td class="action-buttons">
-                            <a href="approveCar.php?owner_id=<?php echo $row['owner_id']; ?>">✅</a>
-                            <a href="disapproveCar.php?owner_id=<?php echo $row['owner_id']; ?>">❎</a>
+                            <a href="approveCar.php?user_id=<?php echo $row['user_id']; ?>">✅</a>
+                            <a href="disapproveCar.php?user_id=<?php echo $row['user_id']; ?>">❎</a>
 
                         </td>
 
@@ -188,10 +188,10 @@ $userid = $_SESSION['user_id'];
         <hr>
         <br>
         <?php
-        $stmt = $db->prepare("SELECT c.car_id, c.owner_id, c.brand, c.model, ci.car_identity_num, ci.cr_number, ci.or_number, ci.reg_exp_date, c.status, c.color, c.seat_count, c.created_at, up.first_name, up.last_name, up.email, up.role
+        $stmt = $db->prepare("SELECT c.car_id, c.user_id, c.brand, c.model, ci.car_identity_num, ci.cr_number, ci.or_number, ci.reg_exp_date, c.status, c.color, c.seat_count, c.created_at, up.first_name, up.last_name, up.email, up.role
         FROM car c
         JOIN car_identification ci ON c.car_id = ci.car_id
-        JOIN user_profile up ON c.owner_id = up.user_id
+        JOIN user_profile up ON c.user_id = up.user_id
         WHERE up.role IN ('user', 'driver')
         AND c.status = 'approved'");
         $stmt->execute();
@@ -218,7 +218,7 @@ $userid = $_SESSION['user_id'];
                 <tbody>
                     <?php
                     while ($row = $result->fetch_assoc()) {
-                        $id = $row['owner_id'];
+                        $id = $row['user_id'];
                         echo "<tr>";
                         echo "<td>" . $row['first_name'] . "</td>";
                         echo "<td>" . $row['last_name'] . "</td>";
@@ -234,7 +234,7 @@ $userid = $_SESSION['user_id'];
                         echo "<td>" . $row['created_at'] . "</td>";
                     ?>
                         <td class="action-buttons">
-                            <a href="disapproveCar.php?owner_id=<?php echo $row['owner_id']; ?>">❎</a>
+                            <a href="disapproveCar.php?user_id=<?php echo $row['user_id']; ?>">❎</a>
 
                         </td>
 
@@ -266,10 +266,10 @@ $userid = $_SESSION['user_id'];
         <hr>
         <br>
         <?php
-        $stmt = $db->prepare("SELECT c.car_id, c.owner_id, c.brand, c.model, ci.car_identity_num, ci.cr_number, ci.or_number, ci.reg_exp_date, c.status, c.color, c.seat_count, c.created_at, up.first_name, up.last_name, up.email, up.role
+        $stmt = $db->prepare("SELECT c.car_id, c.user_id, c.brand, c.model, ci.car_identity_num, ci.cr_number, ci.or_number, ci.reg_exp_date, c.status, c.color, c.seat_count, c.created_at, up.first_name, up.last_name, up.email, up.role
         FROM car c
         JOIN car_identification ci ON c.car_id = ci.car_id
-        JOIN user_profile up ON c.owner_id = up.user_id
+        JOIN user_profile up ON c.user_id = up.user_id
         WHERE up.role IN ('user', 'driver')
         AND c.status = 'declined'");
         $stmt->execute();
@@ -296,7 +296,7 @@ $userid = $_SESSION['user_id'];
                 <tbody>
                     <?php
                     while ($row = $result->fetch_assoc()) {
-                        $id = $row['owner_id'];
+                        $id = $row['user_id'];
                         echo "<tr>";
                         echo "<td>" . $row['first_name'] . "</td>";
                         echo "<td>" . $row['last_name'] . "</td>";
@@ -312,7 +312,7 @@ $userid = $_SESSION['user_id'];
                         echo "<td>" . $row['created_at'] . "</td>";
                     ?>
                         <td class="action-buttons">
-                        <a href="approveCar.php?owner_id=<?php echo $row['owner_id']; ?>">✅</a>
+                        <a href="approveCar.php?user_id=<?php echo $row['user_id']; ?>">✅</a>
                         </td>
 
                     <?php

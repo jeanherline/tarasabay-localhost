@@ -90,10 +90,10 @@ $userid = $_SESSION['user_id'];
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $ret = "SELECT c.brand, c.model, c.owner_id, c.color, c.seat_count, ci.car_identity_num, ci.cr_number, ci.or_number, ci.reg_exp_date, c.status, up.first_name, up.last_name, c.created_at
+                                        $ret = "SELECT c.brand, c.model, c.user_id, c.color, c.seat_count, ci.car_identity_num, ci.cr_number, ci.or_number, ci.reg_exp_date, c.status, up.first_name, up.last_name, c.created_at
                                        FROM car c
                                        JOIN car_identification ci ON c.car_id = ci.car_id
-                                       JOIN user_profile up ON c.owner_id = up.user_id
+                                       JOIN user_profile up ON c.user_id = up.user_id
                                        WHERE c.status = 'pending' ORDER BY c.created_at DESC";
 
                                         $stmt = $db->prepare($ret);
@@ -114,8 +114,8 @@ $userid = $_SESSION['user_id'];
                                             echo "<td>" . $row['reg_exp_date'] . "</td>";
                                             echo "<td>" . $row['created_at'] . "</td>";
                                             echo "<td>
-    <a href='../approveCar.php?owner_id=" . $row['owner_id'] . "' class='badge badge-success'><i class='fa fa-check'></i> Approve</a>
-    <a href='../disapproveCar.php?owner_id=" . $row['owner_id'] . "' class='badge badge-danger'><i class='fa fa-trash'></i> Decline</a>
+    <a href='../approveCar.php?user_id=" . $row['user_id'] . "' class='badge badge-success'><i class='fa fa-check'></i> Approve</a>
+    <a href='../disapproveCar.php?user_id=" . $row['user_id'] . "' class='badge badge-danger'><i class='fa fa-trash'></i> Decline</a>
 </td>";
 
                                             echo "</tr>";
@@ -165,7 +165,7 @@ $userid = $_SESSION['user_id'];
                                         $ret = "SELECT c.brand, c.model, c.color, c.seat_count, ci.car_identity_num, ci.cr_number, ci.or_number, ci.reg_exp_date, c.created_at, c.status, up.first_name, up.last_name
                         FROM car c
                         JOIN car_identification ci ON c.car_id = ci.car_id
-                        JOIN user_profile up ON c.owner_id = up.user_id
+                        JOIN user_profile up ON c.user_id = up.user_id
                         WHERE up.user_id = $userid
                         AND c.status = 'pending'";
                                         $stmt = $db->prepare($ret);

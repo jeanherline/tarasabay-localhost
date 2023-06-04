@@ -21,6 +21,49 @@ session_start();
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
   <link rel="icon" href="assets/img/logo.png" type="images" />
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
+
+    .input-wrap {
+      position: relative;
+      height: 35px;
+      margin-bottom: 2rem;
+    }
+
+    .input-field {
+      font-family: "Poppins", sans-serif;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: none;
+      border: none;
+      outline: none;
+      padding: 0;
+      font-size: 0.95rem;
+      transition: 0.4s;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+
+    .input-wrap:focus {
+      color: #000 !important;
+    }
+
+    .input-field::-ms-expand {
+      display: none;
+    }
+
+    .input-field option {
+      color: #333;
+    }
+
+    .input-field:focus {
+      border-bottom: 1px solid #0077cc;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -58,47 +101,69 @@ session_start();
 
               if (isset($_POST['sign-in'])) {
                 require 'db.php';
-            
+
                 $email = trim($_POST['email']);
                 $pswd = trim($_POST['pswd']);
-            
+
                 // Check if email exists in the database
                 $stmt = $db->prepare("SELECT * FROM user_profile WHERE email = ?");
                 $stmt->bind_param("s", $email);
                 $stmt->execute();
                 $result = $stmt->get_result();
-            
+
                 if ($result->num_rows == 1) {
-                    $user = $result->fetch_assoc();
-            
-                    // Check if password is correct
-                    if (password_verify($pswd, $user['pswd'])) {
-                        $_SESSION['user_id'] = $user['user_id'];
-                        $_SESSION['first_name'] = $user['first_name'];
-                        $_SESSION['role'] = $user['role'];
-                        $_SESSION['email'] = $user['email'];
-            
-                        header('Location: user/dashboard.php');
-                        exit();
-                    } else {
-                        echo '<div style="text-align: center;">
-                            <h5 style="color: red">Invalid password</h5>
-                        </div><br>';
+                  $user = $result->fetch_assoc();
+
+                  // Check if password is correct
+                  if (password_verify($pswd, $user['password'])) {
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['first_name'] = $user['first_name'];
+                    $_SESSION['role'] = $user['role'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['city_id'] = $user['city_id'];
+
+                    $stmt = $db->prepare("SELECT * FROM city WHERE city_id = ?");
+                    $stmt->bind_param("i", $user['city_id']);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    if ($result->num_rows == 1) {
+                      $city = $result->fetch_assoc();
+                      $_SESSION['city_name'] = $city['city_name'];
                     }
-                } else {
+
+                    $stmt = $db->prepare("SELECT * FROM user_identification WHERE user_id = ?");
+                    $stmt->bind_param("i", $user['user_id']);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    if ($result->num_rows == 1) {
+                      $id = $result->fetch_assoc();
+                      $_SESSION['identity_type'] = $id['identity_type'];
+                    }
+
+                    header('Location: user/dashboard.php');
+                    exit();
+                  } else {
                     echo '<div style="text-align: center;">
-                        <h5 style="color: red">Invalid email</h5>
-                    </div><br>';
+                          <h5 style="color: red">Invalid Password</h5>
+                      </div><br>';
+                  }
+                } else {
+                  echo '<div style="text-align: center;">
+                  <h5 style="color: red">Invalid Email</h5>
+              </div><br>';
                 }
-            }
+              }
+
               if (isset($_POST['register'])) {
                 $fname = $db->real_escape_string($_POST['fname']);
                 $lname = $db->real_escape_string($_POST['lname']);
                 $email = $db->real_escape_string($_POST['email']);
+                $pswd = $db->real_escape_string(password_hash($_POST['pswd'], PASSWORD_DEFAULT));
+                $city = $db->real_escape_string($_POST['city']);
                 $id = $db->real_escape_string($_POST['id']);
                 $idnum = $db->real_escape_string($_POST['idnum']);
-
-                $pswd = $db->real_escape_string(password_hash($_POST['pswd'], PASSWORD_DEFAULT));
+                $identity_expiration = $db->real_escape_string($_POST['expiration']);
+                $referralCode = $db->real_escape_string($_POST['referral_code']);
                 $token = bin2hex(random_bytes(16));
 
                 // Check if the email already exists in the user_profile table
@@ -109,11 +174,24 @@ session_start();
                   // Email already exists in the user_profile table
                   echo '<div style="text-align: center;">
                             <h5 style="color: red">Email address already exists. Please use a different email or log in.</h5>
-                        </div><br>';
+                          </div><br>';
                 } else {
-                  // Insert the user data into the `user_temp` table
-                  $sql = "INSERT INTO user_temp (first_name, last_name, email, pswd, token, identity_type, user_identity_num) 
-                  VALUES ('$fname', '$lname', '$email', '$pswd', '$token', '$id', '$idnum')";
+                  // Check if the referral code exists in the database
+                  $sql_referral_check = "SELECT * FROM code WHERE referral_code='$referralCode' AND refer_status = 'Unused'";
+                  $result = $db->query($sql_referral_check);
+
+                  if ($result->num_rows > 0) {
+                    // Referral code exists
+                    // Insert the user data into the `user_temp` table
+                    $sql = "INSERT INTO user_temp (first_name, last_name, email, password, token, city_id, identity_type, user_identity_num, identity_expiration, referral_code) 
+                                VALUES ('$fname', '$lname', '$email', '$pswd', '$token', '$city', '$id', '$idnum', '$identity_expiration', '$referralCode')";
+                  } else {
+                    // Referral code doesn't exist
+                    // Insert the user data into the `user_temp` table with a null referral code
+                    $sql = "INSERT INTO user_temp (first_name, last_name, email, password, token, city_id, identity_type, user_identity_num, identity_expiration) 
+                                VALUES ('$fname', '$lname', '$email', '$pswd', '$token', '$city', '$id', '$idnum', '$identity_expiration')";
+                  }
+
                   if ($db->query($sql) === TRUE) {
                     $mail = new PHPMailer(true);
 
@@ -136,70 +214,71 @@ session_start();
                       $mail->isHTML(true);
                       $mail->Subject = 'Email Verification';
                       $mail->Body = "
-                                  <html>
-                                  <head>
+                                <html>
+                                <head>
                                     <style>
-                                      body {
-                                        font-family: Arial, sans-serif;
-                                        font-size: 16px;
-                                        line-height: 1.6;
-                                        color: #444;
-                                      }
-                                      h1 {
-                                        font-size: 24px;
-                                        font-weight: bold;
-                                        color: #333;
-                                        margin: 0 0 30px;
-                                        text-align: center;
-                                      }
-                                      p {
-                                        margin: 0 0 20px;
-                                      }
-                                      a {
-                                        color: #0072C6;
-                                        text-decoration: none;
-                                      }
-                                      a:hover {
-                                        text-decoration: underline;
-                                      }
-                                      .container {
-                                        max-width: 600px;
-                                        margin: 0 auto;
-                                      }
+                                        body {
+                                            font-family: Arial, sans-serif;
+                                            font-size: 16px;
+                                            line-height: 1.6;
+                                            color: #444;
+                                        }
+                                        h1 {
+                                            font-size: 24px;
+                                            font-weight: bold;
+                                            color: #333;
+                                            margin: 0 0 30px;
+                                            text-align: center;
+                                        }
+                                        p {
+                                            margin: 0 0 20px;
+                                        }
+                                        a {
+                                            color: #0072C6;
+                                            text-decoration: none;
+                                        }
+                                        a:hover {
+                                            text-decoration: underline;
+                                        }
+                                        .container {
+                                            max-width: 600px;
+                                            margin: 0 auto;
+                                        }
                                     </style>
-                                  </head>
-                                  <body>
+                                </head>
+                                <body>
                                     <div class=\"container\">
-                                      <h1>Verification Required for Your TaraSabay App Registration</h1>
-                                      <p>Dear valued user,</p>
-                          <p>Thank you for choosing TaraSabay to find rides or offer your own. To ensure the security of your account, we need to verify your email address before you can start using the app.</p>
-                          <p>Please click on the button below to verify your email address and finalize your registration:</p>
-                          <p><a href=\"http://localhost:8080/tarasabay-localhost/verify.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
-                          <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
-                          <p>Best regards,</p>
-                          <p>TaraSabay PH Team</p>
-                        </div>
-                      </body>
-  
-                      </html>";
+                                        <h1>Verification Required for Your TaraSabay App Registration</h1>
+                                        <p>Dear valued user,</p>
+                                        <p>Thank you for choosing TaraSabay to find rides or offer your own. To ensure the security of your account, we need to verify your email address before you can start using the app.</p>
+                                        <p>Please click on the button below to verify your email address and finalize your registration:</p>
+                                        <p><a href=\"http://localhost:8080/tarasabay-localhost/verify.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
+                                        <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
+                                        <p>Best regards,</p>
+                                        <p>TaraSabay PH Team</p>
+                                    </div>
+                                </body>
+                                </html>";
+
                       $mail->send();
                       echo '<div style="text-align: center;">
-                        <h5 style="color: green">Check email to verify registration</h5><br>
-                      </div>';
+                                    <h5 style="color: green">Check email to verify registration</h5><br>
+                                  </div>';
                     } catch (Exception $e) {
                       echo '<div style="text-align: center;">
-                        <h5 style="color: red">Error sending verification email: </h5>' . $mail->ErrorInfo . '
-                      </div>';
+                                    <h5 style="color: red">Error sending verification email: </h5>' . $mail->ErrorInfo . '
+                                  </div>';
                     }
                   } else {
                     echo '<div style="text-align: center;">
-                        <h5 style="color: red">Error:</h5>
-                      </div>
-                      <div style="text-align: center;">' . $sql . "<br>" . $db->error . '</div>';
+                                <h5 style="color: red">Error:</h5>
+                              </div>
+                              <div style="text-align: center;">' . $sql . "<br>" . $db->error . '</div>';
                   }
                 }
               }
               ?>
+
 
               <input type="submit" id="sign-in" name="sign-in" value="Sign In" class="sign-btn" />
 
@@ -239,75 +318,79 @@ session_start();
                 <label id="email">Email</label>
               </div>
 
-
-
               <div class="input-wrap">
                 <input type="password" id="pswd" name="pswd" minlength="4" class="input-field" autocomplete="off" required />
                 <label id="pswd">Password</label>
               </div>
-              <p class="text" style="font-size: 11px; color: green; text-align: center; padding-bottom:1%">
-                You may apply as a driver if you input a valid <strong>driver's license.</strong>
-              </p>
 
               <div class="input-wrap">
-                <select class="input-field" id="id" name="id">
-                  <option value="" disabled selected>Select a Valid ID</option>
-                  <option value="Passport">Passport</option>
-                  <option value="Driver's License">Driver License</option>
-                  <option value="National ID">National ID</option>
-                  <option value="SSS">SSS</option>
-                  <option value="GSIS">GSIS</option>
-                  <option value="Postal ID">Philippine Postal ID</option>
-                  <option value="Voter's ID">Voter's ID</option>
+                <select class="input-field" id="city" name="city" required>
+                  <option value="" class="disabled-option" disabled selected>Select a City</option>
+                  <?php
+                  $sql = "SELECT * FROM city ORDER BY city_name ASC";
+                  $result = $db->query($sql);
+
+                  if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                      $city_id = $row['city_id'];
+                      $city_name = $row['city_name'];
+                      $province = $row['province'];
+                      $region = $row['region'];
+                  ?>
+                      <option value="<?php echo $city_id; ?>"><?php echo $city_name; ?></option>
+                  <?php
+                    }
+                  } else {
+                    echo "No cities found.";
+                  }
+                  ?>
+
                 </select>
               </div>
-
-              <style>
-                @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
-
-                .input-wrap {
-                  position: relative;
-                  height: 37px;
-                  margin-bottom: 2rem;
-                }
-
-                .input-field {
-                  font-family: "Poppins", sans-serif;
-                  position: absolute;
-                  width: 100%;
-                  height: 100%;
-                  background: none;
-                  border: none;
-                  outline: none;
-                  padding: 0;
-                  font-size: 0.95rem;
-                  color: #151111;
-                  transition: 0.4s;
-                  -webkit-appearance: none;
-                  -moz-appearance: none;
-                  appearance: none;
-                }
-
-                .input-field::-ms-expand {
-                  display: none;
-                }
-
-                .input-field option {
-                  color: #333;
-                }
-
-                .input-field:focus {
-                  border-bottom: 1px solid #0077cc;
-                }
-              </style>
-
+              <div class="input-wrap">
+                <select class="input-field" id="id" name="id" required>
+                  <option value="" style="color: #bbb !important;" disabled selected>Select a Valid ID</option>
+                  <option value="Passport">Passport</option>
+                  <option value="Driver's License">Driver's License</option>
+                  <option value="National ID">National ID</option>
+                  <option value="SSS">SSS (Social Security System ID)</option>
+                  <option value="GSIS">GSIS (Government Service Insurance System ID)</option>
+                  <option value="Postal ID">Philippine Postal ID</option>
+                  <option value="Voter's ID">Voter's ID</option>
+                  <option value="PRC">PRC (Professional Regulation Commission ID)</option>
+                  <option value="UMID">UMID (Unified Multi-Purpose ID)</option>
+                  <option value="TIN">TIN (Tax Identification Number ID)</option>
+                  <option value="PhilHealth">PhilHealth ID</option>
+                  <option value="SeniorCitizen">Senior Citizen ID</option>
+                  <option value="PWD">PWD (Person with Disability) ID</option>
+                  <option value="OFW">OFW (Overseas Filipino Worker) ID</option>
+                  <option value="AFP">AFP (Armed Forces of the Philippines) ID</option>
+                  <option value="IBP">IBP (Integrated Bar of the Philippines) ID</option>
+                </select>
+              </div>
 
               <div class="input-wrap">
                 <input type="text" id="idnum" name="idnum" class="input-field" autocomplete="off" required />
                 <label id="idnum">Valid ID Number</label>
               </div>
+              <a href="" style="  color: #151111;
+                                    text-decoration: none;
+                                    font-size: 0.75rem;
+                                    font-weight: 500;">
+                Valid ID Expiration</a>
+              <div class="input-wrap">
+                <input type="date" id="expiration" name="expiration" class="input-field" autocomplete="off" required />
+              </div>
 
 
+              <div class="input-wrap">
+                <input type="text" id="referral_code" name="referral_code" class="input-field" autocomplete="off" />
+                <label id="referral_code">Referral Code (Optional)</label>
+              </div>
+
+              <p class="text" style="font-size: 11px; color: green; text-align: center; padding-bottom:5%">
+                You may apply as a driver if you input a valid <strong>driver's license.</strong>
+              </p>
               <input type="submit" id="register" name="register" value="Sign Up" class="sign-btn" />
               <!-- <p class="text">
                 By signing up, I agree to the
@@ -316,31 +399,11 @@ session_start();
               </p> -->
             </div>
           </form>
-
-
         </div>
 
         <div class="carousel">
           <div class="images-wrapper">
-            <img src="assets/img/image1.jpg" class="image img-1 show" alt="" />
-            <img src="assets/img/image2.jpg" class="image img-2" alt="" />
-            <img src="assets/img/image3.jpgs" class="image img-3" alt="" />
-          </div>
-
-          <div class="text-slider">
-            <div class="text-wrap">
-              <div class="text-group">
-                <h2>Ride & Save together.</h2>
-                <h2>Carpool your way!</h2>
-                <h2>Commute made easy.</h2>
-              </div>
-            </div>
-
-            <div class="bullets">
-              <span class="active" data-value="1"></span>
-              <span data-value="2"></span>
-              <span data-value="3"></span>
-            </div>
+            <img src="assets/img/image1.jpg" class="image img-1 show" alt="" width="" />
           </div>
         </div>
       </div>
@@ -349,7 +412,6 @@ session_start();
 
 
   <!-- Javascript file -->
-
   <script src="assets/js/app.js"></script>
 </body>
 
