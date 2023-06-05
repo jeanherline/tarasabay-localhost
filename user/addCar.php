@@ -244,7 +244,7 @@ $userid = $_SESSION['user_id'];
 
                                     // Insert car identification data into the database
                                     $identification_sql = "INSERT INTO car_identification (car_id, or_photo, or_number, cr_photo, cr_number, sales_invoice, plate_number, plate_expiration)
-                                                        VALUES ('$last_car_id', '$or_photo_filename', '$or_number', '$cr_photo_filename', '$cr_number', '$sales_invoice_filename', '$plate_number', '$plate_expiration')";
+                                                        VALUES ('$last_car_id', '$or_photo_filename', '$or_number', '$cr_photo_filename', '$cr_number', '$sales_invoice', '$plate_number', '$plate_expiration')";
                                     if ($db->query($identification_sql) === TRUE) {
                                         // Send verification email
                                         $email = $_SESSION['email'];
