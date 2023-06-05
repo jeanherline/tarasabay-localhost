@@ -391,22 +391,54 @@ $userid = $_SESSION['user_id'];
                             if (isset($_POST['submit'])) {
                                 $user_id = $_SESSION['user_id'];
 
+                                // Process and move uploaded files
+                                $profile_photo_path = $_FILES["profile_photo"]["tmp_name"];
+                                $profile_photo_filename = $_FILES["profile_photo"]["name"];
+                                $profile_photo_destination = "../assets/img/photos/" . $profile_photo_filename;
+                                move_uploaded_file($profile_photo_path, $profile_photo_destination);
+
+                                $vax_card_path = $_FILES["vax_card"]["tmp_name"];
+                                $vax_card_filename = $_FILES["vax_card"]["name"];
+                                $vax_card_destination = "../assets/img/photos/" . $vax_card_filename;
+                                move_uploaded_file($vax_card_path, $vax_card_destination);
+
+                                $driver_license_front_path = $_FILES["driver_license_front"]["tmp_name"];
+                                $driver_license_front_filename = $_FILES["driver_license_front"]["name"];
+                                $driver_license_front_destination = "../assets/img/photos/" . $driver_license_front_filename;
+                                move_uploaded_file($driver_license_front_path, $driver_license_front_destination);
+
+                                $driver_license_back_path = $_FILES["driver_license_back"]["tmp_name"];
+                                $driver_license_back_filename = $_FILES["driver_license_back"]["name"];
+                                $driver_license_back_destination = "../assets/img/photos/" . $driver_license_back_filename;
+                                move_uploaded_file($driver_license_back_path, $driver_license_back_destination);
+
+                                $nbi_police_cbi_photo_path = $_FILES["nbi_police_cibi_photo"]["tmp_name"];
+                                $nbi_police_cbi_photo_filename = $_FILES["nbi_police_cibi_photo"]["name"];
+                                $nbi_police_cbi_photo_destination = "../assets/img/photos/" . $nbi_police_cbi_photo_filename;
+                                move_uploaded_file($nbi_police_cbi_photo_path, $nbi_police_cbi_photo_destination);
+
+                                $pwdID_path = $_FILES["pwdID"]["tmp_name"];
+                                $pwdID_filename = $_FILES["pwdID"]["name"];
+                                $pwdID_destination = "../assets/img/photos/" . $pwdID_filename;
+                                move_uploaded_file($pwdID_path, $pwdID_destination);
+
                                 // Retrieve form data
-                                $profile_photo = $_FILES['profile_photo']['name'];
+                                $profile_photo = $profile_photo_filename;
                                 $is_vaxxed = isset($_POST['covid_agreement']) ? 1 : 0;
-                                $vax_card = $_FILES['vax_card']['name'];
+                                $vax_card = $vax_card_filename;
                                 $emergency_contact_name = $_POST['emergency_contact_name'];
                                 $relationship = $_POST['relationship'];
                                 $emergency_contact_number = $_POST['emergency_contact_number'];
                                 $emergency_contact_address = $_POST['emergency_contact_address'];
-                                $driver_license_front = $_FILES['driver_license_front']['name'];
-                                $driver_license_back = $_FILES['driver_license_back']['name'];
+                                $driver_license_front = $driver_license_front_filename;
+                                $driver_license_back = $driver_license_back_filename;
                                 $license_expiration = $_POST['expiration_date'];
                                 $is_above_60 = $_POST['age_above_sixty'] === '1' ? 1 : 0;
                                 $nbi_police_cbi = $_POST['nbi_police_cibi_document'];
-                                $nbi_police_cbi_photo = $_FILES['nbi_police_cibi_photo']['name'];
-                                $pwdID = $_FILES['pwdID']['name'];
+                                $nbi_police_cbi_photo = $nbi_police_cbi_photo_filename;
+                                $pwdID = $pwdID_filename;
                                 $years_experience = $_POST['years_experience'];
+
 
                                 // Update the user_profile table
                                 $stmt = $db->prepare("UPDATE user_profile SET profile_photo = ?, is_vaxxed = ?, vax_card = ? WHERE user_id = ?");
@@ -464,62 +496,63 @@ $userid = $_SESSION['user_id'];
                                     $mail->isHTML(true);
                                     $mail->Subject = 'Driver Verification';
                                     $mail->Body = "
-                                                <html>
-                                                <head>
-                                                <style>
-                                                    body {
-                                                    font-family: Arial, sans-serif;
-                                                    font-size: 16px;
-                                                    line-height: 1.6;
-                                                    color: #444;
-                                                    }
-                                                    h1 {
-                                                    font-size: 24px;
-                                                    font-weight: bold;
-                                                    color: #333;
-                                                    margin: 0 0 30px;
-                                                    text-align: center;
-                                                    }
-                                                    p {
-                                                    margin: 0 0 20px;
-                                                    }
-                                                    a {
-                                                    color: #0072C6;
-                                                    text-decoration: none;
-                                                    }
-                                                    a:hover {
-                                                    text-decoration: underline;
-                                                    }
-                                                    .container {
-                                                    max-width: 600px;
-                                                    margin: 0 auto;
-                                                    }
-                                                </style>
-                                                </head>
-                                                <body>
-                                                <div class=\"container\">
-                                                <h1>Car Registration Requirements Received!</h1>
-                                                <p>Dear valued driver,</p>
-                                                <p>We have received your requirements for becoming a driver on TaraSabay. We appreciate your interest in joining our platform.</p>
-                                                <p>To be officially qualified as a driver, we kindly request you to register a car on the TaraSabay App. This will involve providing the necessary details and documentation related to your vehicle.</p>
-                                                <p>Registering a car will allow you to offer rides and maximize your earning potential on our platform. It's an essential step towards becoming an active driver.</p>
-                                                <p>If you haven't already done so, please log in to the TaraSabay App and navigate to the car registration section. Follow the instructions provided to complete the process.</p>
-                                                <p>If you encounter any difficulties or have any questions, feel free to reach out to our support team at support@tarasabay.com. We are here to assist you throughout the car registration process.</p>
-                                                <p>We look forward to having you as a qualified driver on TaraSabay!</p>
-                                                <p>Best regards,</p>
-                                                <p>TaraSabay PH Team</p>
-                                                </div>
-                                                </body>
-                                                
-                                                </html>";
+                                        <html>
+                                        <head>
+                                        <style>
+                                            body {
+                                            font-family: Arial, sans-serif;
+                                            font-size: 16px;
+                                            line-height: 1.6;
+                                            color: #444;
+                                            }
+                                            h1 {
+                                            font-size: 24px;
+                                            font-weight: bold;
+                                            color: #333;
+                                            margin: 0 0 30px;
+                                            text-align: center;
+                                            }
+                                            p {
+                                            margin: 0 0 20px;
+                                            }
+                                            a {
+                                            color: #0072C6;
+                                            text-decoration: none;
+                                            }
+                                            a:hover {
+                                            text-decoration: underline;
+                                            }
+                                            .container {
+                                            max-width: 600px;
+                                            margin: 0 auto;
+                                            }
+                                        </style>
+                                        </head>
+                                        <body>
+                                        <div class=\"container\">
+                                        <h1>Car Registration Requirements Received!</h1>
+                                        <p>Dear valued driver,</p>
+                                        <p>We have received your requirements for becoming a driver on TaraSabay. We appreciate your interest in joining our platform.</p>
+                                        <p>To be officially qualified as a driver, we kindly request you to register a car on the TaraSabay App. This will involve providing the necessary details and documentation related to your vehicle.</p>
+                                        <p>Registering a car will allow you to offer rides and maximize your earning potential on our platform. It's an essential step towards becoming an active driver.</p>
+                                        <p>If you haven't already done so, please log in to the TaraSabay App and navigate to the car registration section. Follow the instructions provided to complete the process.</p>
+                                        <p>If you encounter any difficulties or have any questions, feel free to reach out to our support team at support@tarasabay.com. We are here to assist you throughout the car registration process.</p>
+                                        <p>We look forward to having you as a qualified driver on TaraSabay!</p>
+                                        <p>Best regards,</p>
+                                        <p>TaraSabay PH Team</p>
+                                        </div>
+                                        </body>
+                                        
+                                        </html>";
                                     $mail->send();
+
                                     echo '<div style="text-align: center; font-family: \'Poppins\', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;">
-                                                <h5 style="color: #4CAF50; font-size: 24px; margin-bottom: 20px;">Car registration requirements received!</h5>
-                                                <p style="color: #333333; font-size: 16px; margin-bottom: 20px;">Thank you for submitting your requirements to become a driver on TaraSabay. We have successfully received your information.</p>
-                                                <p style="color: #333333; font-size: 16px;">To be officially qualified as a driver, we kindly request you to register a car on the TaraSabay App. This will allow you to offer rides and maximize your earning potential on our platform.</p>
-                                                <p style="color: #333333; font-size: 16px;">Please log in again to the TaraSabay Web App and navigate to the car registration section to complete the process. If you encounter any difficulties or have any questions, our support team at support@tarasabay.com is ready to assist you.</p>
-                                                <p style="color: #333333; font-size: 16px;">We look forward to having you as a qualified driver on TaraSabay!</p>
-                                            </div>';
+                                            <h5 style="color: #4CAF50; font-size: 24px; margin-bottom: 20px;">Car registration requirements received!</h5>
+                                            <p style="color: #333333; font-size: 16px; margin-bottom: 20px;">Thank you for submitting your requirements to become a driver on TaraSabay. We have successfully received your information.</p>
+                                            <p style="color: #333333; font-size: 16px;">To be officially qualified as a driver, we kindly request you to register a car on the TaraSabay App. This will allow you to offer rides and maximize your earning potential on our platform.</p>
+                                            <p style="color: #333333; font-size: 16px;">Please log in again to the TaraSabay Web App and navigate to the car registration section to complete the process. If you encounter any difficulties or have any questions, our support team at support@tarasabay.com is ready to assist you.</p>
+                                            <p style="color: #333333; font-size: 16px;">We look forward to having you as a qualified driver on TaraSabay!</p>
+                                        </div>';
                                 } catch (Exception $e) {
                                     echo '<div style="text-align: center;">
                                             <h5 style="color: red">Error sending verification email: </h5>' . $mail->ErrorInfo . '
