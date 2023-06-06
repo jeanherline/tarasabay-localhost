@@ -32,7 +32,7 @@ if ($result->num_rows == 1) {
 
     $is_vaxxed = $row['is_vaxxed'];
     $vax_card = $row['vax_card'];
-    $last_login = $row['last_login'];
+  
 }
 
 $stmt = $db->prepare("SELECT * FROM city WHERE city_id = ?");

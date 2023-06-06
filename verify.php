@@ -114,10 +114,10 @@ if (isset($_GET['token'])) {
         session_start();
         $_SESSION['user_id'] = $user_id;
 
-        header("Location: http://localhost:8080/tarasabay-localhost/login.php");
+        header("Location: http://localhost/tarasabay-localhost/login.php");
         exit;
     } else {
-        header("Location: http://localhost:8080/tarasabay-localhost/notif/notif-failed.php?token=$token");
+        header("Location: http://localhost/tarasabay-localhost/notif/notif-failed.php?token=$token");
         exit;
     }
 }

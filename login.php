@@ -252,7 +252,7 @@ session_start();
                                         <p>Dear valued user,</p>
                                         <p>Thank you for choosing TaraSabay to find rides or offer your own. To ensure the security of your account, we need to verify your email address before you can start using the app.</p>
                                         <p>Please click on the button below to verify your email address and finalize your registration:</p>
-                                        <p><a href=\"http://localhost:8080/tarasabay-localhost/verify.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
+                                        <p><a href=\"http://localhost/tarasabay-localhost/verify.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
                                         <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
                                         <p>Best regards,</p>
                                         <p>TaraSabay PH Team</p>
@@ -391,12 +391,16 @@ session_start();
               <p class="text" style="font-size: 11px; color: green; text-align: center; padding-bottom:5%">
                 You may apply as a driver if you input a valid <strong>driver's license.</strong>
               </p>
+
+              <div class="input-wrap">
+                <p class="text" style="color:#000">
+                  <input type="checkbox" id="agreementCheckbox" required !important>
+                  By signing up, I agree to the Terms of Services and Privacy Policy
+                </p>
+              </div>
+
               <input type="submit" id="register" name="register" value="Sign Up" class="sign-btn" />
-              <!-- <p class="text">
-                By signing up, I agree to the
-                <a href="#">Terms of Services</a> and
-                <a href="#">Privacy Policy</a>
-              </p> -->
+
             </div>
           </form>
         </div>

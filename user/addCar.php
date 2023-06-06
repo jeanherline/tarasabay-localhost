@@ -259,7 +259,7 @@ $userid = $_SESSION['user_id'];
                                             <ul style=\"list-style: disc; margin-left: 30px; color: #333333; font-size: 16px;\">
                                                 <li>Original copy of the Certificate of Registration (CR)</li>
                                                 <li>Original copy of the Official Receipt (OR)</li>
-                                                <li>Photocopy of the driver's valid government-issued ID</li>
+                                                <li>Photocopy of Driver's License</li>
                                                 <li>Photocopy of the TIN (Tax Identification Number) ID</li>
                                                 <li>Photocopy of Owner's Government ID with 3 Original Specimen Signatures</li>
                                                 <li>Vehicle Official Receipt</li>
