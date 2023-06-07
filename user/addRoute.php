@@ -72,7 +72,7 @@ $userid = $_SESSION['user_id'];
                     <div class="card-header">
                         <b>Earn with TaraSabay: Route Registration</b><br>
                         Turn your car into a source of income by registering your route with TaraSabay.
-                        <br>Connect with passengers, set your schedule, and maximize your earning potential. 
+                        <br>Connect with passengers, set your schedule, and maximize your earning potential.
                         <br>
                         <em><br>Join our community of drivers and start earning today!</em>
                         <!-- Icon Cards-->
@@ -107,161 +107,89 @@ $userid = $_SESSION['user_id'];
                     <div class="card-body">
                         <form method="POST" autocomplete="on" enctype="multipart/form-data">
                             <div class="form-group">
-                                <label for="car_photo">Vehicle Photo<span class="text-danger"> *</span></label>
-                                <input type="file" class="form-control" id="car_photo" name="car_photo" accept=".jpg,.jpeg,.png" required>
-                                <br>
-                            </div>
-                            <small class="form-text text-muted">- The car photo helps others identify your vehicle.<br>Please note that once you submit the car photo, it cannot be changed.
-                                <br>
-                                <br>Guidelines for Uploading Car Photo:
-                                <br>1. Ensure the car is clearly visible, with no obstructions or excessive glare.
-                                <br>2. Capture the photo in good lighting conditions, preferably during daylight.
-                                <br>3. Avoid using filters or excessive editing that alters the car's appearance.
-                                <br>4. Include the entire car within the frame, with all relevant details visible.
-                            </small>
-                            <br>
-                            <div class="form-group">
-                                <label for="brand">Vehicle Brand<span class="text-danger"> *</span></label>
-                                <input type="text" class="form-control" placeholder="Enter Car Brand" name="brand" required>
-                                <br>
-                            </div>
+                                <label for="car_id">Choose Which Car to Use<span class="text-danger"> *</span></label>
+                                <select class="form-control" name="car_id" id="car_id" required>
+                                    <option value="" selected disabled>Select Vehicle</option>
+                                    <?php
+                                    $sql = "SELECT * FROM car WHERE user_id = '$userid' AND car_status = 'Active'";
+                                    $result = mysqli_query($db, $sql);
+                                    $numRows = mysqli_num_rows($result);
 
-                            <div class="form-group">
-                                <label for="model">Vehicle Model<span class="text-danger"> *</span></label>
-                                <input type="text" class="form-control" placeholder="Enter Car Model" name="model" required><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="color">Vehicle Color<span class="text-danger"> *</span></label>
-                                <input type="text" class="form-control" placeholder="Enter Car Color" name="color" required><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="type">Vehicle Type<span class="text-danger"> *</span></label>
-                                <select class="form-control" name="type" id="type" required>
-                                    <option value="" selected disabled>Select Car Type</option>
-                                    <option value="Wagon" data-seats="4">Wagon</option>
-                                    <option value="Sedan" data-seats="4">Sedan</option>
-                                    <option value="Hatchback" data-seats="4">Hatchback</option>
-                                    <option value="Coupe" data-seats="1-3">Coupe</option>
-                                    <option value="Crossover" data-seats="4-6">Crossover</option>
-                                    <option value="Regular Cab" data-seats="1">Pick-up (Regular Cab)</option>
-                                    <option value="Extended Cab" data-seats="3-4">Pick-up (Extended Cab)</option>
-                                    <option value="Crew Cab" data-seats="4-5">Pick-up (Crew Cab)</option>
-                                    <option value="SUV" data-seats="4-7">SUV (Sports Utility Vehicle)</option>
-                                    <option value="MPV" data-seats="5-7">MPV (Multi-Purpose Vehicle)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group" id="seatCountContainer" style="display: none;">
-                                <label for="seatCount">Available Seat Count (Passenger Capacity, Excluding Driver Seat)<span class="text-danger"> *</span></label>
-                                <select class="form-control" name="seatCount" id="seatCount" required>
-                                    <option value="" selected disabled>Select Seat Count</option>
-                                </select>
-                                <br>
-                                <small class="form-text text-muted">- Selecting the Seat Count or Passenger Capacity (Excluding Driver Seat)<br>Please note that the chosen seat count cannot be changed once submitted.
-                                    <br>
-                                    <br>Guidelines for Selecting Seat Count:
-                                    <br>1. Include the total number of passengers the vehicle can accommodate, excluding the driver's seat.
-                                    <br>2. If applicable, consider the middle seat on the back row as part of the seat count.
-                                    <br>3. Ensure the selected seat count accurately represents the maximum number of passengers the vehicle can hold.
-                                    <br>4. Take into account the available seating positions, including bench seats or optional third-row seating, if applicable.
-                                </small>
-                            </div>
-
-                            <br>
-                            <script>
-                                document.getElementById('type').addEventListener('change', function() {
-                                    var selectedValue = this.value;
-                                    var otherTypeContainer = document.getElementById('otherTypeContainer');
-                                    var seatCountContainer = document.getElementById('seatCountContainer');
-                                    var otherSeatCountContainer = document.getElementById('otherSeatCountContainer');
-                                    var seatCountSelect = document.getElementById('seatCount');
-
-                                    seatCountContainer.style.display = 'block';
-
-                                    var selectedOption = this.options[this.selectedIndex];
-                                    var seatCount = selectedOption.dataset.seats;
-
-                                    seatCountSelect.innerHTML = '';
-
-                                    if ((selectedValue === 'Coupe')) {
-                                        seatCountSelect.innerHTML = '<option value="' + 1 + '" selected>' + 1 + ' Seats</option>';
-                                        seatCountSelect.innerHTML += '<option value="' + 3 + '" selected>' + 3 + ' Seats</option>';
-                                    } else if ((selectedValue === 'Extended Cab')) {
-                                        seatCountSelect.innerHTML = '<option value="' + 3 + '" selected>' + 3 + ' Seats</option>';
-                                        seatCountSelect.innerHTML += '<option value="' + 4 + '" selected>' + 4 + ' Seats</option>';
-                                    } else if ((selectedValue === 'Crew Cab')) {
-                                        seatCountSelect.innerHTML = '<option value="' + 4 + '" selected>' + 4 + ' Seats</option>';
-                                        seatCountSelect.innerHTML += '<option value="' + 5 + '" selected>' + 5 + ' Seats</option>';
-                                    } else if ((selectedValue === 'SUV')) {
-                                        seatCountSelect.innerHTML = '<option value="' + 4 + '" selected>' + 4 + ' Seats</option>';
-                                        seatCountSelect.innerHTML += '<option value="' + 7 + '" selected>' + 7 + ' Seats</option>';
-                                    } else if ((selectedValue === 'Crossover')) {
-                                        seatCountSelect.innerHTML = '<option value="' + 4 + '" selected>' + 4 + ' Seats</option>';
-                                        seatCountSelect.innerHTML += '<option value="' + 6 + '" selected>' + 6 + ' Seats</option>';
-                                    } else if ((selectedValue === 'MPV')) {
-                                        seatCountSelect.innerHTML = '<option value="' + 5 + '" selected>' + 5 + ' Seats</option>';
-                                        seatCountSelect.innerHTML += '<option value="' + 7 + '" selected>' + 7 + ' Seats</option>';
-                                    } else {
-                                        seatCountSelect.innerHTML = '<option value="' + seatCount + '" selected>' + seatCount + ' Seat/s</option>';
+                                    if ($numRows > 0) {
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            $car_id  = $row['car_id'];
+                                            $type = $row['type'];
+                                            $brand = $row['brand'];
+                                            $model = $row['model'];
+                                            $seat_count = $row['seat_count'];
+                                    ?>
+                                            <option value="<?php echo $car_id; ?>" <?php echo isset($_POST['car_id']) && $_POST['car_id'] == $car_id ? 'selected' : ''; ?>><?php echo $type . " " . $brand . " " . $model; ?></option>
+                                    <?php
+                                        }
                                     }
-                                });
-                            </script>
-
-                            <div class="form-group">
-                                <label for="or_photo">Upload LTO Official Receipt (OR)<span class="text-danger"> *</span></label>
-                                <input type="file" class="form-control" id="or_photo" name="or_photo" accept=".jpg,.jpeg,.png" required>
-                                <br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="or_number">LTO Official Receipt (OR) Number<span class="text-danger"> *</span></label>
-                                <input type="text" class="form-control" placeholder="Enter OR Number" name="or_number" required><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="cr_photo">Upload LTO Certificate of Registration (CR)<span class="text-danger"> *</span></label>
-                                <input type="file" class="form-control" id="cr_photo" name="cr_photo" accept=".jpg,.jpeg,.png" required>
-                                <br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="cr_number">LTO Certificate of Registration (CR) Number<span class="text-danger"> *</span></label>
-                                <input type="text" class="form-control" placeholder="Enter CR Number" name="cr_number" required><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="sales_invoice">Vehicle Sale Invoice and Delivery Receipt<span class="text-success"> (Optional)</span></label>
-                                <input type="file" class="form-control" id="sales_invoice" name="sales_invoice" accept=".jpg,.jpeg,.png">
-                                <br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="plate_number">License Plate Number<span class="text-danger"> *</span></label>
-                                <input type="text" class="form-control" placeholder="Enter License Plate Number" name="plate_number" required>
+                                    ?>
+                                </select>
                                 <small class="form-text text-muted">
-                                    <br><em>Guidelines for Entering License Plate Number:</em>
-                                    <br>1. Enter the license plate number exactly as it appears on your vehicle's registration documents.
-                                    <br>2. Include any letters, numbers, and special characters as they are displayed on the license plate.
-                                    <br>3. Avoid including spaces or hyphens unless they are part of the official license plate format.
-                                    <br>4. Double-check for accuracy and ensure all characters are entered correctly.
+                                    <br><em>Guidelines for Selecting Car to Use:</em>
+                                    <br>1. Choose the car you intend to use for the route from the dropdown list.
+                                    <br>2. The available options will include active cars associated with your user account.
+                                    <br>3. Select the car that best suits your needs for the specific route.
+                                    <br>4. Ensure the car is in good condition and meets the requirements for the journey.
                                 </small>
+                                <br>
                             </div>
 
-                            <br>
                             <div class="form-group">
-                                <label for="plate_expiration">Registration Expiration Date<span class="text-danger"> *</span></label>
-                                <input type="date" class="form-control" name="plate_expiration" required>
-                                <small class="form-text text-muted">
-                                    <br><em>Guidelines for Entering Registration Expiration Date:</em>
-                                    <br>1. Enter the registration expiration date exactly as it appears on your vehicle's registration documents.
-                                    <br>2. Use the specified date format provided on the registration documents (e.g., MM/DD/YYYY).
-                                    <br>3. Ensure the entered date represents the month, day, and year accurately.
-                                    <br>4. The registration expiration date should be <b>at least 6 months</b> in the future from the current date.
-                                    <br>5. Double-check for accuracy and verify that the registration is valid and meets the 6-month requirement at the time of submission.
-                                </small>
+                                <label for="pickup_loc">Pick-Up Location<span class="text-danger"> *</span></label>
+                                <input type="text" class="form-control" placeholder="Enter Pick-Up Location" name="pickup_loc" required>
+                                <br>
                             </div>
+
+                            <div class="form-group">
+                                <label for="dropoff_loc">Drop-off Location<span class="text-danger"> *</span></label>
+                                <input type="text" class="form-control" placeholder="Enter Drop-off Location" name="dropoff_loc" required>
+                                <br>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="departure">Departure Date and Time<span class="text-danger"> *</span></label>
+                                <input type="datetime-local" class="form-control" placeholder="Enter Departure Date and Time" name="departure" required><br>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="est_arrival_time">Estimated Arrival Time<span class="text-danger"> *</span></label>
+                                <input type="time" class="form-control" placeholder="Enter Estimated Arrival Time" name="est_arrival_time" required><br>
+                            </div>
+
+
+                            <?php
+                            if($type == 'Coupe' AND $seat_count == '1') {
+
+                            } else if($type == 'Coupe' AND $seat_count == '3') {
+
+                            } else if($type == 'Crossover' AND $seat_count == '4') {
+
+                            } else if($type == 'Crossover' AND $seat_count == '6') {
+                                
+                            } else if($type == 'Regular Cab' AND $seat_count == '1') {
+
+                            } else if($type == 'Extended Cab' AND $seat_count == '3') {
+
+                            } else if($type == 'Extended Cab' AND $seat_count == '4') {
+
+                            } else if($type == 'Crew Cab' AND $seat_count == '4') {
+
+                            } else if($type == 'Crew Cab' AND $seat_count == '5') {
+
+                            } else if($type == 'SUV' AND $seat_count == '4') {
+
+                            } else if($type == 'SUV' AND $seat_count == '7') {
+
+                            } else if($type == 'MPV' AND $seat_count == '5') {
+
+                            } else if($type == 'MPV' AND $seat_count == '7') {
+                            }
+                            ?>
                             <br>
 
                             <?php
