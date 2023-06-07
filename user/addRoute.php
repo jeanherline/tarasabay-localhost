@@ -123,7 +123,7 @@ $userid = $_SESSION['user_id'];
                                             $model = $row['model'];
                                             $seat_count = $row['seat_count'];
                                     ?>
-                                            <option value="<?php echo $car_id; ?>" <?php echo isset($_POST['car_id']) && $_POST['car_id'] == $car_id ? 'selected' : ''; ?>><?php echo $type . " " . $brand . " " . $model; ?></option>
+                                            <option value="<?php echo $car_id; ?>" data-type="<?php echo $type; ?>" data-count="<?php echo $seat_count; ?>"><?php echo $type . " " . $brand . " " . $model; ?></option>
                                     <?php
                                         }
                                     }
@@ -161,37 +161,205 @@ $userid = $_SESSION['user_id'];
                                 <input type="time" class="form-control" placeholder="Enter Estimated Arrival Time" name="est_arrival_time" required><br>
                             </div>
 
+                            <script>
+                                document.getElementById('car_id').addEventListener('change', function() {
+                                    var selectedCarId = this.value;
+                                    var carTypeSelect = document.getElementById('car_id');
+                                    var selectedOption = carTypeSelect.options[carTypeSelect.selectedIndex];
+                                    var carType = selectedOption.dataset.type;
+                                    var carSeatCount = selectedOption.dataset.count;
+                                    var seatFareContainer = document.getElementById('seatFareContainer');
+                                    var title = document.getElementById('title');
 
-                            <?php
-                            if($type == 'Coupe' AND $seat_count == '1') {
+                                    title.style.display = 'block';
 
-                            } else if($type == 'Coupe' AND $seat_count == '3') {
+                                    seatFareContainer.innerHTML = '';
 
-                            } else if($type == 'Crossover' AND $seat_count == '4') {
+                                    if (carType === 'Coupe') {
+                                        if (carSeatCount === '1') {
+                                            seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <br>
+                                            </div>`;
+                                        } else if (carSeatCount === 3) {
+                                            seatFareContainer.innerHTML = `
+                                        <div class="form-group">
+                                            <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                            <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                            <br>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                            <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                            <br>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="seat3">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                            <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat3" required>
+                                            <br>
+                                        </div>`;
+                                        }
+                                    } else if (carType === 'Crossover') {
+                                        if (carSeatCount === '4') {
+                                            seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat3">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat3" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat4">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <br>
+                                            </div>`;
+                                        } else if (carSeatCount === '6') {
+                                            seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat3">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat3" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat4">Third Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat5">Third Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat5" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat6">Third Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat6" required>
+                                                <br>
+                                            </div>`;
+                                        }
 
-                            } else if($type == 'Crossover' AND $seat_count == '6') {
-                                
-                            } else if($type == 'Regular Cab' AND $seat_count == '1') {
-
-                            } else if($type == 'Extended Cab' AND $seat_count == '3') {
-
-                            } else if($type == 'Extended Cab' AND $seat_count == '4') {
-
-                            } else if($type == 'Crew Cab' AND $seat_count == '4') {
-
-                            } else if($type == 'Crew Cab' AND $seat_count == '5') {
-
-                            } else if($type == 'SUV' AND $seat_count == '4') {
-
-                            } else if($type == 'SUV' AND $seat_count == '7') {
-
-                            } else if($type == 'MPV' AND $seat_count == '5') {
-
-                            } else if($type == 'MPV' AND $seat_count == '7') {
-                            }
-                            ?>
-                            <br>
-
+                                    } else if (carType === 'Regular Cab') {
+                                        seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <br>
+                                            </div>`;
+                                    } else if (carType === 'Extended Cab') {
+                                        if (carSeatCount === '3') {
+                                            seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat4">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <br>
+                                            </div>`;
+                                        } else if (carSeatCount === '4') {
+                                            seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat3">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat3" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat4">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <br>
+                                            </div>`;
+                                        }
+                                    } else if (carType === 'Crew Cab') {
+                                        if (carSeatCount === '4') {
+                                            seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat4">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <br>
+                                            </div>`;
+                                        } else if (carSeatCount === '5') {
+                                            seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat3">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat3" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="seat4">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <br>
+                                            </div>`;
+                                        }
+                                    } else if (carType === 'SUV') {
+                                        // Add code for SUV seat fares here
+                                    } else if (carType === 'MPV') {
+                                        // Add code for MPV seat fares here
+                                    } else {
+                                        // Handle other vehicle types or show default message
+                                    }
+                                });
+                            </script>
+                            <div id="title" style="display: none;">
+                                <em>Seat Fares</em><br><br>
+                            </div>
+                            <div id="seatFareContainer"></div>
                             <?php
                             if (isset($_POST['submit'])) {
 
