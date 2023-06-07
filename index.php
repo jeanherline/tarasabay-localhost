@@ -96,7 +96,7 @@ session_start();
 
               <?php
               if (isset($_SESSION['user_id'])) {
-                header('Location: login.php');
+                header('Location: index.php');
               }
 
               if (isset($_POST['sign-in'])) {

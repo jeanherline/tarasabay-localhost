@@ -9,7 +9,7 @@ use PHPMailer\PHPMailer\Exception;
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../login.php');
+    header('Location: ../index.php');
 }
 
 include('../db.php');
@@ -448,32 +448,32 @@ $userid = $_SESSION['user_id'];
                                     // Process and move uploaded files
                                     $profile_photo_path = $_FILES["profile_photo"]["tmp_name"];
                                     $profile_photo_filename = $_FILES["profile_photo"]["name"];
-                                    $profile_photo_destination = "../assets/img/photos/" . $profile_photo_filename;
+                                    $profile_photo_destination = "../assets/img/profile-photo/" . $profile_photo_filename;
                                     move_uploaded_file($profile_photo_path, $profile_photo_destination);
 
                                     $vax_card_path = $_FILES["vax_card"]["tmp_name"];
                                     $vax_card_filename = $_FILES["vax_card"]["name"];
-                                    $vax_card_destination = "../assets/img/photos/" . $vax_card_filename;
+                                    $vax_card_destination = "../assets/img/vax-card/" . $vax_card_filename;
                                     move_uploaded_file($vax_card_path, $vax_card_destination);
 
                                     $driver_license_front_path = $_FILES["driver_license_front"]["tmp_name"];
                                     $driver_license_front_filename = $_FILES["driver_license_front"]["name"];
-                                    $driver_license_front_destination = "../assets/img/photos/" . $driver_license_front_filename;
+                                    $driver_license_front_destination = "../assets/img/license/" . $driver_license_front_filename;
                                     move_uploaded_file($driver_license_front_path, $driver_license_front_destination);
 
                                     $driver_license_back_path = $_FILES["driver_license_back"]["tmp_name"];
                                     $driver_license_back_filename = $_FILES["driver_license_back"]["name"];
-                                    $driver_license_back_destination = "../assets/img/photos/" . $driver_license_back_filename;
+                                    $driver_license_back_destination = "../assets/img/license/" . $driver_license_back_filename;
                                     move_uploaded_file($driver_license_back_path, $driver_license_back_destination);
 
                                     $nbi_police_cbi_photo_path = $_FILES["nbi_police_cibi_photo"]["tmp_name"];
                                     $nbi_police_cbi_photo_filename = $_FILES["nbi_police_cibi_photo"]["name"];
-                                    $nbi_police_cbi_photo_destination = "../assets/img/photos/" . $nbi_police_cbi_photo_filename;
+                                    $nbi_police_cbi_photo_destination = "../assets/img/docx/" . $nbi_police_cbi_photo_filename;
                                     move_uploaded_file($nbi_police_cbi_photo_path, $nbi_police_cbi_photo_destination);
 
                                     $pwdID_path = $_FILES["pwdID"]["tmp_name"];
                                     $pwdID_filename = $_FILES["pwdID"]["name"];
-                                    $pwdID_destination = "../assets/img/photos/" . $pwdID_filename;
+                                    $pwdID_destination = "../assets/img/pwd/" . $pwdID_filename;
                                     move_uploaded_file($pwdID_path, $pwdID_destination);
 
                                     // Retrieve form data
@@ -584,7 +584,7 @@ $userid = $_SESSION['user_id'];
                                         </head>
                                         <body>
                                         <div class=\"container\">
-                                        <h1>Car Registration Requirements Received!</h1>
+                                        <h1>Driver Registration Requirements Received!</h1>
                                         <p>Dear valued driver,</p>
                                         <p>We have received your requirements for becoming a driver on TaraSabay. We appreciate your interest in joining our platform.</p>
                                         <p>To be officially qualified as a driver, we kindly request you to register a car on the TaraSabay App. This will involve providing the necessary details and documentation related to your vehicle.</p>
@@ -601,7 +601,8 @@ $userid = $_SESSION['user_id'];
                                         $mail->send();
 
                                         echo '<div style="text-align: center; font-family: \'Poppins\', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;">
-                                    <h5 style="color: #4CAF50; font-size: 24px; margin-bottom: 20px;">Car registration requirements received!</h5>
+                                        <img src=\"../assets/img/checked.png\" alt=\"Driver Registration\" style=\"margin-bottom: 20px; width: 100px\">
+                                        <h5 style="color: #4CAF50; font-size: 24px; margin-bottom: 20px;">Driver registration requirements received!</h5>
                                     <p style="color: #333333; font-size: 16px; margin-bottom: 20px;">Thank you for submitting your requirements to become a driver on TaraSabay. We have successfully received your information.</p>
                                     <p style="color: #333333; font-size: 16px;">To be officially qualified as a driver, we kindly request you to register a car on the TaraSabay App. This will allow you to offer rides and maximize your earning potential on our platform.</p>
                                     <p style="color: #333333; font-size: 16px;">Please log in again to the TaraSabay Web App and navigate to the car registration section to complete the process. If you encounter any difficulties or have any questions, our support team at support@tarasabay.com is ready to assist you.</p>

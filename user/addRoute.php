@@ -20,7 +20,7 @@ $userid = $_SESSION['user_id'];
 
 <!DOCTYPE html>
 <html lang="en">
-<title>Add Car</title>
+<title>Add Route</title>
 
 <link rel="icon" href="../assets/img/logo.png" type="images" />
 
@@ -63,15 +63,18 @@ $userid = $_SESSION['user_id'];
                 <!-- Breadcrumbs-->
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="#">Register A Car</a>
+                        <a href="#">Register A Route</a>
                     </li>
-                    <li class="breadcrumb-item active">Add Car</li>
+                    <li class="breadcrumb-item active">Add Route</li>
                 </ol>
                 <hr>
                 <div class="card">
                     <div class="card-header">
-                        <b>Earn with TaraSabay: Car Registration</b><br>
-                        <em>Note: You must sign up with the car that you own</em>
+                        <b>Earn with TaraSabay: Route Registration</b><br>
+                        Turn your car into a source of income by registering your route with TaraSabay.
+                        <br>Connect with passengers, set your schedule, and maximize your earning potential. 
+                        <br>
+                        <em><br>Join our community of drivers and start earning today!</em>
                         <!-- Icon Cards-->
                         <br><br>
                         <div class="row">
@@ -79,25 +82,22 @@ $userid = $_SESSION['user_id'];
                                 <div class="card text-white" style="background-color: #EAAA00;">
                                     <div class="card-body">
                                         <div class="card-body-icon">
-                                            <i class="fas fa-fw fa fa-car"></i>
+                                            <i class="fas fa-route"></i>
                                         </div>
                                         <?php
                                         // Code for counting the ticket balance by user ID
-                                        $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Pending' AND user_id = '$userid'");
-                                        $cars = $result->fetch_row()[0];
+                                        $result = $db->query("SELECT COUNT(*) FROM car INNER JOIN route ON car.user_id = route.car_id WHERE car.user_id = '$userid' AND route.route_status = 'Active'");
+                                        $route = $result->fetch_row()[0];
                                         ?>
-                                        <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fa fa-car"></i>&nbsp;&nbsp;<?php echo $cars; ?></span> Pending Cars</div>
+                                        <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fas fa-route"></i>&nbsp;&nbsp;<?php echo $route; ?></span> Active Routes</div>
                                     </div>
                                     <div class="card-body">
-                                        <div class="card-body-icon">
-                                            <i class="fas fa-fw fa fa-car"></i>
-                                        </div>
                                         <?php
                                         // Code for counting the ticket balance by user ID
-                                        $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Approved' AND user_id = '$userid'");
-                                        $cars = $result->fetch_row()[0];
+                                        $result = $db->query("SELECT COUNT(*) FROM car INNER JOIN route ON car.user_id = route.car_id WHERE car.user_id = '$userid' AND route.route_status = 'Previous'");
+                                        $route = $result->fetch_row()[0];
                                         ?>
-                                        <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fa fa-car"></i>&nbsp;&nbsp;<?php echo $cars; ?></span> Registered Cars</div>
+                                        <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fas fa-route"></i>&nbsp;&nbsp;<?php echo $route; ?></span> Previous Routes</div>
                                     </div>
                                 </div>
 
@@ -105,7 +105,6 @@ $userid = $_SESSION['user_id'];
                         </div>
                     </div>
                     <div class="card-body">
-
                         <form method="POST" autocomplete="on" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="car_photo">Vehicle Photo<span class="text-danger"> *</span></label>

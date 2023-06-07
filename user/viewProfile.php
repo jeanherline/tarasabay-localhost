@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-  header('Location: ../login.php');
+  header('Location: ../index.php');
 }
 
 include('../db.php');
@@ -111,7 +111,7 @@ if ($result->num_rows == 1) {
         <br><br>
         <div class="profile-photo">
           <?php if (!empty($profile_photo)) { ?>
-            <img src="../assets/img/photos/<?php echo $profile_photo; ?>" alt="Profile Photo" class="photo-preview">
+            <img src="../assets/img/profile-photo/<?php echo $profile_photo; ?>" alt="Profile Photo" class="photo-preview">
           <?php } else { ?>
             <img src="../assets/img/default-profile-photo.jpg" alt="Default Profile Photo" class="photo-preview">
           <?php } ?>
@@ -268,7 +268,7 @@ if ($result->num_rows == 1) {
                 <br>
                 <div class="vax-card">
                   <?php if (!empty($vax_card)) { ?>
-                    <img src="../assets/img/photos/<?php echo $vax_card; ?>" alt="Vaccination Card" class="card-preview">
+                    <img src="../assets/img/vax-card/<?php echo $vax_card; ?>" alt="Vaccination Card" class="card-preview">
                   <?php } else { ?>
                     <img src="../assets/img/default-vax-card.jpg" alt="Default Vaccination Card" class="card-preview">
                   <?php } ?>

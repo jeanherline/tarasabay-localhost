@@ -59,11 +59,37 @@
   ?>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-route"></i>
+        <span>Route</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Route</h6>
+        <a class="dropdown-item" href="addRoute.php">Add Route</a>
+        <a class="dropdown-item" href="activeRoutes.php">Active Routes</a>
+        <a class="dropdown-item" href="previousRoutes.php">Previous Routes</a>
+        <a class="dropdown-item" href="cancelledRoutes.php">Cancelled Routes</a>
+      </div>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-car"></i>
+        <span>Booking</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Reservations</h6>
+        <a class="dropdown-item" href="approvedBookings.php">Approved </a>
+        <a class="dropdown-item" href="pendingBookings.php">Pending</a>
+        <a class="dropdown-item" href="cancelled.php">Cancelled</a>
+      </div>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-fw fa-id-card"></i>
         <span>Driver</span>
       </a>
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-        <h6 class="dropdown-header">Cars</h6>
+        <h6 class="dropdown-header">Driver</h6>
+        <a class="dropdown-item" href="apply-as-driver.php">Apply</a>
         <a class="dropdown-item" href="addCar.php">Add Car</a>
         <a class="dropdown-item" href="registeredCars.php">Registered Cars</a>
         <a class="dropdown-item" href="pendingCars.php">Pending Cars</a>

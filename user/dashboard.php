@@ -212,7 +212,7 @@ if ($result->num_rows == 1) {
                 <div class="card text-white" style="background-color: #EAAA00;">
                   <div class="card-body">
                     <div class="card-body-icon">
-                      <i class="fas fa-fw fa fa-id-card"></i>
+                      <i class="fa fa-ticket"></i>
                     </div>
                     <?php
                     // Code for counting the number of approved car registrations by user ID

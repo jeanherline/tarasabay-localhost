@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 04, 2023 at 06:49 PM
+-- Generation Time: Jun 07, 2023 at 03:51 PM
 -- Server version: 10.4.27-MariaDB
--- PHP Version: 8.2.0
+-- PHP Version: 8.1.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -46,17 +46,32 @@ CREATE TABLE `booking` (
 CREATE TABLE `car` (
   `car_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `car_photo` blob DEFAULT NULL,
-  `brand` varchar(20) NOT NULL,
-  `model` varchar(20) NOT NULL,
-  `color` varchar(10) NOT NULL,
-  `type` varchar(20) NOT NULL,
+  `car_photo` varchar(255) DEFAULT NULL,
+  `brand` varchar(255) NOT NULL,
+  `model` varchar(255) NOT NULL,
+  `color` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
   `seat_count` int(2) NOT NULL,
   `car_status` varchar(10) NOT NULL,
-  `qr_code` blob DEFAULT NULL,
+  `qr_code` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `car`
+--
+
+INSERT INTO `car` (`car_id`, `user_id`, `car_photo`, `brand`, `model`, `color`, `type`, `seat_count`, `car_status`, `qr_code`, `created_at`, `updated_at`) VALUES
+(1, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:11:37', '2023-06-07 13:11:37'),
+(2, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:13:34', '2023-06-07 13:13:34'),
+(3, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:15:22', '2023-06-07 13:15:22'),
+(4, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:16:11', '2023-06-07 13:16:11'),
+(5, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:17:18', '2023-06-07 13:17:18'),
+(6, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:19:08', '2023-06-07 13:19:08'),
+(7, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:21:37', '2023-06-07 13:21:37'),
+(8, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:21:53', '2023-06-07 13:21:53'),
+(9, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:22:08', '2023-06-07 13:22:08');
 
 -- --------------------------------------------------------
 
@@ -77,6 +92,21 @@ CREATE TABLE `car_identification` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `car_identification`
+--
+
+INSERT INTO `car_identification` (`car_identity_id`, `car_id`, `or_photo`, `or_number`, `cr_photo`, `cr_number`, `sales_invoice`, `plate_number`, `plate_expiration`, `created_at`, `updated_at`) VALUES
+(1, 1, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', '', 'LSD-4324', '2023-08-22', '2023-06-07 13:11:37', '2023-06-07 13:11:37'),
+(2, 2, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:13:34', '2023-06-07 13:13:34'),
+(3, 3, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:15:22', '2023-06-07 13:15:22'),
+(4, 4, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:16:11', '2023-06-07 13:16:11'),
+(5, 5, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:17:18', '2023-06-07 13:17:18'),
+(6, 6, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:19:08', '2023-06-07 13:19:08'),
+(7, 7, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:21:37', '2023-06-07 13:21:37'),
+(8, 8, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:21:53', '2023-06-07 13:21:53'),
+(9, 9, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:22:08', '2023-06-07 13:22:08');
 
 -- --------------------------------------------------------
 
@@ -177,7 +207,7 @@ CREATE TABLE `driver_identification` (
   `license_expiration` date NOT NULL,
   `is_above_60` tinyint(1) NOT NULL,
   `nbi_police_cbi` varchar(255) NOT NULL,
-  `cbi_date_issued` date NOT NULL,
+  `cbi_date_issued` date DEFAULT NULL,
   `years_experience` int(2) NOT NULL,
   `consents` tinyint(1) NOT NULL DEFAULT 1,
   `declarations` tinyint(1) NOT NULL DEFAULT 1,
@@ -185,6 +215,13 @@ CREATE TABLE `driver_identification` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `driver_identification`
+--
+
+INSERT INTO `driver_identification` (`driver_id`, `user_id`, `disability`, `pwd_docx`, `license_front`, `license_back`, `license_expiration`, `is_above_60`, `nbi_police_cbi`, `cbi_date_issued`, `years_experience`, `consents`, `declarations`, `driver_stat`, `created_at`, `updated_at`) VALUES
+(12, 15, 'Dyslexia', '2.jpg', 'TaraSabay Carpooling App.png', '2.jpg', '2023-06-15', 1, 'NBI Clearance', '0000-00-00', 3, 1, 1, 'Pending', '2023-06-06 18:52:00', '2023-06-06 19:04:25');
 
 -- --------------------------------------------------------
 
@@ -202,6 +239,17 @@ CREATE TABLE `emergency` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `emergency`
+--
+
+INSERT INTO `emergency` (`emergency_id`, `user_id`, `name`, `relationship`, `phone`, `address`, `created_at`, `updated_at`) VALUES
+(24, 15, 'Jeanherline Santiago', 'Father', '+639293010483', 'La Felinila St.', '2023-06-06 18:02:47', '2023-06-06 18:02:47'),
+(25, 15, 'Jeanherline Santiago', 'Father', '+639293010483', 'La Felinila St.', '2023-06-06 18:06:33', '2023-06-06 18:06:33'),
+(26, 15, 'Jeanherline Santiago', 'Father', '+639293010483', 'La Felinila St.', '2023-06-06 18:07:49', '2023-06-06 18:07:49'),
+(27, 15, 'Jeanherline Santiago', 'Father', '+639293010483', 'La Felinila St.', '2023-06-06 18:08:01', '2023-06-06 18:08:01'),
+(28, 15, 'Suzette Bishop Love Angeles', 'Spouse', '09654105485', '1082 Ibayo Street, Pinaod, San Ildefonso, Bulacan', '2023-06-06 18:52:00', '2023-06-06 18:52:00');
 
 -- --------------------------------------------------------
 
@@ -244,12 +292,12 @@ CREATE TABLE `review` (
 CREATE TABLE `route` (
   `route_id` int(11) NOT NULL,
   `car_id` int(11) NOT NULL,
-  `pickup_loc` varchar(50) NOT NULL,
-  `dropoff_loc` varchar(50) NOT NULL,
+  `pickup_loc` varchar(255) NOT NULL,
+  `dropoff_loc` varchar(255) NOT NULL,
   `departure` datetime NOT NULL DEFAULT current_timestamp(),
   `est_arrival_time` time NOT NULL,
   `route_status` varchar(15) NOT NULL,
-  `cancellation_reason` varchar(100) DEFAULT NULL,
+  `cancellation_reason` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -316,7 +364,7 @@ CREATE TABLE `user_profile` (
   `role` varchar(10) NOT NULL,
   `is_vaxxed` tinyint(1) NOT NULL DEFAULT 0,
   `vax_card` varchar(255) DEFAULT NULL,
-  `last_login` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_agree` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -325,9 +373,9 @@ CREATE TABLE `user_profile` (
 -- Dumping data for table `user_profile`
 --
 
-INSERT INTO `user_profile` (`user_id`, `profile_photo`, `first_name`, `middle_name`, `last_name`, `city_id`, `nationality`, `gender`, `birthdate`, `email`, `password`, `ticket_balance`, `role`, `is_vaxxed`, `vax_card`, `last_login`, `created_at`, `updated_at`) VALUES
-(14, 'download.png', 'Jyner', '', 'Lin', 5, 'Filipino', 'Female', '2003-03-29', 'jynerline@gmail.com', '$2y$10$iWP4Hq9nSnb9uYXtDdlOrOJnsRtqsPOt8JELyKoFoXplXXJWLXGGC', '510', 'Passenger', 1, '31vaccine-card1-videoSixteenByNine3000-v2.jpg', '2023-06-03 20:55:49', '2023-06-03 20:55:49', '2023-06-04 14:39:50'),
-(15, 'download.png', 'Jeanherline', 'Lopez', 'Santiago', 12, '', '', '0000-00-00', 'jeanherlinesantiago0329@gmail.com', '$2y$10$4mwq.s/du3mDcpUOVzFHY.olkpUtTjT7RGoE7YOhpZtxh1D9g/9Ta', '10', 'Passenger', 1, 'download (1).jpg', '2023-06-04 14:39:50', '2023-06-04 14:39:50', '2023-06-04 16:23:21');
+INSERT INTO `user_profile` (`user_id`, `profile_photo`, `first_name`, `middle_name`, `last_name`, `city_id`, `nationality`, `gender`, `birthdate`, `email`, `password`, `ticket_balance`, `role`, `is_vaxxed`, `vax_card`, `is_agree`, `created_at`, `updated_at`) VALUES
+(14, 'download.png', 'Jyner', '', 'Lin', 5, 'Filipino', 'Female', '2003-03-29', 'jynerline@gmail.com', '$2y$10$iWP4Hq9nSnb9uYXtDdlOrOJnsRtqsPOt8JELyKoFoXplXXJWLXGGC', '510', 'Passenger', 1, 'download (1).jpg', 1, '2023-06-03 20:55:49', '2023-06-07 13:23:58'),
+(15, 'download.jpg', 'Jeanherline', 'Lopez', 'Santiago', 12, 'Filipino', 'Female', '2023-06-15', 'jeanherlinesantiago0329@gmail.com', '$2y$10$4mwq.s/du3mDcpUOVzFHY.olkpUtTjT7RGoE7YOhpZtxh1D9g/9Ta', '10', 'Driver', 1, '31vaccine-card1-videoSixteenByNine3000-v2.jpg', 1, '2023-06-04 14:39:50', '2023-06-07 13:23:58');
 
 -- --------------------------------------------------------
 
@@ -475,13 +523,13 @@ ALTER TABLE `booking`
 -- AUTO_INCREMENT for table `car`
 --
 ALTER TABLE `car`
-  MODIFY `car_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `car_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `car_identification`
 --
 ALTER TABLE `car_identification`
-  MODIFY `car_identity_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `car_identity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `cico`
@@ -505,13 +553,13 @@ ALTER TABLE `code`
 -- AUTO_INCREMENT for table `driver_identification`
 --
 ALTER TABLE `driver_identification`
-  MODIFY `driver_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `driver_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `emergency`
 --
 ALTER TABLE `emergency`
-  MODIFY `emergency_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `emergency_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `payment`
