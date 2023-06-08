@@ -98,7 +98,7 @@
     </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-fw fa-bus"></i>
+        <i class="fas fa-fw fa-wallet"></i>
         <span>Wallet</span>
       </a>
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
@@ -130,24 +130,43 @@
     <li class="nav-item">
       <a class="nav-link" href="cash-in.php">
         <i class="fas fa-fw fa-bus"></i>
-        <span>Cash-In</span></a>
+        <span>City Admins</span></a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="cash-in-history.php">
-        <i class="fas fa-fw fa-exchange-alt"></i>
-        <span>History</span></a>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-fw fa-bus"></i>
+        <span>Transactions</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Users</h6>
+        <a class="dropdown-item" href="cash-in.php">Cash-In</a>
+
+        <a class="dropdown-item" href="cash-out.php">Cash-Out</a>
+      </div>
     </li>
   <?php
   }
   ?>
 
   <?php
-  if ($_SESSION['role'] == "admin") {
+  if ($_SESSION['role'] == "Main Admin") {
   ?>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-city"></i> <!-- Change the icon class here -->
+        <span>City Admin</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Admins</h6>
+        <a class="dropdown-item" href="createCityAdmin.php">Create New</a>
+        <a class="dropdown-item" href="cityAdmins.php">Manage</a>
+      </div>
+    </li>
+
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-fw fa-book"></i> <!-- Change the icon class here -->
-        <span>Wallet</span>
+        <span>Transactions</span>
       </a>
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
         <h6 class="dropdown-header">Users</h6>
@@ -155,51 +174,66 @@
         <a class="dropdown-item" href="cash-out-manage.php">Cash-Out</a>
       </div>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="tickets.php">
-        <i class="fa fa-ticket"></i>
-        <span>Tickets</span></a>
-    </li>
   <?php
   }
   ?>
 
+  <?php
+  if ($_SESSION['role'] == "City Admin") {
+  ?>
 
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-city"></i> <!-- Change the icon class here -->
+        <span>City Users</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Status</h6>
+        <a class="dropdown-item" href="cityUsers.php?list=Full">Full List</a>
+        <a class="dropdown-item" href="cityUsers.php?list=Expired">Expired License</a>
+      </div>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-folder-open"></i> <!-- Change the icon class here -->
+        <span>Registrations</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Driver / Car</h6>
+        <a class="dropdown-item" href="carReg.php?status=Pending">Pending</a>
+        <a class="dropdown-item" href="carReg.php?status=Active">Active </a>
+        <a class="dropdown-item" href="carReg.php?status=Denied">Denied</a>
+      </div>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-car"></i> <!-- Change the icon class here -->
+        <span>Cars</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Registered Cars</h6>
+        <a class="dropdown-item" href="approvedBookings.php">Full List</a>
+        <a class="dropdown-item" href="pendingBookings.php">Expired Plate</a>
+      </div>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="cash-in.php">
+        <i class="fas fa-fw fa-bus"></i>
+        <span>Cash Out</span></a>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-fw fa-exchange-alt"></i> <!-- Change the icon class here -->
+        <span>Transactions</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Wallet</h6>
+        <a class="dropdown-item" href="cash-in-history.php">Cash-In</a>
+        <a class="dropdown-item" href="cash-out-history.php">Cash-Out</a>
+      </div>
+    </li>
 
-
-  <!-- <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i class="fas fa-fw fa-book"></i>
-      <span>Bookings</span>
-    </a>
-    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-      <h6 class="dropdown-header">Bookings:</h6>
-      <a class="dropdown-item" href="admin-add-booking.php">Add</a>
-      <a class="dropdown-item" href="admin-view-booking.php">View</a>
-      <a class="dropdown-item" href="admin-manage-booking.php">Manage</a>
-    </div>
-  </li>
-
-  <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i class="fas fa-fw fa-comments"></i>
-      <span>Feedbacks</span>
-    </a>
-    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-      <a class="dropdown-item" href="admin-view-feedback.php">View</a>
-      <a class="dropdown-item" href="admin-publish-feedback.php">Manage</a>
-    </div>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link" href="admin-pwd-resets.php">
-      <i class="fas fa-fw fa-key"></i>
-      <span>Password Resets</span></a>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link" href="admin-view-syslogs.php">
-      <i class="fas fa-fw fa fa-history"></i>
-      <span>System Logs</span></a>
-  </li> -->
+  <?php
+  }
+  ?>
 </ul>
