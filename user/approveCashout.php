@@ -75,54 +75,30 @@ $userid = $_SESSION['user_id'];
                             if (isset($_POST['submit'])) {
                                 if (isset($_GET['cico_id']) && isset($_GET['amount'])) {
                                     $walletId = $_GET['cico_id'];
-                                    $amount = $_GET['amount'];
 
-                                    // Retrieve the user_id, acc_balance, and processing_fee associated with the cico_id
-                                    $stmt = $db->prepare("SELECT up.user_id, up.acc_balance, c.processing_fee FROM cico c INNER JOIN user_profile up ON c.user_id = up.user_id WHERE c.cico_id = ?");
-                                    $stmt->bind_param("i", $walletId);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    $row = $result->fetch_assoc();
-                                    $userId = $row['user_id'];
-                                    $accBalance = $row['acc_balance'];
-                                    $processingFee = $row['processing_fee'];
+                                    // Update the status and reference_number of cico table
+                                    $status = "Successful";
+                                    $referenceNumber = $_POST['reference_number'];
+                                    $stmt = $db->prepare("UPDATE cico SET trans_stat = ?, reference_number = ? WHERE cico_id = ?");
+                                    $stmt->bind_param("ssi", $status, $referenceNumber, $walletId);
+                                    $result = $stmt->execute();
+                                    $stmt->close();
 
-                                    // Calculate the total amount including processing fee
-                                    $totalAmount = $amount + $processingFee;
-
-                                    // Check if the acc_balance is sufficient
-                                    if ($accBalance >= $totalAmount) {
-                                        $status = "Approved";
-
-                                        // Update the status and reference_number of cico table
-                                        $stmt = $db->prepare("UPDATE cico SET status = ?, reference_number = ? WHERE cico_id = ?");
-                                        $stmt->bind_param("ssi", $status, $_POST['reference_number'], $walletId);
-                                        $stmt->execute();
-
-                                        // Update the acc_balance and ticket_balance of user_profile table
-                                        $newBalance = $accBalance - $totalAmount;
-                                        $newTicketBalance = $accBalance - $amount;
-                                        $stmt = $db->prepare("UPDATE user_profile SET acc_balance = ?, ticket_balance = ? WHERE user_id = ?");
-                                        $stmt->bind_param("ddi", $newBalance, $newTicketBalance, $userId);
-                                        $result = $stmt->execute();
-
-                                        if ($result) {
+                                    if ($result) {
                             ?>
-                                            <script>
-                                                window.location.href = '../user/cash-out-manage.php';
-                                            </script>
+                                        <script>
+                                            window.location.href = '../user/cash-out-manage.php';
+                                        </script>
                             <?php
-                                        } else {
-                                            echo '<div style="text-align: center;"><h5 style="color: red; font-size: 18px;">Failed</h5></div>';
-                                        }
                                     } else {
-                                        echo '<div style="text-align: center;"><h5 style="color: red; font-size: 18px;">Insufficient balance</h5></div>';
+                                        echo '<div style="text-align: center;"><h5 style="color: red; font-size: 18px;">Failed</h5></div>';
                                     }
                                 }
                             }
                             ?>
                             <button type="submit" name="submit" class="btn btn-success">Add & Approve</button>
                         </form>
+
 
 
                         <!-- End Form -->

@@ -125,37 +125,44 @@ if (isset($_POST['submit'])) {
                                 <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Transaction ID</th>
-                                            <th>Name</th>
-                                            <th>From Ticket Amount</th>
-                                            <th>To Peso Amount</th>
-                                            <th>Processing Fee</th>
+                                            <th>Transaction #</th>
+                                            <th>GCash Mobile Number</th>
+                                            <th>From Ticket</th>
+                                            <th>To Peso</th>
+                                            <th>Process. Fee</th>
+                                            <th>Reference Number</th>
+                                            <th>Method Type</th>
+                                            <th>Date and Time</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $query = "SELECT cico.*
-                                                FROM cico
-                                                INNER JOIN user_profile up ON cico.user_id = up.user_id
-                                                WHERE cico.ticket_amount > 0 AND cico.trans_stat = 'Cash-Out'
-                                                AND cico.trans_stat = 'Approved'
-                                                ORDER BY cico.created_at ASC";
+                                        $query = "SELECT c.*
+                FROM cico c
+                INNER JOIN user_profile up ON c.user_id = up.user_id
+                WHERE c.ticket_amount > 0 AND c.trans_stat = 'Cash-Out'
+                ORDER BY c.created_at ASC";
                                         $stmt = $db->prepare($query);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
-                                        $totalAmount = 0;
+                                        $totalTicketAmount = 0;
+                                        $totalPesoAmount = 0;
                                         $totalProcessingFee = 0;
                                         $count = 1;
 
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
                                             echo "<td>" . $row['cico_id'] . "</td>";
-                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                                            echo "<td>" . $row['gcash_mobile_number'] . "</td>";
                                             echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
-                                            echo "<td>" . number_format($row['peso_amount'], 2) . "</td>";
-                                            echo "<td>" . number_format($row['processing_fee'], 2) . "</td>";
+                                            echo "<td>₱ " . number_format($row['peso_amount'], 2) . "</td>";
+                                            echo "<td>₱ " . number_format($row['processing_fee'], 2) . "</td>";
+                                            echo "<td>" . $row['reference_number'] . "</td>";
+                                            echo "<td>" . $row['method_type'] . "</td>";
+                                            echo "<td>" . $row['created_at'] . "</td>";
                                             echo "</tr>";
-                                            $totalAmount += $row['ticket_amount'];
+                                            $totalTicketAmount += $row['ticket_amount'];
+                                            $totalPesoAmount += $row['peso_amount'];
                                             $totalProcessingFee += $row['processing_fee'];
                                             $count++;
                                         }
@@ -164,11 +171,16 @@ if (isset($_POST['submit'])) {
                                     <tfoot>
                                         <tr>
                                             <td colspan="2"><b>Total Ticket Amount</b></td>
-                                            <td colspan="2"><?php echo number_format($totalAmount, 2); ?></td>
-                                            <td><?php echo number_format($totalProcessingFee, 2); ?></td>
+                                            <td><?php echo number_format($totalTicketAmount, 2); ?></td>
+                                            <td><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
+                                            <td><?php echo "₱ " . number_format($totalProcessingFee, 2); ?></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                     </tfoot>
                                 </table>
+
 
 
                             </div>
@@ -200,48 +212,64 @@ if (isset($_POST['submit'])) {
                                 <tr>
                                     <th>Transaction #</th>
                                     <th>GCash Mobile Number</th>
-                                    <th>Amount</th>
+                                    <th>From Ticket</th>
+                                    <th>To Peso</th>
+                                    <th>Process. Fee</th>
                                     <th>Reference Number</th>
-                                    <th>Created At</th>
-                                    <th>Status</th>
+                                    <th>Method Type</th>
+                                    <th>Date and Time</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 $user_id = $userid; // Replace with the desired user ID
-
-                                $stmt = $db->prepare("SELECT c.cico_id, up.first_name, up.last_name, c.peso_amount, c.ticket_amount, c.convenience_fee, c.trans_stat, c.gcash_mobile_number, c.reference_number, c.created_at
-                                        FROM cico c
-                                        INNER JOIN user_profile up ON c.user_id = up.user_id
-                                        WHERE c.user_id = ? AND c.trans_stat = 'Cash-out'
-                                        ORDER BY c.cico_id");
+                                $stmt = $db->prepare("SELECT c.*
+                        FROM cico c
+                        INNER JOIN user_profile up ON c.user_id = up.user_id
+                        WHERE c.user_id = ? AND c.trans_type = 'cash-out' AND c.trans_stat = 'Successful'
+                        ORDER BY c.cico_id");
 
                                 $stmt->bind_param("i", $user_id);
                                 $stmt->execute();
                                 $result = $stmt->get_result();
                                 $count = 1;
+                                $totalTicketAmount = 0;
+                                $totalPesoAmount = 0;
+                                $totalProcessingFee = 0;
 
                                 while ($row = $result->fetch_assoc()) {
                                     echo "<tr>";
                                     echo "<td>" . $count . "</td>";
                                     echo "<td>" . $row['gcash_mobile_number'] . "</td>";
-                                    echo "<td>₱" . number_format($row['peso_amount'], 2) . "</td>";
+                                    echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
+                                    echo "<td>₱ " . number_format($row['peso_amount'], 2) . "</td>";
+                                    echo "<td>₱ " . number_format($row['processing_fee'], 2) . "</td>";
                                     echo "<td>" . $row['reference_number'] . "</td>";
+                                    echo "<td>" . $row['method_type'] . "</td>";
                                     echo "<td>" . $row['created_at'] . "</td>";
-                                    echo "<td>";
-                                    if ($row['status'] == "Pending") {
-                                        echo '<span class="badge badge-warning">' . $row['status'] . '</span>';
-                                    } elseif ($row['status'] == "Approved") {
-                                        echo '<span class="badge badge-success">' . $row['status'] . '</span>';
-                                    } elseif ($row['status'] == "Declined") {
-                                        echo '<span class="badge badge-danger">' . $row['status'] . '</span>';
-                                    }
-                                    echo "</td>";
+
                                     echo "</tr>";
                                     $count++;
+                                    $totalTicketAmount += $row['ticket_amount'];
+                                    $totalPesoAmount += $row['peso_amount'];
+                                    $totalProcessingFee += $row['convenience_fee'];
                                 }
                                 ?>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"><b>Total Ticket Amount</b></td>
+                                    <td><?php echo "₱ " . number_format($totalTicketAmount, 2); ?></td>
+                                    <td><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
+                                    <td><?php echo "₱ " . number_format($totalProcessingFee, 2); ?></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+
+
+
                         </table>
 
                     </div>

@@ -59,7 +59,7 @@ $userid = $_SESSION['user_id'];
                 <!-- Breadcrumbs-->
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="#">Trasactions</a>
+                        <a href="#">Transactions</a>
                     </li>
                     <li class="breadcrumb-item active">Cash-Out</li>
                 </ol>
@@ -74,7 +74,7 @@ $userid = $_SESSION['user_id'];
                                 </div>
                                 <?php
                                 // Code for counting the ticket balance by user ID
-                                $result = $db->query("SELECT acc_balance FROM user_profile WHERE user_id = '$userid'");
+                                $result = $db->query("SELECT ticket_balance FROM user_profile WHERE user_id = '$userid'");
                                 $ticketBalance = $result->fetch_row()[0];
                                 ?>
                                 <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fa fa-ticket"></i>&nbsp;&nbsp;<?php echo $ticketBalance; ?></span> Ticket Balance</div>
@@ -108,7 +108,7 @@ $userid = $_SESSION['user_id'];
                                 // Retrieve the user's account balance
                                 $availableBalance = 0.00; // Default value
                                 if (isset($userid)) {
-                                    $stmt = $db->prepare("SELECT acc_balance, role FROM user_profile WHERE user_id = ?");
+                                    $stmt = $db->prepare("SELECT ticket_balance, role FROM user_profile WHERE user_id = ?");
                                     $stmt->bind_param("i", $userid);
                                     $stmt->execute();
                                     $stmt->bind_result($accBalance, $role);
@@ -137,25 +137,33 @@ $userid = $_SESSION['user_id'];
                                 $reference = ""; // Define the reference number
                                 $status = 'Pending'; // Set initial status as 'Pending'
 
-                                if ($role === 'driver') {
+                                if ($role === 'Driver') {
                                     if ($amount + $processingFee > $availableTickets) {
                                         echo '<div style="text-align: center;">
-                                            <h5 style="color: red; font-size:16px;">Insufficient ticket balance for cash-out!</h5>
-                                        </div>';
+                                               <h5 style="color: red; font-size:16px;">Insufficient ticket balance for cash-out!</h5>
+                                           </div>';
                                     } else {
-                                        $stmt = $db->prepare("INSERT INTO cico (user_id, transaction_type, gcash_mobile_number, amount, processing_fee, convenience_fee, reference_number, status, created_at, updated_at)
-                                                 VALUES (?, 'cash-out', ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+                                        // Deduct the cash-out amount from the ticket_balance
+                                        $newBalance = $availableBalance - ($amount + $processingFee);
+
+                                        $stmt = $db->prepare("UPDATE user_profile SET ticket_balance = ? WHERE user_id = ?");
+                                        $stmt->bind_param("di", $newBalance, $userid);
+                                        $stmt->execute();
+                                        $stmt->close();
+
+                                        $stmt = $db->prepare("INSERT INTO cico (user_id, trans_type, gcash_mobile_number, peso_amount, ticket_amount, processing_fee, convenience_fee, reference_number, method_type, trans_stat, created_at, updated_at)
+                                                   VALUES (?, 'Cash-Out', ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 
                                         $convenienceFee = 0.00;
-
-                                        $stmt->bind_param("isdddss", $userid, $mobileNo, $amount, $processingFee, $convenienceFee, $reference, $status);
+                                        $methodType = 'GCash';
+                                        $stmt->bind_param("issidisss", $userid, $mobileNo, $amount, $amount, $processingFee, $convenienceFee, $reference, $methodType, $status);
 
                                         $result = $stmt->execute();
 
                                         if ($result) {
                                             echo '<div style="text-align: center;">
-                                            <h5 style="color: green; font-size:16px;">Cash-out transaction pending!</h5>
-                                        </div>';
+                                                   <h5 style="color: green; font-size:16px;">Cash-out transaction pending!</h5>
+                                               </div>';
                                         } else {
                                             echo "Error: " . $stmt->error;
                                         }
@@ -164,6 +172,7 @@ $userid = $_SESSION['user_id'];
                                 }
                             }
                             ?>
+
 
                             <button type="submit" name="submit" class="btn btn-success">Cash Out</button>
                         </form>

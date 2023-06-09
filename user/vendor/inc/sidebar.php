@@ -65,9 +65,9 @@
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
         <h6 class="dropdown-header">Route</h6>
         <a class="dropdown-item" href="addRoute.php">Add Route</a>
-        <a class="dropdown-item" href="activeRoutes.php">Active Routes</a>
-        <a class="dropdown-item" href="previousRoutes.php">Previous Routes</a>
-        <a class="dropdown-item" href="cancelledRoutes.php">Cancelled Routes</a>
+        <a class="dropdown-item" href="driverRoute.php?status=Active">Active Routes</a>
+        <a class="dropdown-item" href="driverRoute.php?status=Previous">Previous Routes</a>
+        <a class="dropdown-item" href="driverRoute.php?status=Cancelled">Cancelled Routes</a>
       </div>
     </li>
     <li class="nav-item dropdown">

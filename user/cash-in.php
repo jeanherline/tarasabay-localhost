@@ -57,7 +57,7 @@ $userid = $_SESSION['user_id'];
                 <!-- Breadcrumbs-->
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="#">Trasactions</a>
+                        <a href="#">Transactions</a>
                     </li>
                     <li class="breadcrumb-item active">Cash-In</li>
                 </ol>

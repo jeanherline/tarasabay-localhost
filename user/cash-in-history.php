@@ -136,12 +136,13 @@ if (isset($_POST['submit'])) {
                                                 FROM cico
                                                 INNER JOIN user_profile up ON cico.user_id = up.user_id
                                                 WHERE cico.peso_amount > 0 AND cico.trans_type = 'cash-in'
-                                                AND cico.trans_stat = 'Approved'
+                                                AND cico.trans_stat = 'Successful'
                                                 ORDER BY cico.created_at ASC";
                                         $stmt = $db->prepare($query);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
-                                        $totalAmount = 0;
+                                        $totalPesoAmount = 0;
+                                        $totalTicketAmount = 0;
                                         $totalConvenienceFee = 0;
 
                                         while ($row = $result->fetch_assoc()) {
@@ -152,7 +153,8 @@ if (isset($_POST['submit'])) {
                                             echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
                                             echo "<td>" . number_format($row['convenience_fee'], 2) . "</td>";
                                             echo "</tr>";
-                                            $totalAmount += $row['peso_amount'];
+                                            $totalPesoAmount += $row['peso_amount'];
+                                            $totalTicketAmount += $row['ticket_amount'];
                                             $totalConvenienceFee += $row['convenience_fee'];
                                         }
                                         ?>
@@ -160,11 +162,17 @@ if (isset($_POST['submit'])) {
                                     <tfoot>
                                         <tr>
                                             <td colspan="2"><b>Total Peso Amount</b></td>
-                                            <td colspan="2"><?php echo number_format($totalAmount, 2); ?></td>
+                                            <td colspan="2"><?php echo number_format($totalPesoAmount, 2); ?></td>
                                             <td><?php echo number_format($totalConvenienceFee, 2); ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"><b>Total Ticket Amount</b></td>
+                                            <td colspan="2"><?php echo number_format($totalTicketAmount, 2); ?></td>
+                                            <td></td>
                                         </tr>
                                     </tfoot>
                                 </table>
+
                             </div>
                         </div>
                         <div class="card-footer small text-muted">
@@ -206,13 +214,17 @@ if (isset($_POST['submit'])) {
                                         $stmt = $db->prepare("SELECT c.cico_id, c.gcash_mobile_number, c.peso_amount, c.ticket_amount, c.convenience_fee, c.reference_number, c.method_type, c.created_at, c.trans_stat
                                                 FROM cico c
                                                 INNER JOIN user_profile up ON c.user_id = up.user_id
-                                                WHERE c.user_id = ? AND c.trans_type = 'cash-in'
+                                                WHERE c.user_id = ? AND c.trans_type = 'cash-in' AND c.trans_stat = 'Successful'
                                                 ORDER BY c.cico_id");
 
                                         $stmt->bind_param("i", $user_id);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
                                         $count = 1; // Initialize the count variable
+
+                                        $totalPesoAmount = 0; // Initialize the total peso amount variable
+                                        $totalTicketAmount = 0; // Initialize the total ticket amount variable
+                                        $totalConvenienceFee = 0; // Initialize the total convenience fee variable
 
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
@@ -226,10 +238,27 @@ if (isset($_POST['submit'])) {
                                             echo "<td>" . $row['created_at'] . "</td>";
                                             echo "</tr>";
                                             $count++; // Increment the count variable
+                                            $totalPesoAmount += $row['peso_amount'];
+                                            $totalTicketAmount += $row['ticket_amount'];
+                                            $totalConvenienceFee += $row['convenience_fee'];
                                         }
                                         ?>
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2"><b>Total</b></td>
+                                            <td><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
+                                            <td><?php echo $totalTicketAmount; ?></td>
+                                            <td><?php echo "₱ " . number_format($totalConvenienceFee, 2); ?></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
+
+
+
                             </div>
                         </div>
                     </div>
