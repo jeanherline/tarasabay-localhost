@@ -77,9 +77,9 @@
       </a>
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
         <h6 class="dropdown-header">Reservations</h6>
-        <a class="dropdown-item" href="approvedBookings.php">Approved </a>
-        <a class="dropdown-item" href="pendingBookings.php">Pending</a>
-        <a class="dropdown-item" href="cancelled.php">Cancelled</a>
+        <a class="dropdown-item" href="driverBooking.php?list=Pending">Pending</a>
+        <a class="dropdown-item" href="driverBooking.php?list=Approved">Approved</a>
+        <a class="dropdown-item" href="driverBooking.php?list=Cancelled">Cancelled</a>
       </div>
     </li>
     <li class="nav-item dropdown">
