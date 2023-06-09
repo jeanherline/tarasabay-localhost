@@ -512,7 +512,7 @@ $userid = $_SESSION['user_id'];
                                     }
 
                                     $stmt = $db->prepare("INSERT INTO driver_identification (user_id, pwd_docx, license_front, license_back, license_expiration, is_above_60, nbi_police_cbi, cbi_date_issued, years_experience, disability) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                                    $stmt->bind_param("issssissss", $user_id, $pwdID, $driver_license_front, $driver_license_back, $license_expiration, $is_above_60, $nbi_police_cbi, $date_issued, $years_experience, $otherDisability);
+                                    $stmt->bind_param("issssissss", $user_id, $pwdID, $driver_license_front, $driver_license_back, $license_expiration, $is_above_60, $nbi_police_cbi_photo_filename, $date_issued, $years_experience, $otherDisability);
                                     $stmt->execute();
 
                                     // Close the statement

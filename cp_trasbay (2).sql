@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 07, 2023 at 03:51 PM
+-- Generation Time: Jun 09, 2023 at 01:39 PM
 -- Server version: 10.4.27-MariaDB
--- PHP Version: 8.1.12
+-- PHP Version: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -63,15 +63,7 @@ CREATE TABLE `car` (
 --
 
 INSERT INTO `car` (`car_id`, `user_id`, `car_photo`, `brand`, `model`, `color`, `type`, `seat_count`, `car_status`, `qr_code`, `created_at`, `updated_at`) VALUES
-(1, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:11:37', '2023-06-07 13:11:37'),
-(2, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:13:34', '2023-06-07 13:13:34'),
-(3, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:15:22', '2023-06-07 13:15:22'),
-(4, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:16:11', '2023-06-07 13:16:11'),
-(5, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:17:18', '2023-06-07 13:17:18'),
-(6, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:19:08', '2023-06-07 13:19:08'),
-(7, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:21:37', '2023-06-07 13:21:37'),
-(8, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:21:53', '2023-06-07 13:21:53'),
-(9, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Pending', NULL, '2023-06-07 13:22:08', '2023-06-07 13:22:08');
+(9, 15, 'download.jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Active', '../assets/img/qr_codes/car_15.png', '2023-06-07 13:22:08', '2023-06-09 11:34:51');
 
 -- --------------------------------------------------------
 
@@ -106,7 +98,7 @@ INSERT INTO `car_identification` (`car_identity_id`, `car_id`, `or_photo`, `or_n
 (6, 6, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:19:08', '2023-06-07 13:19:08'),
 (7, 7, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:21:37', '2023-06-07 13:21:37'),
 (8, 8, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:21:53', '2023-06-07 13:21:53'),
-(9, 9, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-4324', '2023-08-22', '2023-06-07 13:22:08', '2023-06-07 13:22:08');
+(9, 9, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-123', '2023-08-22', '2023-06-07 13:22:08', '2023-06-09 11:18:04');
 
 -- --------------------------------------------------------
 
@@ -221,7 +213,7 @@ CREATE TABLE `driver_identification` (
 --
 
 INSERT INTO `driver_identification` (`driver_id`, `user_id`, `disability`, `pwd_docx`, `license_front`, `license_back`, `license_expiration`, `is_above_60`, `nbi_police_cbi`, `cbi_date_issued`, `years_experience`, `consents`, `declarations`, `driver_stat`, `created_at`, `updated_at`) VALUES
-(12, 15, 'Dyslexia', '2.jpg', 'TaraSabay Carpooling App.png', '2.jpg', '2023-06-15', 1, 'NBI Clearance', '0000-00-00', 3, 1, 1, 'Pending', '2023-06-06 18:52:00', '2023-06-06 19:04:25');
+(12, 15, 'Dyslexia', '2.jpg', '10_2021-07-23_18-27-24.jpg', 'download (4).jpg', '2023-06-15', 1, '2.jpg', '0000-00-00', 3, 1, 1, 'Expired', '2023-06-06 18:52:00', '2023-06-09 10:27:58');
 
 -- --------------------------------------------------------
 
@@ -302,6 +294,13 @@ CREATE TABLE `route` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `route`
+--
+
+INSERT INTO `route` (`route_id`, `car_id`, `pickup_loc`, `dropoff_loc`, `departure`, `est_arrival_time`, `route_status`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
+(3, 9, 'Baliwag', 'Manila', '2023-06-09 08:30:00', '10:30:00', 'Active', NULL, '2023-06-08 14:52:19', '2023-06-08 14:52:19');
+
 -- --------------------------------------------------------
 
 --
@@ -311,12 +310,22 @@ CREATE TABLE `route` (
 CREATE TABLE `seat` (
   `seat_id` int(11) NOT NULL,
   `route_id` int(11) NOT NULL,
-  `seat_type` varchar(15) NOT NULL,
-  `fare` decimal(6,2) NOT NULL,
+  `seat_type` varchar(255) NOT NULL,
+  `fare` varchar(255) NOT NULL,
   `seat_status` varchar(15) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `seat`
+--
+
+INSERT INTO `seat` (`seat_id`, `route_id`, `seat_type`, `fare`, `seat_status`, `created_at`, `updated_at`) VALUES
+(6, 3, 'Front Passenger Seat', '250', 'Available', '2023-06-08 14:52:19', '2023-06-08 14:52:19'),
+(7, 3, 'Second Row Left Window Seat', '230', 'Available', '2023-06-08 14:52:19', '2023-06-08 14:52:19'),
+(8, 3, 'Second Row Middle Seat', '200', 'Available', '2023-06-08 14:52:19', '2023-06-08 14:52:19'),
+(9, 3, 'Second Row Right Window Seat', '230', 'Available', '2023-06-08 14:52:19', '2023-06-08 14:52:19');
 
 -- --------------------------------------------------------
 
@@ -340,7 +349,9 @@ CREATE TABLE `user_identification` (
 
 INSERT INTO `user_identification` (`user_identity_id`, `user_id`, `identity_type`, `user_identity_num`, `identity_expiration`, `created_at`, `updated_at`) VALUES
 (13, 14, 'National ID', 'FD23-432S-DSA', '2023-06-19', '2023-06-03 20:55:49', '2023-06-03 20:55:49'),
-(14, 15, 'Driver\'s License', 'LF-4324', '2023-06-20', '2023-06-04 14:39:50', '2023-06-04 14:39:50');
+(14, 15, 'Driver\'s License', 'LF-4324', '2023-06-20', '2023-06-04 14:39:50', '2023-06-04 14:39:50'),
+(15, 16, 'National ID', 'FDS-4324', '2023-06-21', '2023-06-08 14:56:53', '2023-06-08 14:56:53'),
+(16, 17, 'Voter\'s ID', '12345678', '2023-06-24', '2023-06-08 16:35:10', '2023-06-08 16:35:10');
 
 -- --------------------------------------------------------
 
@@ -360,8 +371,8 @@ CREATE TABLE `user_profile` (
   `birthdate` date NOT NULL,
   `email` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `ticket_balance` varchar(255) NOT NULL,
-  `role` varchar(10) NOT NULL,
+  `ticket_balance` varchar(255) DEFAULT NULL,
+  `role` varchar(255) NOT NULL,
   `is_vaxxed` tinyint(1) NOT NULL DEFAULT 0,
   `vax_card` varchar(255) DEFAULT NULL,
   `is_agree` tinyint(1) NOT NULL DEFAULT 1,
@@ -375,7 +386,9 @@ CREATE TABLE `user_profile` (
 
 INSERT INTO `user_profile` (`user_id`, `profile_photo`, `first_name`, `middle_name`, `last_name`, `city_id`, `nationality`, `gender`, `birthdate`, `email`, `password`, `ticket_balance`, `role`, `is_vaxxed`, `vax_card`, `is_agree`, `created_at`, `updated_at`) VALUES
 (14, 'download.png', 'Jyner', '', 'Lin', 5, 'Filipino', 'Female', '2003-03-29', 'jynerline@gmail.com', '$2y$10$iWP4Hq9nSnb9uYXtDdlOrOJnsRtqsPOt8JELyKoFoXplXXJWLXGGC', '510', 'Passenger', 1, 'download (1).jpg', 1, '2023-06-03 20:55:49', '2023-06-07 13:23:58'),
-(15, 'download.jpg', 'Jeanherline', 'Lopez', 'Santiago', 12, 'Filipino', 'Female', '2023-06-15', 'jeanherlinesantiago0329@gmail.com', '$2y$10$4mwq.s/du3mDcpUOVzFHY.olkpUtTjT7RGoE7YOhpZtxh1D9g/9Ta', '10', 'Driver', 1, '31vaccine-card1-videoSixteenByNine3000-v2.jpg', 1, '2023-06-04 14:39:50', '2023-06-07 13:23:58');
+(15, 'download.jpg', 'Jeanherline', 'Lopez', 'Santiago', 12, 'Filipino', 'Female', '2023-06-15', 'jeanherlinesantiago0329@gmail.com', '$2y$10$4mwq.s/du3mDcpUOVzFHY.olkpUtTjT7RGoE7YOhpZtxh1D9g/9Ta', '0', 'Driver', 1, '31vaccine-card1-videoSixteenByNine3000-v2.jpg', 1, '2023-06-04 14:39:50', '2023-06-08 14:52:19'),
+(16, NULL, 'Juan', '', 'Dela Cruz', 12, '', '', '0000-00-00', 'cinemi1486@ozatvn.com', '$2y$10$sPauKoqU//HyC7mGSnDafOADwxzKy/mx1JRtb/l/1QcnAkcMEKoPq', '0', 'Main Admin', 0, NULL, 1, '2023-06-08 14:56:53', '2023-06-08 16:35:50'),
+(17, NULL, 'John Lloyd', '', 'Cruz', 12, '', '', '0000-00-00', 'imureyzdh1@ezztt.com', '$2y$10$UFabKhJtNaJP5E4KRTNiRudKmGeahkgjTBE/BFX5xjaMVYOe5LAGW', '', 'City Admin', 0, NULL, 1, '2023-06-08 16:35:10', '2023-06-08 17:13:37');
 
 -- --------------------------------------------------------
 
@@ -398,6 +411,17 @@ CREATE TABLE `user_temp` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_temp`
+--
+
+INSERT INTO `user_temp` (`temp_id`, `first_name`, `last_name`, `city_id`, `email`, `password`, `identity_type`, `user_identity_num`, `identity_expiration`, `referral_code`, `token`, `created_at`, `updated_at`) VALUES
+(21, 'John Lloyd', 'Cruz', 3, 'imureyzdh1@ezztt.com', '$2y$10$Q3Ug7FGVtn2.gZisM5lAYeppYRHyLhkZ6z0kqb87E.k2XHcgrJZPa', 'Voter\'s ID', '12345678', '2023-06-24', NULL, '024daf2f45162a9b70ef705ee855edde', '2023-06-08 16:21:36', '2023-06-08 16:21:36'),
+(22, 'John Lloyd', 'Cruz', 3, 'imureyzdh1@ezztt.com', '$2y$10$WFoMx0HmX22PJLZhfpQXhOvg.9V7LcLlrat.LE6a8ZjV1cpYemhvq', 'Voter\'s ID', '12345678', '2023-06-24', NULL, '0dc1eb2c33f50be01b8b843f8eaf15bf', '2023-06-08 16:22:06', '2023-06-08 16:22:06'),
+(23, 'John Lloyd', 'Cruz', 3, 'imureyzdh1@ezztt.com', '$2y$10$cwmUKr5FtsIOXbcgnJi1oeLXdwOtEVfClSgpk7s5Vht.B/pihh9fa', 'Voter\'s ID', '12345678', '2023-06-24', NULL, '10845e3e84913a4eb11d70e6465c7712', '2023-06-08 16:26:53', '2023-06-08 16:26:53'),
+(24, 'John Lloyd', 'Cruz', 3, 'imureyzdh1@ezztt.com', '$2y$10$qiqYdDEpyaDuCcW21gUsf.JBHLOxznN4E8RZGpYz.8GS3QnN/sFVO', 'Voter\'s ID', '12345678', '2023-06-24', NULL, '4064c2684dfc0e2bc2ddeb996e995d50', '2023-06-08 16:28:42', '2023-06-08 16:28:42'),
+(25, 'John Lloyd', 'Cruz', 3, 'imureyzdh1@ezztt.com', '$2y$10$HxW4N10MyeZTtI.GJlNOXe6Ejj/MfQSzPPMyX078ATu1JFhTD6xOS', 'Voter\'s ID', '12345678', '2023-06-24', NULL, 'b197be57ee86320263f02dd2d9ebac63', '2023-06-08 16:29:32', '2023-06-08 16:29:32');
 
 --
 -- Indexes for dumped tables
@@ -577,31 +601,31 @@ ALTER TABLE `review`
 -- AUTO_INCREMENT for table `route`
 --
 ALTER TABLE `route`
-  MODIFY `route_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `route_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `seat`
 --
 ALTER TABLE `seat`
-  MODIFY `seat_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `seat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `user_identification`
 --
 ALTER TABLE `user_identification`
-  MODIFY `user_identity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `user_identity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `user_profile`
 --
 ALTER TABLE `user_profile`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `user_temp`
 --
 ALTER TABLE `user_temp`
-  MODIFY `temp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `temp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Constraints for dumped tables

@@ -179,25 +179,25 @@ $userid = $_SESSION['user_id'];
                                         if (carSeatCount === '1') {
                                             seatFareContainer.innerHTML = `
                                             <div class="form-group">
-                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
                                                 <br>
                                             </div>`;
                                         } else if (carSeatCount === 3) {
                                             seatFareContainer.innerHTML = `
                                         <div class="form-group">
-                                            <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
-                                            <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                            <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                            <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
                                             <br>
                                         </div>
                                         <div class="form-group">
-                                            <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
-                                            <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                            <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                            <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
                                             <br>
                                         </div>
                                         <div class="form-group">
-                                            <label for="seat3">Second Row Right Window Seat<span class="text-danger"> *</span></label>
-                                            <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat3" required>
+                                            <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                            <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
                                             <br>
                                         </div>`;
                                         }
@@ -205,104 +205,103 @@ $userid = $_SESSION['user_id'];
                                         if (carSeatCount === '4') {
                                             seatFareContainer.innerHTML = `
                                             <div class="form-group">
-                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat3">Second Row Middle Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat3" required>
+                                                <label for="SRMS">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRMS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat4">Second Row Right Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
                                                 <br>
                                             </div>`;
                                         } else if (carSeatCount === '6') {
                                             seatFareContainer.innerHTML = `
                                             <div class="form-group">
-                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat3">Second Row Right Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat3" required>
+                                                <label for="SRMS">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRMS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat4">Third Row Left Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat5">Third Row Middle Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat5" required>
+                                                <label for="TRLWS">Third Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="TRLWS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat6">Third Row Right Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat6" required>
+                                                <label for="TRRWS">Third Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="TRRWS" required>
                                                 <br>
                                             </div>`;
                                         }
-
                                     } else if (carType === 'Regular Cab') {
                                         seatFareContainer.innerHTML = `
                                             <div class="form-group">
-                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
                                                 <br>
                                             </div>`;
                                     } else if (carType === 'Extended Cab') {
                                         if (carSeatCount === '3') {
                                             seatFareContainer.innerHTML = `
                                             <div class="form-group">
-                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat4">Second Row Right Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
                                                 <br>
                                             </div>`;
                                         } else if (carSeatCount === '4') {
                                             seatFareContainer.innerHTML = `
                                             <div class="form-group">
-                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat3">Second Row Middle Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat3" required>
+                                                <label for="SRMS">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRMS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat4">Second Row Right Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
                                                 <br>
                                             </div>`;
                                         }
@@ -310,49 +309,197 @@ $userid = $_SESSION['user_id'];
                                         if (carSeatCount === '4') {
                                             seatFareContainer.innerHTML = `
                                             <div class="form-group">
-                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat4">Second Row Right Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <label for="SRMS">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRMS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
                                                 <br>
                                             </div>`;
                                         } else if (carSeatCount === '5') {
                                             seatFareContainer.innerHTML = `
                                             <div class="form-group">
-                                                <label for="seat1">Front Passenger Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat1" required>
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat2">Second Row Left Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat2" required>
+                                                <label for="FPMS">Front Passenger Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPMS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat3">Second Row Middle Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat3" required>
+                                                <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
                                                 <br>
                                             </div>
                                             <div class="form-group">
-                                                <label for="seat4">Second Row Right Window Seat<span class="text-danger"> *</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="seat4" required>
+                                                <label for="SRMS">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRMS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
                                                 <br>
                                             </div>`;
                                         }
                                     } else if (carType === 'SUV') {
-                                        // Add code for SUV seat fares here
+                                        if (carSeatCount === '4') {
+                                            seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRMS">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRMS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
+                                                <br>
+                                            </div>`;
+                                        } else if (carSeatCount === '7') {
+                                            seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRMS">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRMS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="TRLWS">Third Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="TRLWS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="TRMS">Third Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="TRMS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="TRRWS">Third Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="TRRWS" required>
+                                                <br>
+                                            </div>`;
+                                        }
                                     } else if (carType === 'MPV') {
-                                        // Add code for MPV seat fares here
+                                        if (carSeatCount === '5') {
+                                            seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="TRLWS">Third Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="TRLWS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="TRRWS">Third Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="TRRWS" required>
+                                                <br>
+                                            </div>`;
+                                        } else if (carSeatCount === '7') {
+                                            seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRMS">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRMS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="TRLWS">Third Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="TRLWS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="TRRWS">Third Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="TRRWS" required>
+                                                <br>
+                                            </div>`;
+                                        }
                                     } else {
-                                        // Handle other vehicle types or show default message
+                                        seatFareContainer.innerHTML = `
+                                            <div class="form-group">
+                                                <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRLWS">Second Row Left Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRLWS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRMS">Second Row Middle Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRMS" required>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="SRRWS">Second Row Right Window Seat<span class="text-danger"> *</span></label>
+                                                <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="SRRWS" required>
+                                                <br>
+                                            </div>`;
                                     }
                                 });
                             </script>
@@ -362,195 +509,136 @@ $userid = $_SESSION['user_id'];
                             <div id="seatFareContainer"></div>
                             <?php
                             if (isset($_POST['submit'])) {
+                                // Retrieve form data
+                                $car = $_POST["car_id"];
+                                $pickup_loc = $_POST["pickup_loc"];
+                                $dropoff_loc = $_POST["dropoff_loc"];
+                                $departure = $_POST["departure"];
+                                $est_arrival_time = $_POST["est_arrival_time"];
 
-                                $brand = $_POST["brand"];
-                                $model = $_POST["model"];
-                                $color = $_POST["color"];
+                                // Define array for selected seat types
+                                $selected_seats = [];
 
-                                if ($_POST['type'] == 'Other') {
-                                    $type = isset($_POST['otherType']) ? $_POST['otherType'] : '';
-                                    $seat_count = isset($_POST['otherSeatCount']) ? $_POST['otherSeatCount'] : '';
-                                } else {
-                                    $type = $_POST['type'];
-                                    $seat_count = $_POST['seatCount'];
+                                // Check which seat types are selected and add them to the array
+                                if (isset($_POST['FPS'])) {
+                                    $selected_seats[] = [
+                                        'seat_type' => 'Front Passenger Seat',
+                                        'fare' => $_POST['FPS']
+                                    ];
                                 }
 
-                                // Process and move uploaded files
-                                $car_photo_path = $_FILES["car_photo"]["tmp_name"];
-                                $car_photo_filename = $_FILES["car_photo"]["name"];
-                                $car_photo_destination = "../assets/img/car/" . $car_photo_filename;
-                                if (file_exists($car_photo_path)) {
-                                    move_uploaded_file($car_photo_path, $car_photo_destination);
+                                if (isset($_POST['FPMS'])) {
+                                    $selected_seats[] = [
+                                        'seat_type' => 'Front Passenger Middle Seat',
+                                        'fare' => $_POST['FPMS']
+                                    ];
                                 }
 
-                                $or_photo_path = $_FILES["or_photo"]["tmp_name"];
-                                $or_photo_filename = $_FILES["or_photo"]["name"];
-                                $or_photo_destination = "../assets/img/or/" . $or_photo_filename;
-                                if (file_exists($or_photo_path)) {
-                                    move_uploaded_file($or_photo_path, $or_photo_destination);
+                                if (isset($_POST['SRLWS'])) {
+                                    $selected_seats[] = [
+                                        'seat_type' => 'Second Row Left Window Seat',
+                                        'fare' => $_POST['SRLWS']
+                                    ];
                                 }
 
-                                $cr_photo_path = $_FILES["cr_photo"]["tmp_name"];
-                                $cr_photo_filename = $_FILES["cr_photo"]["name"];
-                                $cr_photo_destination = "../assets/img/cr/" . $cr_photo_filename;
-                                if (file_exists($cr_photo_path)) {
-                                    move_uploaded_file($cr_photo_path, $cr_photo_destination);
+                                if (isset($_POST['SRMS'])) {
+                                    $selected_seats[] = [
+                                        'seat_type' => 'Second Row Middle Seat',
+                                        'fare' => $_POST['SRMS']
+                                    ];
                                 }
 
-                                $sales_invoice = isset($_FILES["sales_invoice"]["name"]) ? $_FILES["sales_invoice"]["name"] : '';
-                                if (!empty($sales_invoice)) {
-                                    $sales_invoice_path = $_FILES["sales_invoice"]["tmp_name"];
-                                    $sales_invoice_filename = $_FILES["sales_invoice"]["name"];
-                                    $sales_invoice_destination = "../assets/img/sales-invoice/" . $sales_invoice_filename;
-                                    if (file_exists($sales_invoice_path)) {
-                                        move_uploaded_file($sales_invoice_path, $sales_invoice_destination);
-                                    }
+                                if (isset($_POST['SRRWS'])) {
+                                    $selected_seats[] = [
+                                        'seat_type' => 'Second Row Right Window Seat',
+                                        'fare' => $_POST['SRRWS']
+                                    ];
                                 }
 
+                                if (isset($_POST['TRLWS'])) {
+                                    $selected_seats[] = [
+                                        'seat_type' => 'Third Row Left Window Seat',
+                                        'fare' => $_POST['TRLWS']
+                                    ];
+                                }
 
-                                // Retrieve other form data
-                                $or_number = $_POST["or_number"];
-                                $cr_number = $_POST["cr_number"];
-                                $plate_number = $_POST["plate_number"];
-                                $plate_expiration = $_POST["plate_expiration"];
+                                if (isset($_POST['TRMS'])) {
+                                    $selected_seats[] = [
+                                        'seat_type' => 'Third Row Middle Seat',
+                                        'fare' => $_POST['TRMS']
+                                    ];
+                                }
 
-                                // Insert car data into the database
-                                $car_sql = "INSERT INTO car (user_id, car_photo, brand, model, color, type, seat_count, car_status)
-                                            VALUES ('{$_SESSION['user_id']}', '$car_photo_filename', '$brand', '$model', '$color', '$type', '$seat_count', 'Pending')";
-                                if ($db->query($car_sql) === TRUE) {
-                                    $last_car_id = $db->insert_id;
+                                if (isset($_POST['TRRWS'])) {
+                                    $selected_seats[] = [
+                                        'seat_type' => 'Third Row Right Window Seat',
+                                        'fare' => $_POST['TRRWS']
+                                    ];
+                                }
 
-                                    // Insert car identification data into the database
-                                    $identification_sql = "INSERT INTO car_identification (car_id, or_photo, or_number, cr_photo, cr_number, sales_invoice, plate_number, plate_expiration)
-                                                        VALUES ('$last_car_id', '$or_photo_filename', '$or_number', '$cr_photo_filename', '$cr_number', '$sales_invoice', '$plate_number', '$plate_expiration')";
-                                    if ($db->query($identification_sql) === TRUE) {
-                                        // Send verification email
-                                        $email = $_SESSION['email'];
-                                        $verification_message = "Dear valued user,\n\nThank you for choosing our service. To ensure the security of your account, we need to verify your email address before you can start using our app.\n\nPlease follow the instructions provided in the verification email to complete the process.\n\nBest regards,\nYour App Team";
+                                $user_id = $_SESSION['user_id']; 
+                                $ticket_balance_query = "SELECT ticket_balance FROM user_profile WHERE user_id = ?";
+                                $ticket_balance_statement = mysqli_prepare($db, $ticket_balance_query);
+                                mysqli_stmt_bind_param($ticket_balance_statement, "i", $user_id);
+                                mysqli_stmt_execute($ticket_balance_statement);
+                                mysqli_stmt_bind_result($ticket_balance_statement, $ticket_balance);
+                                mysqli_stmt_fetch($ticket_balance_statement);
+                                mysqli_stmt_close($ticket_balance_statement); 
 
-                                        // Additional email sending logic goes here
-                                        // Send verification email
-                                        $mail = new PHPMailer(true);
+                                // Check if the ticket balance is sufficient
+                                if ($ticket_balance >= 10) {
+                                    // Insert data into the `route` table using prepared statements
+                                    $route_query = "INSERT INTO route (car_id, pickup_loc, dropoff_loc, departure, est_arrival_time, route_status)
+                                                    VALUES (?, ?, ?, ?, ?, 'Active')";
+                                    $route_statement = mysqli_prepare($db, $route_query);
+                                    mysqli_stmt_bind_param($route_statement, "issss", $car, $pickup_loc, $dropoff_loc, $departure, $est_arrival_time);
+                                    mysqli_stmt_execute($route_statement);
 
-                                        // Fetch the email from the user_profile table
-                                        $stmt = $db->prepare("SELECT email FROM user_profile WHERE user_id = ?");
-                                        $stmt->bind_param("i", $user_id);
-                                        $stmt->execute();
-                                        $result = $stmt->get_result();
-                                        $row = $result->fetch_assoc();
-                                        $email = $row['email'];
+                                    if (mysqli_stmt_affected_rows($route_statement) > 0) {
+                                        $route_id = mysqli_insert_id($db); // Get the auto-generated route ID
 
-                                        $stmt->close();
-                                        $result->close();
+                                        // Insert data into the `seat` table for each selected seat type using prepared statements
+                                        $seat_query = "INSERT INTO seat (route_id, seat_type, fare, seat_status)
+                                                        VALUES (?, ?, ?, 'Available')";
+                                        $seat_statement = mysqli_prepare($db, $seat_query);
 
+                                        foreach ($selected_seats as $seat) {
+                                            $seat_type = $seat['seat_type'];
+                                            $fare = $seat['fare'];
 
-                                        $city = $_SESSION['city_name'];
-
-                                        try {
-                                            $mail->SMTPDebug = 0;
-                                            $mail->isSMTP();
-                                            $mail->Host = 'smtp.gmail.com';
-                                            $mail->SMTPAuth = true;
-                                            $mail->Username = 'carpoolapp01@gmail.com';
-                                            $mail->Password = 'wzspvmmnnxhtbuxd';
-                                            $mail->SMTPSecure = 'tls';
-                                            $mail->Port = 587;
-
-                                            $mail->setFrom('noreply@tarasabay.com', 'TaraSabay PH');
-                                            $mail->addAddress($email);
-                                            $mail->addCustomHeader('X-Priority', '1');
-                                            $mail->addCustomHeader('Importance', 'High');
-
-                                            $mail->isHTML(true);
-                                            $mail->Subject = 'Car Verification';
-                                            $mail->Body = "
-                                                <html>
-                                                <head>
-                                                <style>
-                                                    body {
-                                                        font-family: Arial, sans-serif;
-                                                        font-size: 16px;
-                                                        line-height: 1.6;
-                                                        color: #444;
-                                                    }
-                                                    h1 {
-                                                        font-size: 24px;
-                                                        font-weight: bold;
-                                                        color: #333;
-                                                        margin: 0 0 30px;
-                                                        text-align: center;
-                                                    }
-                                                    p {
-                                                        margin: 0 0 20px;
-                                                    }
-                                                    a {
-                                                        color: #0072C6;
-                                                        text-decoration: none;
-                                                    }
-                                                    a:hover {
-                                                        text-decoration: underline;
-                                                    }
-                                                    .container {
-                                                        max-width: 600px;
-                                                        margin: 0 auto;
-                                                    }
-                                                </style>
-                                                </head>
-                                                <body>
-                                                <div class=\"container\">
-                                                <h1>Car Verification Required for Your TaraSabay App</h1>
-                                                <p>Dear valued user,</p>
-                                                <p>Thank you for choosing TaraSabay to find rides or offer your own. To ensure the security of your account, we need to verify your car before you can start using the app as a driver.</p>
-                                                <p>Please visit and submit the following requirements to the nearest TaraSabay office in <b>$city</b> to deliver the necessary documents for verification. Our representatives will assist you with the process.</p>
-                                                <ul>
-                                                    <li>Original copy of the Certificate of Registration (CR)</li>
-                                                    <li>Original copy of the Official Receipt (OR)</li>
-                                                    <li>Photocopy of Driver's License</li>
-                                                    <li>Photocopy of the TIN (Tax Identification Number) ID</li>
-                                                    <li>Photocopy of Owner's Government ID with 3 Original Specimen Signatures</li>
-                                                    <li>Vehicle Sale Invoice and Delivery Receipt (Optional)</li>
-                                                    <li>LTFRB Documents (If applicable):
-                                                        <ul>
-                                                            <li>Provision Authority (PA)</li>
-                                                            <li>Certificate of Public Convenience (CPC)</li>
-                                                            <li>Motion for extension of PA</li>
-                                                        </ul>
-                                                        If any of the above, please provide the following of the Document:
-                                                        <ul>
-                                                            <li>Page 1</li>
-                                                            <li>Page 2</li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>PAMI (Optional)</li>
-                                                </ul>
-                                                <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
-                                                <p>Best regards,</p>
-                                                <p>TaraSabay PH Team</p>
-                                                </div>
-                                                </body>
-                                                </html>";
-
-                                            $mail->AltBody = 'Car Verification Required for Your TaraSabay App';
-
-                                            $mail->send();
-
-                                            echo "<div style=\"text-align: center; font-family: 'Poppins', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;\">
-                                                    <img src=\"../assets/img/checked.png\" alt=\"Car Registration\" style=\"margin-bottom: 20px; width: 100px\">
-                                                    <h5 style=\"color: #4CAF50; font-size: 24px; margin-bottom: 20px;\">Car registration requirements received!</h5>
-                                                    <p style=\"color: #333333; font-size: 16px; margin-bottom: 20px;\">An email has been sent to your email address with the requirements needed to be submitted to the nearest TaraSabay office in your city.</p>
-                                                    <p style=\"color: #333333; font-size: 16px;\">These requirements are necessary to become an official driver of the TaraSabay app.</p>
-                                                </div>";
-                                        } catch (Exception $e) {
-                                            echo '<div style="text-align: center;">
-                                                <h5 style="color: red">Error sending verification email: </h5>' . $mail->ErrorInfo . '
-                                            </div>';
+                                            mysqli_stmt_bind_param($seat_statement, "iss", $route_id, $seat_type, $fare);
+                                            mysqli_stmt_execute($seat_statement);
                                         }
+
+                                        // Update the ticket_balance in the user table
+                                        $ticket_update_query = "UPDATE user_profile SET ticket_balance = ticket_balance - 10 WHERE user_id = ?";
+                                        $ticket_update_statement = mysqli_prepare($db, $ticket_update_query);
+                                        mysqli_stmt_bind_param($ticket_update_statement, "i", $user_id);
+                                        mysqli_stmt_execute($ticket_update_statement);
+
+                                        // Success message for route registration
+                                        echo '<div style="text-align: center; font-family: \'Poppins\', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+                                                <img src="../assets/img/checked.png" alt="Route Registration" style="margin-bottom: 20px; width: 100px">
+                                                <h5 style="color: #4CAF50; font-size: 24px; margin-bottom: 20px;">Route registration successful!</h5>
+                                                <p style="color: #333333; font-size: 16px; margin-bottom: 20px;">Thank you for registering your route. Your route has been successfully registered.</p>
+                                                <p style="color: #333333; font-size: 16px; margin-bottom: 20px;">10 tickets have been deducted from your account as a registration fee.</p>
+                                                <p style="color: #333333; font-size: 16px; margin-bottom: 20px;">Please note that if you cancel the created route, the registration fee will not be refunded to your account.</p>
+                                                <p style="color: #333333; font-size: 16px;">If you have any further questions or need assistance, please contact our support team at support@tarasabay.com. We are here to help!</p>
+                                            </div>';
+                                    } else {
+                                        // Error inserting route data
+                                        echo "Error inserting route data: " . mysqli_error($db);
                                     }
+                                    mysqli_stmt_close($route_statement); // Close the statement
                                 } else {
-                                    echo "Error: " . $car_sql . "<br>" . $db->error;
+                                    // Insufficient ticket balance
+                                    echo '<div style="text-align: center; font-family: \'Poppins\', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+                                            <img src="../assets/img/error.png" alt="Insufficient Tickets" style="margin-bottom: 20px; width: 100px">
+                                            <h5 style="color: #FF0000; font-size: 24px; margin-bottom: 20px;">Insufficient tickets!</h5>
+                                            <p style="color: #333333; font-size: 16px; margin-bottom: 20px;">Sorry, you don\'t have enough tickets in your account to register the route.</p>
+                                            <p style="color: #333333; font-size: 16px;">Please cash-in additional tickets to proceed or contact our support team at support@tarasabay.com for further assistance.</p>
+                                        </div>';
                                 }
-                                // Close database connection
-                                $db->close();
                             }
                             ?>
                             <button type="submit" name="submit" class="btn btn-success">Register</button>
