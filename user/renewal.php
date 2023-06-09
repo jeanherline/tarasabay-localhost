@@ -74,19 +74,19 @@ if ($result->num_rows == 1) {
 
             <div class="container-fluid">
                 <?php
-                if (isset($_GET['list']) && $_GET['list'] === 'Full') {
+                if (isset($_GET['list']) && $_GET['list'] === 'Driver') {
                 ?>
                     <!-- Breadcrumbs-->
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="">City Users</a>
+                            <a href="#">Renewal</a>
                         </li>
-                        <li class="breadcrumb-item active">Full List</li>
+                        <li class="breadcrumb-item active">Expired Driver's License</li>
                     </ol>
                     <div class="card mb-3">
                         <div class="card-header">
                             <i class="fas fa-table"></i>
-                            Manage City Users
+                            Manage License Renewal
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -96,7 +96,7 @@ if ($result->num_rows == 1) {
                                             <th>#</th>
                                             <th>Full Name</th>
                                             <th>Email Address</th>
-                                            <th>Account Status</th>
+                                            <th>License Expiration</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -104,7 +104,12 @@ if ($result->num_rows == 1) {
                                     <tbody>
                                         <?php
                                         $city_id = $_SESSION['city_id'];
-                                        $ret = "SELECT * FROM user_profile WHERE role = 'Passenger' OR role = 'Driver' AND city_id = '$city_id'";
+
+                                        $ret = "SELECT up.*, di.*
+                                        FROM user_profile up
+                                        INNER JOIN driver_identification di ON up.user_id = di.user_id
+                                        WHERE (up.role = 'Driver' AND di.driver_stat = 'Expired') AND up.city_id = '$city_id'";
+
                                         $stmt = $db->prepare($ret);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
@@ -116,12 +121,14 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . $cnt . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . "</td>";
                                             echo "<td>" . $row['email'] . "</td>";
-                                            echo "<td>" . $row['role'] . "</td>";
-
+                                            echo "<td>" . $row['license_expiration'] . "</td>";
                                         ?>
                                             <td>
-                                                <a href="viewAdminProfile.php?user_id=<?php echo $user; ?>&list=Full">
+                                                <a href="viewRenewalProfile.php?user_id=<?php echo $user; ?>&list=Driver">
                                                     <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                </a>
+                                                <a href="renewDriver.php?user_id=<?php echo $user; ?>&list=Driver">
+                                                    <button><i class="fa fa-check"></i>&nbsp;Renew&nbsp;</button>
                                                 </a>
                                             </td>
                                             <?php
@@ -147,14 +154,95 @@ if ($result->num_rows == 1) {
                     <?php
 
                     ?>
-                    <!-- /.container-fluid -->
 
-                    <!-- Sticky Footer -->
-                    <?php include("vendor/inc/footer.php"); ?>
 
+                <?php
+                } else if (isset($_GET['list']) && $_GET['list'] === 'Plate') {
+                ?>
+                    <!-- Breadcrumbs-->
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">Renewal</a>
+                        </li>
+                        <li class="breadcrumb-item active">Expired License Plate</li>
+                    </ol>
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="fas fa-table"></i>
+                            Manage License Renewal
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Full Name</th>
+                                            <th>Email Address</th>
+                                            <th>License Expiration</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <?php
+                                        $city_id = $_SESSION['city_id'];
+
+                                        $ret = "SELECT up.*, di.*, ci.plate_expiration
+                                                FROM user_profile up
+                                                INNER JOIN car di ON up.user_id = di.user_id
+                                                INNER JOIN car_identification ci ON di.car_id = ci.car_id
+                                                WHERE (up.role = 'Driver' AND di.car_status = 'Expired') AND up.city_id = '$city_id'";
+
+                                        $stmt = $db->prepare($ret);
+                                        $stmt->execute();
+                                        $result = $stmt->get_result();
+                                        $cnt = 1;
+                                        while ($row = $result->fetch_assoc()) {
+                                            $user = $row['user_id'];
+
+                                            echo "<tr>";
+                                            echo "<td>" . $cnt . "</td>";
+                                            echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . "</td>";
+                                            echo "<td>" . $row['email'] . "</td>";
+                                            echo "<td>" . $row['plate_expiration'] . "</td>";
+                                        ?>
+                                            <td>
+                                                <a href="viewCarReg.php?user_id=<?php echo $user; ?>&status=Expired">
+                                                    <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                </a>
+                                                <a href="renewPlate.php?user_id=<?php echo $user; ?>">
+                                                    <button><i class="fa fa-check"></i>&nbsp;Renew&nbsp;</button>
+                                                </a>
+                                            </td>
+                                            <?php
+                                            ?>
+
+                                        <?php
+                                            echo "</tr>";
+                                            $cnt++;
+                                        }
+                                        ?>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer small text-muted">
+                            <?php
+                            date_default_timezone_set("Africa/Nairobi");
+                            echo "Generated : " . date("h:i:sa");
+                            ?>
+                        </div>
+                    </div>
                 <?php
                 }
                 ?>
+                <!-- /.container-fluid -->
+
+                <!-- Sticky Footer -->
+                <?php include("vendor/inc/footer.php"); ?>
+
             </div>
             <!-- /.content-wrapper -->
 

@@ -112,21 +112,18 @@ if ($result->num_rows == 1) {
                                 $listOption = $_GET['list'];
 
                                 // Check the value of the list option and set the corresponding value for $list
-                                if ($listOption === 'Full' || $listOption === 'Expired' ) {
+                                if ($listOption === 'Driver' ) {
                                     $list = $listOption;
                                 }
                             }
                             ?>
-                            <a href="cityUsers.php?list=<?php echo $list; ?>">City Users</a>
-
-                            <?php
-                            ?>
+                            <a href="renewal.php?list=<?php echo $list; ?>">Renewal</a>
 
 
                         <?php
                         } elseif (isset($_SESSION['role']) == "Main Admin") {
                         ?>
-                            <a href="cityAdmins.php">Manage City Admin</a>
+                            <a href="cityAdmins.php">Renewal</a>
                         <?php
                         }
                         ?>

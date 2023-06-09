@@ -181,17 +181,10 @@
   <?php
   if ($_SESSION['role'] == "City Admin") {
   ?>
-
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-city"></i> <!-- Change the icon class here -->
-        <span>City Users</span>
-      </a>
-      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-        <h6 class="dropdown-header">Status</h6>
-        <a class="dropdown-item" href="cityUsers.php?list=Full">Full List</a>
-        <a class="dropdown-item" href="cityUsers.php?list=Expired">Expired License</a>
-      </div>
+    <li class="nav-item">
+      <a class="nav-link" href="cityUsers.php?list=Full">
+        <i class="fas fa-city"></i>
+        <span>City Users</span></a>
     </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -207,17 +200,17 @@
     </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-car"></i> <!-- Change the icon class here -->
-        <span>Cars</span>
+        <i class="fas fa-folder-open"></i> <!-- Change the icon class here -->
+        <span>Renewal</span>
       </a>
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-        <h6 class="dropdown-header">Registered Cars</h6>
-        <a class="dropdown-item" href="approvedBookings.php">Full List</a>
-        <a class="dropdown-item" href="pendingBookings.php">Expired Plate</a>
+        <h6 class="dropdown-header">Driver & Car</h6>
+        <a class="dropdown-item" href="renewal.php?list=Driver">Driver's License</a>
+        <a class="dropdown-item" href="renewal.php?list=Plate">License Plate</a>
       </div>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="cash-in.php">
+      <a class="nav-link" href="cash-out-manage.php">
         <i class="fas fa-fw fa-bus"></i>
         <span>Cash Out</span></a>
     </li>
@@ -232,7 +225,6 @@
         <a class="dropdown-item" href="cash-out-history.php">Cash-Out</a>
       </div>
     </li>
-
   <?php
   }
   ?>

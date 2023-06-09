@@ -132,37 +132,37 @@ if (isset($_POST['submit'])) {
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $ret = "SELECT cico.wallet_id, cico.gcash_mobile_number, cico.amount, cico.convenience_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.status
-                                    FROM cico
-                                    INNER JOIN user_profile up ON cico.user_id = up.user_id
-                                    WHERE cico.amount > 0 AND cico.transaction_type = 'cash-out' AND (cico.status = 'Pending' OR cico.status = 'Approved' OR cico.status = 'Declined')
-                                    ORDER BY cico.created_at DESC";
+                                    $ret = "SELECT cico.cico_id, cico.gcash_mobile_number, cico.peso_amount, cico.convenience_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.trans_stat
+                                            FROM cico
+                                            INNER JOIN user_profile up ON cico.user_id = up.user_id
+                                            WHERE cico.peso_amount > 0 AND cico.trans_type = 'cash-out' AND (cico.trans_stat = 'Pending' OR cico.trans_stat = 'Approved' OR cico.trans_stat = 'Declined')
+                                            ORDER BY cico.created_at DESC";
 
                                     $stmt = $db->prepare($ret);
                                     $stmt->execute();
                                     $result = $stmt->get_result();
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "<td>" . $row['wallet_id'] . "</td>";
+                                        echo "<td>" . $row['cico_id'] . "</td>";
                                         echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                        echo "<td>" . number_format($row['amount'], 2) . "</td>";
+                                        echo "<td>" . number_format($row['peso_amount'], 2) . "</td>";
                                         echo "<td>" . $row['gcash_mobile_number'] . "</td>";
                                         echo "<td>" . $row['reference_number'] . "</td>";
                                         echo "<td>" . $row['created_at'] . "</td>";
 
                                         echo "<td>";
-                                        if ($row['status'] == "Pending") {
+                                        if ($row['trans_stat'] == "Pending") {
                                             echo '<span class="badge badge-warning">Pending</span>';
-                                        } elseif ($row['status'] == "Approved") {
+                                        } elseif ($row['trans_stat'] == "Approved") {
                                             echo '<span class="badge badge-success">Approved</span>';
-                                        } elseif ($row['status'] == "Declined") {
+                                        } elseif ($row['trans_stat'] == "Declined") {
                                             echo '<span class="badge badge-danger">Declined</span>';
                                         }
                                         echo "</td>";
                                         echo "<td>
-                                        <a href='approveCashout.php?wallet_id=" . $row['wallet_id'] . "&amount=" . $row['amount'] . "' class='badge badge-success'><i class='fa fa-check'></i> Approve</a>
-                                        <a href='../declineCashout.php?wallet_id=" . $row['wallet_id'] . "&amount=" . $row['amount'] . "' class='badge badge-danger'><i class='fa fa-ban'></i> Decline</a>
-                                        </td>";
+                                                <a href='approveCashout.php?cico_id=" . $row['cico_id'] . "&amount=" . $row['peso_amount'] . "' class='badge badge-success'><i class='fa fa-check'></i> Approve</a>
+                                                <a href='../declineCashout.php?cico_id=" . $row['cico_id'] . "&amount=" . $row['peso_amount'] . "' class='badge badge-danger'><i class='fa fa-ban'></i> Decline</a>
+                                            </td>";
                                         echo "</tr>";
                                     }
                                     ?>
@@ -170,6 +170,8 @@ if (isset($_POST['submit'])) {
                             </table>
                         </div>
                     </div>
+
+
                     <div class="card-footer small text-muted">
                         <?php
                         date_default_timezone_set("Africa/Nairobi");

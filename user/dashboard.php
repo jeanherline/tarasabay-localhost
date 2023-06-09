@@ -86,6 +86,7 @@ if ($result->num_rows == 1) {
         if ($_SESSION['role'] == "City Admin") {
         ?>
           <!-- Icon Cards-->
+
           <div class="row">
             <div class="col-xl-3 col-sm-6 mb-3">
               <div class="card text-white" style="background-color: #EAAA00;">
@@ -95,12 +96,35 @@ if ($result->num_rows == 1) {
                   </div>
                   <?php
                   // Code for counting the number of approved car registrations by user ID
-                  $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Approved'");
+                  $result = $db->query("SELECT COUNT(*) FROM driver_identification WHERE driver_stat = 'Renewal'");
                   $approvedRegistrations = $result->fetch_row()[0];
                   ?>
-                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $approvedRegistrations; ?></span> Approved Registrations</div>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $approvedRegistrations; ?>
+                    </span> Driver's License Renewal</div>
                 </div>
-                <a class="card-footer text-white clearfix small z-1" href="registeredCars.php">
+                <a class="card-footer text-white clearfix small z-1" href="renewal.php?list=Driver">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-fw fa fa-id-card"></i>
+                  </div>
+                  <?php
+                  // Code for counting the number of approved car registrations by user ID
+                  $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Renewal'");
+                  $approvedRegistrations = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $approvedRegistrations; ?>
+                    </span> License Plate Renewal</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="renewal.php?list=Plate">
                   <span class="float-left">View Details</span>
                   <span class="float-right">
                     <i class="fas fa-angle-right"></i>
@@ -120,7 +144,168 @@ if ($result->num_rows == 1) {
                   $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Pending'");
                   $pendingRegistrations = $result->fetch_row()[0];
                   ?>
-                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $pendingRegistrations; ?></span> Pending Registrations</div>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $pendingRegistrations; ?>
+                    </span> Pending Car Registrations</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="carReg.php?status=Pending">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-fw fa fa-bus"></i>
+                  </div>
+                  <?php
+                  // Code for counting the number of pending car registrations by user ID
+                  $result = $db->query("SELECT COUNT(*) FROM cico WHERE trans_type = 'Cash-Out' AND trans_stat = 'Pending'");
+                  $pendingRegistrations = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $pendingRegistrations; ?>
+                    </span> Pending Cash-Out</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="cash-out-manage.php">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <!--Bookings-->
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fas fa-table"></i>
+              Pending Car Registrations
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Owner Full Name</th>
+                      <th>Car Photo</th>
+                      <th>Vehicle Type</th>
+                      <th>Brand, Model, & Color</th>
+                      <th>OR No.</th>
+                      <th>CR No.</th>
+                      <th>Plate No.</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <?php
+                    $city_id = $_SESSION['city_id'];
+
+                    $ret = "SELECT car.*, user_profile.*, car_identification.*, city.city_name
+                                        FROM car
+                                        INNER JOIN user_profile ON car.user_id = user_profile.user_id
+                                        INNER JOIN car_identification ON car.car_id = car_identification.car_id
+                                        INNER JOIN city ON user_profile.city_id = city.city_id
+                                        WHERE car.car_status = 'Pending' AND user_profile.city_id = '$city_id'";
+                    $stmt = $db->prepare($ret);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $cnt = 1;
+
+                    while ($row = $result->fetch_assoc()) {
+                      $id = $row['user_id'];
+
+                      echo "<tr>";
+                      echo "<td>" . $cnt . "</td>";
+                      echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . "</td>";
+                      echo "<td><img src='../assets/img/car/" . $row['profile_photo'] . "' alt='Profile Photo' width='50' height='50'></td>";
+                      echo "<td>" . $row['type'] . "</td>";
+                      echo "<td>" . $row['brand'] . " " . $row['model'] . " " . $row['color'] . "</td>";
+                      echo "<td>" . $row['or_number'] . "</td>";
+                      echo "<td>" . $row['cr_number'] . "</td>";
+                      echo "<td>" . $row['plate_number'] . "</td>";
+
+                      if ($_SESSION['role'] == "City Admin") {
+                    ?>
+                        <td>
+                          <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Pending">
+                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                          </a>
+                        </td>
+                      <?php
+                      } else {
+                      ?>
+                        <td>
+                          <a href="viewAdminProfile.php?user_id=<?php echo $id; ?>">
+                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                          </a>
+                        </td>
+                      <?php
+                      }
+                      ?>
+
+                    <?php
+                      echo "</tr>";
+                      $cnt++;
+                    }
+                    ?>
+                  </tbody>
+
+                </table>
+              </div>
+            </div>
+            <div class="card-footer small text-muted">
+              <?php
+              date_default_timezone_set("Africa/Nairobi");
+              echo "Generated : " . date("h:i:sa");
+              ?>
+            </div>
+          </div>
+
+        <?php
+
+
+        } elseif ($_SESSION['role'] == "Main Admin") {
+        ?>
+          <!-- Icon Cards-->
+          <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-city"></i>
+                  </div>
+                  <?php
+                  // Code for counting the number of registered cars with status "approved" by user ID
+                  $result = $db->query("SELECT COUNT(*) FROM user_profile WHERE role = 'City Admin'");
+                  $driver = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $driver; ?></span> City Admins</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="registeredCars.php">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-user-friends"></i>
+                  </div>
+                  <?php
+                  $result = $db->query("SELECT COUNT(*) FROM user_profile WHERE role = 'Passenger'");
+                  $passenger = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $passenger; ?></span> TaraSabay Passengers</div>
                 </div>
                 <a class="card-footer text-white clearfix small z-1" href="pendingCars.php">
                   <span class="float-left">View Details</span>
@@ -130,223 +315,105 @@ if ($result->num_rows == 1) {
                 </a>
               </div>
             </div>
-
-            <!--Bookings-->
-            <div class="card mb-3">
-              <div class="card-header">
-                <i class="fas fa-table"></i>
-                Pending Car Registrations
-              </div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                      <tr>
-                        <th>Brand</th>
-                        <th>Model</th>
-                        <th>Color</th>
-                        <th>Seat Count</th>
-                        <th>License Plate</th>
-                        <th>CR Number</th>
-                        <th>OR Number</th>
-                        <th>Reg Exp Date</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <?php
-                      $ret = "SELECT c.car_id, c.user_id, c.brand, c.model, ci.plate_number, ci.cr_number, ci.or_number, ci.plate_expiration, c.car_status, c.color
-                                FROM car c
-                                JOIN car_identification ci ON c.car_id = ci.car_id
-                                JOIN user_profile up ON c.user_id = up.user_id
-                                WHERE c.car_status = 'Pending'";
-
-                      $stmt = $db->prepare($ret);
-                      $stmt->execute();
-                      $result = $stmt->get_result();
-                      $cnt = 1;
-                      while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . $row['brand'] . "</td>";
-                        echo "<td>" . $row['model'] . "</td>";
-                        echo "<td>" . $row['color'] . "</td>";
-                        echo "<td>" . $row['seat_count'] . "</td>";
-                        echo "<td>" . $row['car_identity_num'] . "</td>";
-                        echo "<td>" . $row['cr_number'] . "</td>";
-                        echo "<td>" . $row['or_number'] . "</td>";
-                        echo "<td>" . $row['reg_exp_date'] . "</td>";
-                      ?>
-                        <td><?php if ($row['status'] == "Pending") {
-                              echo '<span class = "badge badge-warning">' . $row['status'] . '</span>';
-                            } else {
-                              echo '<span class = "badge badge-success">' . $row['status'] . '</span>';
-                            } ?></td>
-                      <?php
-                        echo "</tr>";
-                        $cnt++;
-                      }
-                      ?>
-
-                    </tbody>
-                  </table>
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-id-card"></i>
+                  </div>
+                  <?php
+                  $result = $db->query("SELECT COUNT(*) FROM user_profile WHERE role = 'Driver'");
+                  $driver = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $driver; ?></span> TaraSabay Drivers</div>
                 </div>
-              </div>
-              <div class="card-footer small text-muted">
-                <?php
-                date_default_timezone_set("Africa/Nairobi");
-                echo "Generated : " . date("h:i:sa");
-                ?>
+                <a class="card-footer text-white clearfix small z-1" href="pendingCars.php">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
               </div>
             </div>
-
-          <?php
-
-
-        } elseif ($_SESSION['role'] == "Main Admin") {
-          ?>
-            <!-- Icon Cards-->
-            <div class="row">
-              <div class="col-xl-3 col-sm-6 mb-3">
-                <div class="card text-white" style="background-color: #EAAA00;">
-                  <div class="card-body">
-                    <div class="card-body-icon">
-                      <i class="fas fa-city"></i>
-                    </div>
-                    <?php
-                    // Code for counting the number of registered cars with status "approved" by user ID
-                    $result = $db->query("SELECT COUNT(*) FROM user_profile WHERE role = 'City Admin'");
-                    $driver = $result->fetch_row()[0];
-                    ?>
-                    <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $driver; ?></span> City Admins</div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-fw fa fa-car"></i>
                   </div>
-                  <a class="card-footer text-white clearfix small z-1" href="registeredCars.php">
-                    <span class="float-left">View Details</span>
-                    <span class="float-right">
-                      <i class="fas fa-angle-right"></i>
-                    </span>
-                  </a>
+                  <?php
+                  // Code for counting the number of pending cars with status "pending" by user ID
+                  $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Active'");
+                  $vehicle = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $vehicle; ?></span> Active Cars</div>
                 </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 mb-3">
-                <div class="card text-white" style="background-color: #EAAA00;">
-                  <div class="card-body">
-                    <div class="card-body-icon">
-                      <i class="fas fa-user-friends"></i>
-                    </div>
-                    <?php
-                    $result = $db->query("SELECT COUNT(*) FROM user_profile WHERE role = 'Passenger'");
-                    $passenger = $result->fetch_row()[0];
-                    ?>
-                    <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $passenger; ?></span> TaraSabay Passengers</div>
-                  </div>
-                  <a class="card-footer text-white clearfix small z-1" href="pendingCars.php">
-                    <span class="float-left">View Details</span>
-                    <span class="float-right">
-                      <i class="fas fa-angle-right"></i>
-                    </span>
-                  </a>
-                </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 mb-3">
-                <div class="card text-white" style="background-color: #EAAA00;">
-                  <div class="card-body">
-                    <div class="card-body-icon">
-                      <i class="fas fa-id-card"></i>
-                    </div>
-                    <?php
-                    $result = $db->query("SELECT COUNT(*) FROM user_profile WHERE role = 'Driver'");
-                    $driver = $result->fetch_row()[0];
-                    ?>
-                    <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $driver; ?></span> TaraSabay Drivers</div>
-                  </div>
-                  <a class="card-footer text-white clearfix small z-1" href="pendingCars.php">
-                    <span class="float-left">View Details</span>
-                    <span class="float-right">
-                      <i class="fas fa-angle-right"></i>
-                    </span>
-                  </a>
-                </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 mb-3">
-                <div class="card text-white" style="background-color: #EAAA00;">
-                  <div class="card-body">
-                    <div class="card-body-icon">
-                      <i class="fas fa-fw fa fa-car"></i>
-                    </div>
-                    <?php
-                    // Code for counting the number of pending cars with status "pending" by user ID
-                    $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Active'");
-                    $vehicle = $result->fetch_row()[0];
-                    ?>
-                    <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $vehicle; ?></span> Active Cars</div>
-                  </div>
-                  <a class="card-footer text-white clearfix small z-1" href="pendingCars.php">
-                    <span class="float-left">View Details</span>
-                    <span class="float-right">
-                      <i class="fas fa-angle-right"></i>
-                    </span>
-                  </a>
-                </div>
+                <a class="card-footer text-white clearfix small z-1" href="pendingCars.php">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
               </div>
             </div>
-          <?php
+          </div>
+        <?php
         } elseif ($_SESSION['role'] == "City Admin") {
         }
-          ?>
-          <!-- /.container-fluid -->
+        ?>
+        <!-- /.container-fluid -->
 
-          <!-- Sticky Footer -->
-          <?php include("vendor/inc/footer.php"); ?>
-
-          </div>
-          <!-- /.content-wrapper -->
+        <!-- Sticky Footer -->
+        <?php include("vendor/inc/footer.php"); ?>
 
       </div>
-      <!-- /#wrapper -->
+      <!-- /.content-wrapper -->
 
-      <!-- Scroll to Top Button-->
-      <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-      </a>
+    </div>
+    <!-- /#wrapper -->
 
-      <!-- Logout Modal-->
-      <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-              <a class="btn btn-danger" href="../logout.php">Logout</a>
-            </div>
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-danger" href="../logout.php">Logout</a>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Bootstrap core JavaScript-->
-      <script src="vendor/jquery/jquery.min.js"></script>
-      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-      <!-- Core plugin JavaScript-->
-      <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-      <!-- Page level plugin JavaScript-->
-      <script src="vendor/chart.js/Chart.min.js"></script>
-      <script src="vendor/datatables/jquery.dataTables.js"></script>
-      <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <!-- Page level plugin JavaScript-->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
-      <!-- Custom scripts for all pages-->
-      <script src="vendor/js/sb-admin.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="vendor/js/sb-admin.min.js"></script>
 
-      <!-- Demo scripts for this page-->
-      <script src="vendor/js/demo/datatables-demo.js"></script>
-      <script src="vendor/js/demo/chart-area-demo.js"></script>
+    <!-- Demo scripts for this page-->
+    <script src="vendor/js/demo/datatables-demo.js"></script>
+    <script src="vendor/js/demo/chart-area-demo.js"></script>
 
 </body>
 

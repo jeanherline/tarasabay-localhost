@@ -419,6 +419,49 @@ $stmt->close();
                                 <input type="file" class="form-control" id="vax_card" name="vax_card" accept=".jpg,.jpeg,.png" value="<?php echo isset($_POST['vax_card']) ? $_POST['vax_card'] : (isset($vax_card) ? $vax_card : ''); ?>">
                                 <br>
                             </div>
+
+                            <?php
+                            $stmt = $db->prepare("SELECT * FROM emergency WHERE user_id = ?");
+                            $stmt->bind_param("s", $userid);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
+
+                            if ($result->num_rows == 1) {
+                                $row = $result->fetch_assoc();
+                                $name = $row['name'];
+                                $relationship = $row['relationship'];
+                                $phone = $row['phone'];
+                                $address = $row['address'];
+                            }
+                            ?>
+                            <em>Emergency Contact</em><br><br>
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control disabled-input" value="<?php echo isset($_POST['name']) ? $_POST['name'] : $name; ?>" name="name"><br>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="relationship">Relationship<span class="text-danger"> *</span></label>
+                                <select class="form-control" name="relationship" id="relationship" required>
+                                    <option value="<?php echo isset($_POST['relationship']) ? $_POST['relationship'] : $relationship; ?>" selected disabled><?php echo isset($_POST['relationship']) ? $_POST['relationship'] : $relationship; ?></option>
+                                    <option value="Spouse">Spouse</option>
+                                    <option value="Father">Father</option>
+                                    <option value="Mother">Mother</option>
+                                    <option value="Sibling">Sibling</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <br>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="text" class="form-control disabled-input" value="<?php echo isset($_POST['phone']) ? $_POST['phone'] : $phone; ?>" name="phone"><br>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" class="form-control disabled-input" value="<?php echo isset($_POST['address']) ? $_POST['address'] : $address; ?>" name="address"><br>
+                            </div>
+
                             <?php
                             // Check if the form is submitted
                             if (isset($_POST['submit'])) {
@@ -430,6 +473,11 @@ $stmt->close();
                                 $nationality = isset($_POST['nationality']) ? $_POST['nationality'] : '';
                                 $gender = isset($_POST['gender']) ? $_POST['gender'] : '';
                                 $birthdate = isset($_POST['birthdate']) ? $_POST['birthdate'] : '';
+
+                                $name = isset($_POST['name']) ? $_POST['name'] : '';
+                                $relationship = isset($_POST['relationship']) ? $_POST['relationship'] : '';
+                                $phone = isset($_POST['phone']) ? $_POST['phone'] : '';
+                                $address = isset($_POST['address']) ? $_POST['address'] : '';
 
                                 $is_vaxxed = 0;
 
@@ -461,9 +509,17 @@ $stmt->close();
                                     echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Update Unsuccessful</h5></div>';
                                     echo 'Error: ' . $stmt->error; // Print any error message
                                 }
+
+                                // Update emergency contact
+                                $stmt = $db->prepare("UPDATE emergency SET name=?, relationship=?, phone=?, address=? WHERE user_id=?");
+                                $stmt->bind_param("ssssi", $name, $relationship, $phone, $address, $userid);
+                                $stmt->execute();
+
                                 mysqli_close($db);
                             }
                             ?>
+
+
 
                             <button type="submit" style="float:right; margin-right: 1%;" name="submit" id="submit" class="btn btn-success">Save Changes</button>
                         </form>

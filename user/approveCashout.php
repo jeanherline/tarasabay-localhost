@@ -73,12 +73,12 @@ $userid = $_SESSION['user_id'];
                             </div>
                             <?php
                             if (isset($_POST['submit'])) {
-                                if (isset($_GET['wallet_id']) && isset($_GET['amount'])) {
-                                    $walletId = $_GET['wallet_id'];
+                                if (isset($_GET['cico_id']) && isset($_GET['amount'])) {
+                                    $walletId = $_GET['cico_id'];
                                     $amount = $_GET['amount'];
 
-                                    // Retrieve the user_id, acc_balance, and processing_fee associated with the wallet_id
-                                    $stmt = $db->prepare("SELECT up.user_id, up.acc_balance, c.processing_fee FROM cico c INNER JOIN user_profile up ON c.user_id = up.user_id WHERE c.wallet_id = ?");
+                                    // Retrieve the user_id, acc_balance, and processing_fee associated with the cico_id
+                                    $stmt = $db->prepare("SELECT up.user_id, up.acc_balance, c.processing_fee FROM cico c INNER JOIN user_profile up ON c.user_id = up.user_id WHERE c.cico_id = ?");
                                     $stmt->bind_param("i", $walletId);
                                     $stmt->execute();
                                     $result = $stmt->get_result();
@@ -95,14 +95,15 @@ $userid = $_SESSION['user_id'];
                                         $status = "Approved";
 
                                         // Update the status and reference_number of cico table
-                                        $stmt = $db->prepare("UPDATE cico SET status = ?, reference_number = ? WHERE wallet_id = ?");
+                                        $stmt = $db->prepare("UPDATE cico SET status = ?, reference_number = ? WHERE cico_id = ?");
                                         $stmt->bind_param("ssi", $status, $_POST['reference_number'], $walletId);
                                         $stmt->execute();
 
-                                        // Update the acc_balance of user_profile table
+                                        // Update the acc_balance and ticket_balance of user_profile table
                                         $newBalance = $accBalance - $totalAmount;
-                                        $stmt = $db->prepare("UPDATE user_profile SET acc_balance = ? WHERE user_id = ?");
-                                        $stmt->bind_param("di", $newBalance, $userId);
+                                        $newTicketBalance = $accBalance - $amount;
+                                        $stmt = $db->prepare("UPDATE user_profile SET acc_balance = ?, ticket_balance = ? WHERE user_id = ?");
+                                        $stmt->bind_param("ddi", $newBalance, $newTicketBalance, $userId);
                                         $result = $stmt->execute();
 
                                         if ($result) {

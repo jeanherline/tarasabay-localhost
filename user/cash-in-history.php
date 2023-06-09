@@ -110,7 +110,7 @@ if (isset($_POST['submit'])) {
                 </ol>
 
                 <?php
-                if ($_SESSION['role'] == "admin") {
+                if ($_SESSION['role'] == "City Admin") {
                 ?>
                     <!--Bookings-->
                     <div class="card mb-3">
@@ -125,17 +125,18 @@ if (isset($_POST['submit'])) {
                                         <tr>
                                             <th>Transaction ID</th>
                                             <th>Name</th>
-                                            <th>Amount</th>
+                                            <th>From Peso Amount</th>
+                                            <th>To Ticket Amount</th>
                                             <th>Convenience Fee</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $query = "SELECT cico.wallet_id, cico.gcash_mobile_number, cico.amount, cico.convenience_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.status
+                                        $query = "SELECT cico.*
                                                 FROM cico
                                                 INNER JOIN user_profile up ON cico.user_id = up.user_id
-                                                WHERE cico.amount > 0 AND cico.transaction_type = 'cash-in'
-                                                AND cico.status = 'Approved'
+                                                WHERE cico.peso_amount > 0 AND cico.trans_type = 'cash-in'
+                                                AND cico.trans_stat = 'Approved'
                                                 ORDER BY cico.created_at ASC";
                                         $stmt = $db->prepare($query);
                                         $stmt->execute();
@@ -145,25 +146,25 @@ if (isset($_POST['submit'])) {
 
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
-                                            echo "<td>" . $row['wallet_id'] . "</td>";
+                                            echo "<td>" . $row['cico_id'] . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td>" . number_format($row['amount'], 2) . "</td>";
+                                            echo "<td>" . number_format($row['peso_amount'], 2) . "</td>";
+                                            echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
                                             echo "<td>" . number_format($row['convenience_fee'], 2) . "</td>";
                                             echo "</tr>";
-                                            $totalAmount += $row['amount'];
+                                            $totalAmount += $row['peso_amount'];
                                             $totalConvenienceFee += $row['convenience_fee'];
                                         }
                                         ?>
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="2"><b>Total</b></td>
-                                            <td><?php echo number_format($totalAmount, 2); ?></td>
+                                            <td colspan="2"><b>Total Peso Amount</b></td>
+                                            <td colspan="2"><?php echo number_format($totalAmount, 2); ?></td>
                                             <td><?php echo number_format($totalConvenienceFee, 2); ?></td>
                                         </tr>
                                     </tfoot>
                                 </table>
-
                             </div>
                         </div>
                         <div class="card-footer small text-muted">
@@ -173,6 +174,7 @@ if (isset($_POST['submit'])) {
                             ?>
                         </div>
                     </div>
+
                 <?php
                 } else {
                 ?>
@@ -231,6 +233,7 @@ if (isset($_POST['submit'])) {
                             </div>
                         </div>
                     </div>
+
 
 
 

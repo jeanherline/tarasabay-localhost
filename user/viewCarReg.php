@@ -85,17 +85,29 @@ if ($result->num_rows == 1) {
                                 $listOption = $_GET['status'];
 
                                 // Check the value of the list option and set the corresponding value for $list
-                                if ($listOption === 'Pending' || $listOption === 'Active' || $listOption === 'Denied') {
+                                if ($listOption === 'Pending' || $listOption === 'Active' || $listOption === 'Denied' || $listOption === 'Expired') {
                                     $list = $listOption;
                                 }
                             }
                             ?>
-                            <a href="carReg.php?status=<?php echo $list; ?>">Registrations</a>
+                            <?php
+                            if ($list == 'Expired') {
+                            ?>
+                                <a href="renewal.php?list=Plate">Renewal</a>
+
+                            <?php
+                            } else {
+                            ?>
+                                <a href="carReg.php?status=<?php echo $list; ?>">Registrations</a>
+
+                            <?php
+                            }
+                            ?>
                         <?php
                         }
                         ?>
                     </li>
-                    <li class="breadcrumb-item active">View Pending</li>
+                    <li class="breadcrumb-item active">View <?php echo $list ?></li>
                 </ol>
                 <hr>
                 <br><br>
@@ -109,7 +121,7 @@ if ($result->num_rows == 1) {
                         INNER JOIN driver_identification ON car.user_id = driver_identification.user_id
                         INNER JOIN car_identification ON car.user_id = driver_identification.user_id
                         INNER JOIN city ON user_profile.city_id = city.city_id
-                        WHERE car.car_status = 'Pending' AND user_profile.user_id = '$user_id'";
+                        WHERE car.car_status = '$list' AND user_profile.user_id = '$user_id'";
                 $stmt = $db->prepare($ret);
                 $stmt->execute();
                 $result = $stmt->get_result();
@@ -121,6 +133,7 @@ if ($result->num_rows == 1) {
                     $middle_name = $row['middle_name'];
                     $last_name = $row['last_name'];
                     $role = $row['role'];
+                    $car_status = $row['car_status'];
 
                     $disability = $row['disability'];
                     $pwd_docx = $row['pwd_docx'];
@@ -343,8 +356,16 @@ if ($result->num_rows == 1) {
                                 <input type="date" class="form-control disabled-input" value="<?php echo $plate_expiration ?>" name="plate_expiration" disabled><br>
                             </div>
 
-                            <a href="approveCarReg.php"><button style="float:right; margin-right: 1%;" class="btn btn-success">Approve</button></a>
-                            <a href="denyCarReg.php"><button style="float:right; margin-right: 1%;" class="btn btn-success">Deny</button></a>
+                            <?php
+                            if ($car_status == 'Pending') {
+                            ?>
+                                <a href="approveCarReg.php"><button style="float:right; margin-right: 1%;" class="btn btn-success">Approve</button></a>
+                                <a href="denyCarReg.php"><button style="float:right; margin-right: 1%;" class="btn btn-success">Deny</button></a>
+                            <?php
+                            }
+
+                            ?>
+
                         </form>
                         <!-- End Form-->
                     </div>

@@ -113,7 +113,7 @@ if (isset($_POST['submit'])) {
 
                 <!--Bookings-->
                 <?php
-                if ($_SESSION['role'] == "Admin") {
+                if ($_SESSION['role'] == "City Admin") {
                 ?>
                     <div class="card mb-3">
                         <div class="card-header">
@@ -127,48 +127,49 @@ if (isset($_POST['submit'])) {
                                         <tr>
                                             <th>Transaction ID</th>
                                             <th>Name</th>
-                                            <th>Amount</th>
+                                            <th>From Ticket Amount</th>
+                                            <th>To Peso Amount</th>
                                             <th>Processing Fee</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $query = "SELECT cico.cico_id, cico.gcash_mobile_number, cico.amount, cico.processing_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.status
-                                                    FROM cico
-                                                    INNER JOIN user_profile up ON cico.user_id = up.user_id
-                                                    WHERE cico.amount > 0 AND cico.transaction_type = 'cash-out'
-                                                    AND cico.status = 'Approved'
-                                                    ORDER BY cico.created_at ASC";
+                                        $query = "SELECT cico.*
+                                                FROM cico
+                                                INNER JOIN user_profile up ON cico.user_id = up.user_id
+                                                WHERE cico.ticket_amount > 0 AND cico.trans_stat = 'Cash-Out'
+                                                AND cico.trans_stat = 'Approved'
+                                                ORDER BY cico.created_at ASC";
                                         $stmt = $db->prepare($query);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
                                         $totalAmount = 0;
                                         $totalProcessingFee = 0;
-                                        $count = 1; // Add a count variable to display an incrementing number
+                                        $count = 1;
 
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
-                                            echo "<tr>";
                                             echo "<td>" . $row['cico_id'] . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td>" . number_format($row['amount'], 2) . "</td>";
+                                            echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
+                                            echo "<td>" . number_format($row['peso_amount'], 2) . "</td>";
                                             echo "<td>" . number_format($row['processing_fee'], 2) . "</td>";
                                             echo "</tr>";
-                                            echo "</tr>";
-                                            $totalAmount += $row['amount'];
+                                            $totalAmount += $row['ticket_amount'];
                                             $totalProcessingFee += $row['processing_fee'];
-                                            $count++; // Increment the count variable
+                                            $count++;
                                         }
                                         ?>
-
-
                                     </tbody>
-                                    <tr>
-                                        <td colspan="2"><b>Total</b></td>
-                                        <td><?php echo number_format($totalAmount, 2); ?></td>
-                                        <td><?php echo number_format($totalProcessingFee, 2); ?></td>
-                                    </tr>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2"><b>Total Ticket Amount</b></td>
+                                            <td colspan="2"><?php echo number_format($totalAmount, 2); ?></td>
+                                            <td><?php echo number_format($totalProcessingFee, 2); ?></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
+
 
                             </div>
                         </div>
@@ -209,23 +210,22 @@ if (isset($_POST['submit'])) {
                                 <?php
                                 $user_id = $userid; // Replace with the desired user ID
 
-                                $stmt = $db->prepare("SELECT c.cico_id, up.first_name, up.last_name, c.peso_amount, c.ticket_amount, c.convenience_fee, c.status, c.gcash_mobile_number, c.reference_number, c.created_at
+                                $stmt = $db->prepare("SELECT c.cico_id, up.first_name, up.last_name, c.peso_amount, c.ticket_amount, c.convenience_fee, c.trans_stat, c.gcash_mobile_number, c.reference_number, c.created_at
                                         FROM cico c
                                         INNER JOIN user_profile up ON c.user_id = up.user_id
-                                        WHERE c.user_id = ? AND c.transaction_type = 'Cash-out'
+                                        WHERE c.user_id = ? AND c.trans_stat = 'Cash-out'
                                         ORDER BY c.cico_id");
 
                                 $stmt->bind_param("i", $user_id);
                                 $stmt->execute();
                                 $result = $stmt->get_result();
-                                $count = 1; // Initialize the count variable
+                                $count = 1;
 
                                 while ($row = $result->fetch_assoc()) {
                                     echo "<tr>";
-                                    echo "<td>" . $count . "</td>"; // Display the incrementing number
+                                    echo "<td>" . $count . "</td>";
                                     echo "<td>" . $row['gcash_mobile_number'] . "</td>";
-                                    echo "<td>" . number_format($row['peso_amount'], 2) . "</td>";
-                                    echo "<td>" . $row['ticket_amount'] . "</td>";
+                                    echo "<td>₱" . number_format($row['peso_amount'], 2) . "</td>";
                                     echo "<td>" . $row['reference_number'] . "</td>";
                                     echo "<td>" . $row['created_at'] . "</td>";
                                     echo "<td>";
@@ -238,12 +238,12 @@ if (isset($_POST['submit'])) {
                                     }
                                     echo "</td>";
                                     echo "</tr>";
-                                    $count++; // Increment the count variable
+                                    $count++;
                                 }
                                 ?>
                             </tbody>
-
                         </table>
+
                     </div>
                 </div>
 

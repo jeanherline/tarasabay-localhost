@@ -187,10 +187,6 @@ if ($result->num_rows == 1) {
                     <?php
 
                     ?>
-                    <!-- /.container-fluid -->
-
-                    <!-- Sticky Footer -->
-                    <?php include("vendor/inc/footer.php"); ?>
 
                 <?php
                 } elseif (isset($_GET['status']) && $_GET['status'] === 'Active') {
@@ -205,7 +201,7 @@ if ($result->num_rows == 1) {
                     <div class="card mb-3">
                         <div class="card-header">
                             <i class="fas fa-table"></i>
-                            Manage Active Registrations
+                            Active Registrations
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -255,28 +251,19 @@ if ($result->num_rows == 1) {
                                             if ($_SESSION['role'] == "City Admin") {
                                         ?>
                                                 <td>
-                                                    <a href="viewCarReg.php?user_id=<?php echo $id; ?>">
-                                                        <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                    <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Active">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                     </a>
-                                                    <a href="editCarReg.php?user_id=<?php echo $id; ?>">
-                                                        <button><i class="fa fa-pencil"></i>&nbsp;Edit&nbsp;</button>
-                                                    </a>
-                                                    <a href="removeCityAdmin.php?user_id=<?php echo $id; ?>">
-                                                        <button><i class="fa fa-ban"></i>&nbsp;Remove&nbsp;</button>
+                                                    <a href="denyCarReg.php?user_id=<?php echo $id; ?>">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-ban"></i>&nbsp;Deny&nbsp;&nbsp;</button>
                                                     </a>
                                                 </td>
                                             <?php
                                             } else {
                                             ?>
                                                 <td>
-                                                    <a href="viewAdminProfile.php?user_id=<?php echo $id; ?>">
-                                                        <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
-                                                    </a>
-                                                    <a href="editCityAdmin.php?user_id=<?php echo $id; ?>">
-                                                        <button><i class="fa fa-pencil"></i>&nbsp;Edit&nbsp;</button>
-                                                    </a>
-                                                    <a href="addCityAdmin.php?user_id=<?php echo $id; ?>">
-                                                        <button><i class="fa fa-check"></i>&nbsp;Add&nbsp;</button>
+                                                    <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Active">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                     </a>
                                                 </td>
                                             <?php
@@ -292,72 +279,172 @@ if ($result->num_rows == 1) {
 
                                 </table>
                             </div>
+                            <div class="card-footer small text-muted">
+                                <?php
+                                date_default_timezone_set("Africa/Nairobi");
+                                echo "Generated : " . date("h:i:sa");
+                                ?>
+                            </div>
                         </div>
-                        <div class="card-footer small text-muted">
-                            <?php
-                            date_default_timezone_set("Africa/Nairobi");
-                            echo "Generated : " . date("h:i:sa");
-                            ?>
-                        </div>
-                    </div>
+                        <?php
+
+                        ?>
                     <?php
-
+                } elseif (isset($_GET['status']) && $_GET['status'] === 'Denied') {
                     ?>
-                    <!-- /.container-fluid -->
+                        <!-- Breadcrumbs-->
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="#">Registrations</a>
+                            </li>
+                            <li class="breadcrumb-item active">Denied</li>
+                        </ol>
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <i class="fas fa-table"></i>
+                                Denied Registrations
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Owner Full Name</th>
+                                                <th>Car Photo</th>
+                                                <th>Vehicle Type</th>
+                                                <th>Brand, Model, & Color</th>
+                                                <th>OR No.</th>
+                                                <th>CR No.</th>
+                                                <th>Plate No.</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
 
-                    <!-- Sticky Footer -->
-                <?php include("vendor/inc/footer.php");
-                } ?>
+                                        <tbody>
+                                            <?php
+                                            $city_id = $_SESSION['city_id'];
+
+                                            $ret = "SELECT car.*, user_profile.*, car_identification.*, city.city_name
+                                            FROM car
+                                            INNER JOIN user_profile ON car.user_id = user_profile.user_id
+                                            INNER JOIN car_identification ON car.car_id = car_identification.car_id
+                                            INNER JOIN city ON user_profile.city_id = city.city_id
+                                            WHERE car.car_status = 'Denied' AND user_profile.city_id = '$city_id'";
+                                            $stmt = $db->prepare($ret);
+                                            $stmt->execute();
+                                            $result = $stmt->get_result();
+                                            $cnt = 1;
+
+                                            while ($row = $result->fetch_assoc()) {
+                                                $id = $row['user_id'];
+
+                                                echo "<tr>";
+                                                echo "<td>" . $cnt . "</td>";
+                                                echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . "</td>";
+                                                echo "<td><img src='../assets/img/car/" . $row['profile_photo'] . "' alt='Profile Photo' width='50' height='50'></td>";
+                                                echo "<td>" . $row['type'] . "</td>";
+                                                echo "<td>" . $row['brand'] . " " . $row['model'] . " " . $row['color'] . "</td>";
+                                                echo "<td>" . $row['or_number'] . "</td>";
+                                                echo "<td>" . $row['cr_number'] . "</td>";
+                                                echo "<td>" . $row['plate_number'] . "</td>";
+
+                                                if ($_SESSION['role'] == "City Admin") {
+                                            ?>
+                                                    <td>
+                                                        <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Denied">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                        </a>
+                                                        <a href="approveCarReg.php?user_id=<?php echo $id; ?>">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Approve&nbsp;&nbsp;</button>
+                                                        </a>
+                                                    </td>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <td>
+                                                        <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Denied">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                        </a>
+                                                    </td>
+                                                <?php
+                                                }
+                                                ?>
+                                            <?php
+                                                echo "</tr>";
+                                                $cnt++;
+                                            }
+                                            ?>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                                <div class="card-footer small text-muted">
+                                    <?php
+                                    date_default_timezone_set("Africa/Nairobi");
+                                    echo "Generated : " . date("h:i:sa");
+                                    ?>
+                                </div>
+                            </div>
+                            <?php
+
+                            ?>
+                            <!-- /.container-fluid -->
+
+                            <!-- Sticky Footer -->
+                        <?php
+                    }
+                        ?>
 
 
-            </div>
-            <!-- /.content-wrapper -->
+                        </div>
+                        <!-- /.content-wrapper -->
 
-        </div>
-        <!-- /#wrapper -->
-
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
-
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
                     </div>
-                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-danger" href="../logout.php">Logout</a>
+                    <!-- /#wrapper -->
+
+                    <!-- Scroll to Top Button-->
+                    <a class="scroll-to-top rounded" href="#page-top">
+                        <i class="fas fa-angle-up"></i>
+                    </a>
+
+                    <!-- Logout Modal-->
+                    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                    <a class="btn btn-danger" href="../logout.php">Logout</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Bootstrap core JavaScript-->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+                    <!-- Bootstrap core JavaScript-->
+                    <script src="vendor/jquery/jquery.min.js"></script>
+                    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Core plugin JavaScript-->
-        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+                    <!-- Core plugin JavaScript-->
+                    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-        <!-- Page level plugin JavaScript-->
-        <script src="vendor/chart.js/Chart.min.js"></script>
-        <script src="vendor/datatables/jquery.dataTables.js"></script>
-        <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+                    <!-- Page level plugin JavaScript-->
+                    <script src="vendor/chart.js/Chart.min.js"></script>
+                    <script src="vendor/datatables/jquery.dataTables.js"></script>
+                    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
-        <!-- Custom scripts for all pages-->
-        <script src="vendor/js/sb-admin.min.js"></script>
+                    <!-- Custom scripts for all pages-->
+                    <script src="vendor/js/sb-admin.min.js"></script>
 
-        <!-- Demo scripts for this page-->
-        <script src="vendor/js/demo/datatables-demo.js"></script>
-        <script src="vendor/js/demo/chart-area-demo.js"></script>
+                    <!-- Demo scripts for this page-->
+                    <script src="vendor/js/demo/datatables-demo.js"></script>
+                    <script src="vendor/js/demo/chart-area-demo.js"></script>
 
 </body>
 
