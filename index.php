@@ -140,19 +140,53 @@ session_start();
                       $_SESSION['identity_type'] = $id['identity_type'];
                     }
 
+                    // Check if driver's license is expired
+                    $stmt = $db->prepare("SELECT * FROM driver_identification WHERE user_id = ?");
+                    $stmt->bind_param("i", $user['user_id']);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    if ($result->num_rows == 1) {
+                      $driver = $result->fetch_assoc();
+                      $licenseExpirationDate = $driver['license_expiration'];
+                      $currentDate = date('Y-m-d');
+                      if ($licenseExpirationDate < $currentDate) {
+                        $stmt = $db->prepare("UPDATE driver_identification SET driver_stat = 'Expired' WHERE user_id = ?");
+                        $stmt->bind_param("i", $user['user_id']);
+                        $stmt->execute();
+                      }
+                    }
+
+                    // Check if car license plate is expired
+                    $stmt = $db->prepare("SELECT * FROM car_identification WHERE car_id IN (SELECT car_id FROM car WHERE user_id = ?)");
+                    $stmt->bind_param("i", $user['user_id']);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    if ($result->num_rows > 0) {
+                      while ($row = $result->fetch_assoc()) {
+                        $plateExpirationDate = $row['plate_expiration'];
+                        $currentDate = date('Y-m-d');
+                        if ($plateExpirationDate < $currentDate) {
+                          $stmt = $db->prepare("UPDATE car SET car_status = 'Expired' WHERE car_id = ?");
+                          $stmt->bind_param("i", $row['car_id']);
+                          $stmt->execute();
+                        }
+                      }
+                    }
+
                     header('Location: user/dashboard.php');
                     exit();
                   } else {
                     echo '<div style="text-align: center;">
-                          <h5 style="color: red">Invalid Password</h5>
-                      </div><br>';
+                <h5 style="color: red">Invalid Password</h5>
+            </div><br>';
                   }
                 } else {
                   echo '<div style="text-align: center;">
-                  <h5 style="color: red">Invalid Email</h5>
-              </div><br>';
+            <h5 style="color: red">Invalid Email</h5>
+        </div><br>';
                 }
               }
+
 
               if (isset($_POST['register'])) {
                 $fname = $db->real_escape_string($_POST['fname']);

@@ -140,8 +140,6 @@
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
         <h6 class="dropdown-header">Users</h6>
         <a class="dropdown-item" href="cash-in-history.php">Cash-In</a>
-
-        <a class="dropdown-item" href="cash-out-history.php">Cash-Out</a>
       </div>
     </li>
   <?php
@@ -170,8 +168,8 @@
       </a>
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
         <h6 class="dropdown-header">Users</h6>
-        <a class="dropdown-item" href="cash-in-manage.php">Cash-In</a>
-        <a class="dropdown-item" href="cash-out-manage.php">Cash-Out</a>
+        <a class="dropdown-item" href="cash-in-history.php">Cash-In</a>
+        <a class="dropdown-item" href="cash-out-history.php">Cash-Out</a>
       </div>
     </li>
   <?php
