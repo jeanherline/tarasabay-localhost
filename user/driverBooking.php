@@ -101,14 +101,18 @@ if ($result->num_rows == 1) {
                                             <th>Drop-Off Location</th>
                                             <th>Departure</th>
                                             <th>Est Arrival Time</th>
-                                            <th>Booked By</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $user_id = $_SESSION['user_id'];
-                                        $ret = "SELECT r.*, up.first_name, up.last_name FROM route r INNER JOIN car c ON r.car_id = c.car_id INNER JOIN user_profile up ON r.car_id  = up.user_id WHERE (c.user_id = ? AND r.route_status = 'Active')";
+                                        $ret = "SELECT r.*, up.first_name, up.last_name, s.seat_type, s.fare FROM route r
+                                                INNER JOIN car c ON r.car_id = c.car_id
+                                                INNER JOIN user_profile up ON r.car_id = up.user_id
+                                                INNER JOIN seat s ON r.route_id = s.route_id
+                                                INNER JOIN booking b ON s.seat_id = b.seat_id
+                                                WHERE (c.user_id = ? AND r.route_status = 'Active' AND b.booking_status = 'Pending')";
                                         $stmt = $db->prepare($ret);
                                         $stmt->bind_param("s", $user_id);
                                         $stmt->execute();
@@ -136,6 +140,7 @@ if ($result->num_rows == 1) {
                                         }
                                         ?>
                                     </tbody>
+
                                 </table>
 
 
@@ -158,7 +163,7 @@ if ($result->num_rows == 1) {
                     <?php include("vendor/inc/footer.php"); ?>
 
                 <?php
-                } elseif (isset($_GET['status']) && $_GET['status'] === 'Previous') {
+                } elseif (isset($_GET['list']) && $_GET['list'] === 'Previous') {
                 ?>
                     <!-- Breadcrumbs-->
                     <ol class="breadcrumb">
@@ -178,18 +183,25 @@ if ($result->num_rows == 1) {
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                            <th>Name</th>
+                                            <th>Seat Type</th>
+                                            <th>Fare</th>
                                             <th>Pickup Location</th>
                                             <th>Drop-Off Location</th>
                                             <th>Departure</th>
                                             <th>Est Arrival Time</th>
-                                            <th>Route Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $user_id = $_SESSION['user_id'];
-                                        $ret = "SELECT * FROM route INNER JOIN car ON route.car_id = car.car_id WHERE (car.user_id = ? AND route.route_status = 'Previous')";
+                                        $ret = "SELECT r.*, up.first_name, up.last_name, s.seat_type, s.fare FROM route r
+                                                INNER JOIN car c ON r.car_id = c.car_id
+                                                INNER JOIN user_profile up ON r.car_id = up.user_id
+                                                INNER JOIN seat s ON r.route_id = s.route_id
+                                                INNER JOIN booking b ON s.seat_id = b.seat_id
+                                                WHERE (c.user_id = ? AND r.route_status = 'Active' AND b.booking_status = 'Previous')";
                                         $stmt = $db->prepare($ret);
                                         $stmt->bind_param("s", $user_id);
                                         $stmt->execute();
@@ -198,15 +210,17 @@ if ($result->num_rows == 1) {
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
+                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                                            echo "<td>" . $row['seat_type'] . "</td>";
+                                            echo "<td>" . $row['fare'] . "</td>";
                                             echo "<td>" . $row['pickup_loc'] . "</td>";
                                             echo "<td>" . $row['dropoff_loc'] . "</td>";
                                             echo "<td>" . $row['departure'] . "</td>";
                                             echo "<td>" . $row['est_arrival_time'] . "</td>";
-                                            echo "<td>" . $row['route_status'] . "</td>";
                                         ?>
                                             <td>
                                                 <a href="driverManageRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Active">
-                                                    <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
                                             </td>
                                         <?php
@@ -215,6 +229,7 @@ if ($result->num_rows == 1) {
                                         }
                                         ?>
                                     </tbody>
+
                                 </table>
 
                             </div>
@@ -234,7 +249,7 @@ if ($result->num_rows == 1) {
                     <!-- Sticky Footer -->
                     <?php include("vendor/inc/footer.php"); ?>
                 <?php
-                } elseif (isset($_GET['status']) && $_GET['status'] === 'Cancelled') {
+                } elseif (isset($_GET['list']) && $_GET['list'] === 'Cancelled') {
                 ?>
                     <!-- Breadcrumbs-->
                     <ol class="breadcrumb">
@@ -254,18 +269,26 @@ if ($result->num_rows == 1) {
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                            <th>Name</th>
+                                            <th>Seat Type</th>
+                                            <th>Fare</th>
                                             <th>Pickup Location</th>
                                             <th>Drop-Off Location</th>
                                             <th>Departure</th>
                                             <th>Est Arrival Time</th>
-                                            <th>Route Status</th>
+                                            <th>Reason</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $user_id = $_SESSION['user_id'];
-                                        $ret = "SELECT * FROM route INNER JOIN car ON route.car_id = car.car_id WHERE (car.user_id = ? AND route.route_status = 'Cancelled')";
+                                        $ret = "SELECT r.*, up.first_name, up.last_name, s.seat_type, s.fare FROM route r
+                                                INNER JOIN car c ON r.car_id = c.car_id
+                                                INNER JOIN user_profile up ON r.car_id = up.user_id
+                                                INNER JOIN seat s ON r.route_id = s.route_id
+                                                INNER JOIN booking b ON s.seat_id = b.seat_id
+                                                WHERE (c.user_id = ? AND r.route_status = 'Active' AND b.booking_status = 'Cancelled')";
                                         $stmt = $db->prepare($ret);
                                         $stmt->bind_param("s", $user_id);
                                         $stmt->execute();
@@ -274,15 +297,18 @@ if ($result->num_rows == 1) {
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
+                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                                            echo "<td>" . $row['seat_type'] . "</td>";
+                                            echo "<td>" . $row['fare'] . "</td>";
                                             echo "<td>" . $row['pickup_loc'] . "</td>";
                                             echo "<td>" . $row['dropoff_loc'] . "</td>";
                                             echo "<td>" . $row['departure'] . "</td>";
+                                            echo "<td>" . $row['cancellation_reason'] . "</td>";
                                             echo "<td>" . $row['est_arrival_time'] . "</td>";
-                                            echo "<td>" . $row['route_status'] . "</td>";
                                         ?>
                                             <td>
                                                 <a href="driverManageRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Active">
-                                                    <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
                                             </td>
                                         <?php
@@ -291,6 +317,7 @@ if ($result->num_rows == 1) {
                                         }
                                         ?>
                                     </tbody>
+
                                 </table>
 
                             </div>

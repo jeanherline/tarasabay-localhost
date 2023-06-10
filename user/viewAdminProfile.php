@@ -112,7 +112,7 @@ if ($result->num_rows == 1) {
                                 $listOption = $_GET['list'];
 
                                 // Check the value of the list option and set the corresponding value for $list
-                                if ($listOption === 'Full' || $listOption === 'Expired' ) {
+                                if ($listOption === 'Full' || $listOption === 'Expired') {
                                     $list = $listOption;
                                 }
                             }
@@ -224,6 +224,7 @@ if ($result->num_rows == 1) {
                                 <label for="idnum">Valid ID Number</label>
                                 <input type="text" class="form-control disabled-input" value="<?php echo $validid ?>" name="idnum" disabled><br>
                             </div>
+
                             <div class="form-group text-center">
                                 <label for="vax_card">Vaccination Card:</label>
                                 <br>
@@ -235,6 +236,133 @@ if ($result->num_rows == 1) {
                                     <?php } ?>
                                 </div>
                             </div>
+
+                            <?php
+                            if ($idtype == "Driver's License") {
+                                $stmt = $db->prepare("SELECT * FROM driver_identification WHERE user_id = ?");
+                                $stmt->bind_param("s", $userid);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                if ($result->num_rows == 1) {
+                                    $row = $result->fetch_assoc();
+                                    $disability = $row['disability'];
+                                    $pwd_docx = $row['pwd_docx'];
+                                    $license_front = $row['license_front'];
+                                    $license_back = $row['license_back'];
+                                    $license_expiration = $row['license_expiration'];
+                                    $nbi_police_cbi = $row['nbi_police_cbi'];
+                                    $cbi_date_issued = $row['cbi_date_issued'];
+                                    $years_experience = $row['years_experience'];
+                                }
+
+                                if (!empty($disability)) {
+                            ?>
+                                    <div class="form-group">
+                                        <label for="disability">Disability</label>
+                                        <input type="text" class="form-control disabled-input" value="<?php echo $disability ?>" name="disability" disabled><br>
+                                    </div>
+
+                                    <div class="form-group text-center">
+                                        <label for="pwd_docx">PWD Card / Certificate</label>
+                                        <br>
+                                        <div class="license" style="width: 300px; margin: 0 auto;">
+                                            <?php if (!empty($disability)) { ?>
+                                                <img src="../assets/img/pwd/<?php echo $pwd_docx; ?>" alt="pwd_docx" class="card-preview">
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                <?php
+                                }
+                                ?>
+
+                                <div class="form-group text-center">
+                                    <label for="license_front">License Front:</label>
+                                    <br>
+                                    <div class="license" style="width: 300px; margin: 0 auto;">
+                                        <img src="../assets/img/license/<?php echo $license_front; ?>" alt="license_front" class="card-preview">
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group text-center">
+                                    <label for="license_front">License Back:</label>
+                                    <br>
+                                    <div class="license" style="width: 300px; margin: 0 auto;">
+                                        <img src="../assets/img/license/<?php echo $license_back; ?>" alt="license_back" class="card-preview">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="license_expiration">License Expiration</label>
+                                    <input type="date" class="form-control disabled-input" value="<?php echo $license_expiration ?>" name="license_expiration" disabled><br>
+                                </div>
+
+                                <div class="form-group text-center">
+                                    <label for="pwd_docx">NBI / Police / CBI:</label>
+                                    <br>
+                                    <div class="vax-card" style="width:200px;">
+                                        <img src="../assets/img/docx/<?php echo $nbi_police_cbi; ?>" alt="nbi_police_cbi" class="card-preview">
+                                    </div>
+                                </div>
+
+                                <div class=" form-group">
+                                    <label for="cbi_date_issued"><em><b>IF:</b></em> CBI Date of Issuance</label>
+                                    <input type="date" class="form-control disabled-input" value="<?php echo $cbi_date_issued ?>" name="cbi_date_issued" disabled><br>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="years_experience">Years of Experience</label>
+                                    <input type="text" class="form-control disabled-input" value="<?php echo $years_experience ?>" name="years_experience" disabled><br>
+                                </div>
+
+                            <?php
+                            }
+
+                            ?>
+                            <br>
+                            <?php
+                            $stmt = $db->prepare("SELECT * FROM emergency WHERE user_id = ?");
+                            $stmt->bind_param("s", $userid);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
+
+                            if ($result->num_rows == 1) {
+                                $row = $result->fetch_assoc();
+                                $name = $row['name'];
+                                $relationship = $row['relationship'];
+                                $phone = $row['phone'];
+                                $address = $row['address'];
+
+                            ?>
+                                <em>Emergency Contact</em>
+                                <br> <br>
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control disabled-input" value="<?php echo $name ?>" name="name" disabled><br>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="relationship">Relationship</label>
+                                    <input type="text" class="form-control disabled-input" value="<?php echo $relationship ?>" name="relationship" disabled><br>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="phone">Phone</label>
+                                    <input type="text" class="form-control disabled-input" value="<?php echo $phone ?>" name="phone" disabled><br>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <input type="text" class="form-control disabled-input" value="<?php echo $address ?>" name="address" disabled><br>
+                                </div>
+                            <?php
+
+                            }
+
+                            ?>
+
                         </form>
                         <!-- End Form-->
                     </div>

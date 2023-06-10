@@ -266,7 +266,7 @@ $userid = $_SESSION['user_id'];
                                 <br>
                                 <div class="form-group">
                                     <label for="plate_expiration">Registration Expiration Date<span class="text-danger"> *</span></label>
-                                    <input type="date" class="form-control" name="plate_expiration" required>
+                                    <input type="date" class="form-control" name="plate_expiration" id="plate_expiration" required>
                                     <small class="form-text text-muted">
                                         <br><em>Guidelines for Entering Registration Expiration Date:</em>
                                         <br>1. Enter the registration expiration date exactly as it appears on your vehicle's registration documents.
@@ -276,6 +276,7 @@ $userid = $_SESSION['user_id'];
                                         <br>5. Double-check for accuracy and verify that the registration is valid and meets the 6-month requirement at the time of submission.
                                     </small>
                                 </div>
+
                                 <br>
 
                                 <?php
@@ -332,148 +333,153 @@ $userid = $_SESSION['user_id'];
                                     $plate_number = $_POST["plate_number"];
                                     $plate_expiration = $_POST["plate_expiration"];
 
-                                    // Insert car data into the database
-                                    $car_sql = "INSERT INTO car (user_id, car_photo, brand, model, color, type, seat_count, car_status)
-                                            VALUES ('{$_SESSION['user_id']}', '$car_photo_filename', '$brand', '$model', '$color', '$type', '$seat_count', 'Pending')";
-                                    if ($db->query($car_sql) === TRUE) {
-                                        $last_car_id = $db->insert_id;
+                                    // Validate the registration expiration date
+                                    $currentDate = date('Y-m-d');
+                                    $minimumDate = date('Y-m-d', strtotime('+6 months'));
 
-                                        // Insert car identification data into the database
-                                        $identification_sql = "INSERT INTO car_identification (car_id, or_photo, or_number, cr_photo, cr_number, sales_invoice, plate_number, plate_expiration)
-                                                        VALUES ('$last_car_id', '$or_photo_filename', '$or_number', '$cr_photo_filename', '$cr_number', '$sales_invoice', '$plate_number', '$plate_expiration')";
-                                        if ($db->query($identification_sql) === TRUE) {
-                                            // Send verification email
-                                            $email = $_SESSION['email'];
-                                            $verification_message = "Dear valued user,\n\nThank you for choosing our service. To ensure the security of your account, we need to verify your email address before you can start using our app.\n\nPlease follow the instructions provided in the verification email to complete the process.\n\nBest regards,\nYour App Team";
-
-                                            // Additional email sending logic goes here
-                                            // Send verification email
-                                            $mail = new PHPMailer(true);
-
-                                            // Fetch the email from the user_profile table
-                                            $stmt = $db->prepare("SELECT email FROM user_profile WHERE user_id = ?");
-                                            $stmt->bind_param("i", $user_id);
-                                            $stmt->execute();
-                                            $result = $stmt->get_result();
-                                            $row = $result->fetch_assoc();
-                                            $email = $row['email'];
-
-                                            $stmt->close();
-                                            $result->close();
-
-
-                                            $city = $_SESSION['city_name'];
-
-                                            try {
-                                                $mail->SMTPDebug = 0;
-                                                $mail->isSMTP();
-                                                $mail->Host = 'smtp.gmail.com';
-                                                $mail->SMTPAuth = true;
-                                                $mail->Username = 'carpoolapp01@gmail.com';
-                                                $mail->Password = 'wzspvmmnnxhtbuxd';
-                                                $mail->SMTPSecure = 'tls';
-                                                $mail->Port = 587;
-
-                                                $mail->setFrom('noreply@tarasabay.com', 'TaraSabay PH');
-                                                $mail->addAddress($email);
-                                                $mail->addCustomHeader('X-Priority', '1');
-                                                $mail->addCustomHeader('Importance', 'High');
-
-                                                $mail->isHTML(true);
-                                                $mail->Subject = 'Car Verification';
-                                                $mail->Body = "
-                                                <html>
-                                                <head>
-                                                <style>
-                                                    body {
-                                                        font-family: Arial, sans-serif;
-                                                        font-size: 16px;
-                                                        line-height: 1.6;
-                                                        color: #444;
-                                                    }
-                                                    h1 {
-                                                        font-size: 24px;
-                                                        font-weight: bold;
-                                                        color: #333;
-                                                        margin: 0 0 30px;
-                                                        text-align: center;
-                                                    }
-                                                    p {
-                                                        margin: 0 0 20px;
-                                                    }
-                                                    a {
-                                                        color: #0072C6;
-                                                        text-decoration: none;
-                                                    }
-                                                    a:hover {
-                                                        text-decoration: underline;
-                                                    }
-                                                    .container {
-                                                        max-width: 600px;
-                                                        margin: 0 auto;
-                                                    }
-                                                </style>
-                                                </head>
-                                                <body>
-                                                <div class=\"container\">
-                                                <h1>Car Verification Required for Your TaraSabay App</h1>
-                                                <p>Dear valued user,</p>
-                                                <p>Thank you for choosing TaraSabay to find rides or offer your own. To ensure the security of your account, we need to verify your car before you can start using the app as a driver.</p>
-                                                <p>Please visit and submit the following requirements to the nearest TaraSabay office in <b>$city</b> to deliver the necessary documents for verification. Our representatives will assist you with the process.</p>
-                                                <ul>
-                                                    <li>Original copy of the Certificate of Registration (CR)</li>
-                                                    <li>Original copy of the Official Receipt (OR)</li>
-                                                    <li>Photocopy of Driver's License</li>
-                                                    <li>Photocopy of the TIN (Tax Identification Number) ID</li>
-                                                    <li>Photocopy of Owner's Government ID with 3 Original Specimen Signatures</li>
-                                                    <li>Vehicle Sale Invoice and Delivery Receipt (Optional)</li>
-                                                    <li>LTFRB Documents (If applicable):
-                                                        <ul>
-                                                            <li>Provision Authority (PA)</li>
-                                                            <li>Certificate of Public Convenience (CPC)</li>
-                                                            <li>Motion for extension of PA</li>
-                                                        </ul>
-                                                        If any of the above, please provide the following of the Document:
-                                                        <ul>
-                                                            <li>Page 1</li>
-                                                            <li>Page 2</li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>PAMI (Optional)</li>
-                                                </ul>
-                                                <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
-                                                <p>Best regards,</p>
-                                                <p>TaraSabay PH Team</p>
-                                                </div>
-                                                </body>
-                                                </html>";
-
-                                                $mail->AltBody = 'Car Verification Required for Your TaraSabay App';
-
-                                                $mail->send();
-
-                                                echo "<div style=\"text-align: center; font-family: 'Poppins', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;\">
-                                                    <img src=\"../assets/img/checked.png\" alt=\"Car Registration\" style=\"margin-bottom: 20px; width: 100px\">
-                                                    <h5 style=\"color: #4CAF50; font-size: 24px; margin-bottom: 20px;\">Car registration requirements received!</h5>
-                                                    <p style=\"color: #333333; font-size: 16px; margin-bottom: 20px;\">An email has been sent to your email address with the requirements needed to be submitted to the nearest TaraSabay office in your city.</p>
-                                                    <p style=\"color: #333333; font-size: 16px;\">These requirements are necessary to become an official driver of the TaraSabay app.</p>
-                                                </div>";
-                                            } catch (Exception $e) {
-                                                echo '<div style="text-align: center;">
-                                                <h5 style="color: red">Error sending verification email: </h5>' . $mail->ErrorInfo . '
-                                            </div>';
-                                            }
-                                        }
+                                    if ($plate_expiration < $minimumDate) {
+                                        echo '<div style="text-align: center;"><h5 style="color: red; font-size: 18px;">The registration expiration date must be at least 6 months in the future from the current date.</h5></div>';
                                     } else {
-                                        echo "Error: " . $car_sql . "<br>" . $db->error;
+                                        // Insert car data into the database
+                                        $car_sql = "INSERT INTO car (user_id, car_photo, brand, model, color, type, seat_count, car_status)
+ VALUES ('{$_SESSION['user_id']}', '$car_photo_filename', '$brand', '$model', '$color', '$type', '$seat_count', 'Pending')";
+                                        if ($db->query($car_sql) === TRUE) {
+                                            $last_car_id = $db->insert_id;
+
+                                            // Insert car identification data into the database
+                                            $identification_sql = "INSERT INTO car_identification (car_id, or_photo, or_number, cr_photo, cr_number, sales_invoice, plate_number, plate_expiration)
+             VALUES ('$last_car_id', '$or_photo_filename', '$or_number', '$cr_photo_filename', '$cr_number', '$sales_invoice', '$plate_number', '$plate_expiration')";
+                                            if ($db->query($identification_sql) === TRUE) {
+                                                // Send verification email
+                                                $email = $_SESSION['email'];
+
+                                                // Additional email sending logic goes here
+                                                // Send verification email
+                                                $mail = new PHPMailer(true);
+
+                                                // Fetch the email from the user_profile table
+                                                $stmt = $db->prepare("SELECT email FROM user_profile WHERE user_id = ?");
+                                                $stmt->bind_param("i", $user_id);
+                                                $stmt->execute();
+                                                $result = $stmt->get_result();
+                                                $row = $result->fetch_assoc();
+
+                                                $stmt->close();
+                                                $result->close();
+
+
+                                                $city = $_SESSION['city_name'];
+
+                                                try {
+                                                    $mail->SMTPDebug = 0;
+                                                    $mail->isSMTP();
+                                                    $mail->Host = 'smtp.gmail.com';
+                                                    $mail->SMTPAuth = true;
+                                                    $mail->Username = 'carpoolapp01@gmail.com';
+                                                    $mail->Password = 'wzspvmmnnxhtbuxd';
+                                                    $mail->SMTPSecure = 'tls';
+                                                    $mail->Port = 587;
+
+                                                    $mail->setFrom('noreply@tarasabay.com', 'TaraSabay PH');
+                                                    $mail->addAddress($email);
+                                                    $mail->addCustomHeader('X-Priority', '1');
+                                                    $mail->addCustomHeader('Importance', 'High');
+
+                                                    $mail->isHTML(true);
+                                                    $mail->Subject = 'Car Verification';
+                                                    $mail->Body = "
+                 <html>
+                 <head>
+                 <style>
+                     body {
+                         font-family: Arial, sans-serif;
+                         font-size: 16px;
+                         line-height: 1.6;
+                         color: #444;
+                     }
+                     h1 {
+                         font-size: 24px;
+                         font-weight: bold;
+                         color: #333;
+                         margin: 0 0 30px;
+                         text-align: center;
+                     }
+                     p {
+                         margin: 0 0 20px;
+                     }
+                     a {
+                         color: #0072C6;
+                         text-decoration: none;
+                     }
+                     a:hover {
+                         text-decoration: underline;
+                     }
+                     .container {
+                         max-width: 600px;
+                         margin: 0 auto;
+                     }
+                 </style>
+                 </head>
+                 <body>
+                 <div class=\"container\">
+                 <h1>Car Verification Required for Your TaraSabay App</h1>
+                 <p>Dear valued user,</p>
+                 <p>Thank you for choosing TaraSabay to find rides or offer your own. To ensure the security of your account, we need to verify your car before you can start using the app as a driver.</p>
+                 <p>Please bring your car to the nearest TaraSabay office in <b>$city</b> for verification and checking. Our representatives will inspect your car to ensure it meets the necessary requirements.</p>
+                 <p>During the visit, please provide the following documents:</p>
+                 <ul>
+                     <li>Original copy of the Certificate of Registration (CR)</li>
+                     <li>Original copy of the Official Receipt (OR)</li>
+                     <li>Photocopy of Driver's License</li>
+                     <li>Photocopy of the TIN (Tax Identification Number) ID</li>
+                     <li>Photocopy of Owner's Government ID with 3 Original Specimen Signatures</li>
+                     <li>Vehicle Sale Invoice and Delivery Receipt (Optional)</li>
+                     <li>LTFRB Documents (If applicable):
+                         <ul>
+                             <li>Provision Authority (PA)</li>
+                             <li>Certificate of Public Convenience (CPC)</li>
+                             <li>Motion for extension of PA</li>
+                         </ul>
+                         If any of the above, please provide the following of the Document:
+                         <ul>
+                             <li>Page 1</li>
+                             <li>Page 2</li>
+                         </ul>
+                     </li>
+                     <li>PAMI (Optional)</li>
+                 </ul>
+                 <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
+                 <p>Best regards,</p>
+                 <p>TaraSabay PH Team</p>
+                 </div>
+                 </body>
+                 </html>";
+                                                    $mail->AltBody = 'Car Verification Required for Your TaraSabay App';
+
+                                                    $mail->send();
+
+                                                    echo "<div style=\"text-align: center; font-family: 'Poppins', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;\">
+         <img src=\"../assets/img/checked.png\" alt=\"Car Registration\" style=\"margin-bottom: 20px; width: 100px\">
+         <h5 style=\"color: #4CAF50; font-size: 24px; margin-bottom: 20px;\">Car registration requirements received!</h5>
+         <p style=\"color: #333333; font-size: 16px; margin-bottom: 20px;\">An email has been sent to your email address with the requirements needed to be submitted to the nearest TaraSabay office in your city.</p>
+         <p style=\"color: #333333; font-size: 16px;\">These requirements are necessary to become an official driver of the TaraSabay app.</p>
+     </div>";
+                                                } catch (Exception $e) {
+                                                    echo '<div style="text-align: center;">
+     <h5 style="color: red">Error sending verification email: </h5>' . $mail->ErrorInfo . '
+ </div>';
+                                                }
+                                            }
+                                        } else {
+                                            echo "Error: " . $car_sql . "<br>" . $db->error;
+                                        }
+                                        // Close database connection
+                                        $db->close();
                                     }
-                                    // Close database connection
-                                    $db->close();
                                 }
                                 ?>
                                 <button type="submit" name="submit" class="btn btn-success">Register</button>
                                 <hr>
-
                             </form>
                         <?php
                         }

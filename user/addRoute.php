@@ -85,27 +85,28 @@ $userid = $_SESSION['user_id'];
                                             <i class="fas fa-route"></i>
                                         </div>
                                         <?php
-                                        // Code for counting the ticket balance by user ID
-                                        $result = $db->query("SELECT COUNT(*) FROM car INNER JOIN route ON car.user_id = route.car_id WHERE car.user_id = '$userid' AND route.route_status = 'Active'");
-                                        $route = $result->fetch_row()[0];
+                                        // Code for counting the active routes by user ID
+                                        $result = $db->query("SELECT COUNT(*) FROM car INNER JOIN route ON car.car_id = route.car_id WHERE car.user_id = '$userid' AND route.route_status = 'Active'");
+                                        $activeRoutes = $result->fetch_row()[0];
                                         ?>
-                                        <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fas fa-route"></i>&nbsp;&nbsp;<?php echo $route; ?></span> Active Routes</div>
+                                        <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fas fa-route"></i>&nbsp;&nbsp;<?php echo $activeRoutes; ?></span> Active Routes</div>
                                     </div>
                                     <div class="card-body">
                                         <?php
-                                        // Code for counting the ticket balance by user ID
-                                        $result = $db->query("SELECT COUNT(*) FROM car INNER JOIN route ON car.user_id = route.car_id WHERE car.user_id = '$userid' AND route.route_status = 'Previous'");
-                                        $route = $result->fetch_row()[0];
+                                        // Code for counting the previous routes by user ID
+                                        $result = $db->query("SELECT COUNT(*) FROM car INNER JOIN route ON car.car_id = route.car_id WHERE car.user_id = '$userid' AND route.route_status = 'Previous'");
+                                        $previousRoutes = $result->fetch_row()[0];
                                         ?>
-                                        <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fas fa-route"></i>&nbsp;&nbsp;<?php echo $route; ?></span> Previous Routes</div>
+                                        <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fas fa-route"></i>&nbsp;&nbsp;<?php echo $previousRoutes; ?></span> Previous Routes</div>
                                     </div>
                                 </div>
+
 
                             </div>
                         </div>
                     </div>
                     <?php
-                    $sql = "SELECT * FROM driver_identification WHERE user_id = '$userid' AND driver_stat = 'Expired'";
+                    $sql = "SELECT * FROM driver_identification WHERE user_id = '$userid' AND driver_stat = 'Expired' || driver_stat = 'Pending'";
                     $result = mysqli_query($db, $sql);
                     $numRows = mysqli_num_rows($result);
 
@@ -664,7 +665,7 @@ $userid = $_SESSION['user_id'];
                             <!-- End Form-->
                         </div>
                         <hr>
-                        
+
                 </div>
             <?php
                     }

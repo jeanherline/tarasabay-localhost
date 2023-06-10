@@ -223,7 +223,7 @@ if ($result->num_rows == 1) {
                       echo "<tr>";
                       echo "<td>" . $cnt . "</td>";
                       echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . "</td>";
-                      echo "<td><img src='../assets/img/car/" . $row['profile_photo'] . "' alt='Profile Photo' width='50' height='50'></td>";
+                      echo "<td><img src='../assets/img/car/" . $row['car_photo'] . "' alt='Profile Photo' width='50' height='50'></td>";
                       echo "<td>" . $row['type'] . "</td>";
                       echo "<td>" . $row['brand'] . " " . $row['model'] . " " . $row['color'] . "</td>";
                       echo "<td>" . $row['or_number'] . "</td>";

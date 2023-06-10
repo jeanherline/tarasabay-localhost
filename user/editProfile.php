@@ -428,39 +428,75 @@ $stmt->close();
 
                             if ($result->num_rows == 1) {
                                 $row = $result->fetch_assoc();
-                                $name = $row['name'];
-                                $relationship = $row['relationship'];
-                                $phone = $row['phone'];
-                                $address = $row['address'];
+                                $name = isset($row['name']) ? $row['name'] : "";
+                                $relationship = isset($row['relationship']) ? $row['relationship'] : "";
+                                $phone = isset($row['phone']) ? $row['phone'] : "";
+                                $address = isset($row['address']) ? $row['address'] : "";
+
+                            ?>
+                                <em>Emergency Contact</em><br><br>
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control disabled-input" value="<?php echo isset($_POST['name']) ? $_POST['name'] : $name; ?>" name="name"><br>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="relationship">Relationship<span class="text-danger"> *</span></label>
+                                    <select class="form-control" name="relationship" id="relationship" required>
+                                        <option value="<?php echo isset($_POST['relationship']) ? $_POST['relationship'] : $relationship; ?>" selected disabled><?php echo isset($_POST['relationship']) ? $_POST['relationship'] : $relationship; ?></option>
+                                        <option value="Spouse">Spouse</option>
+                                        <option value="Father">Father</option>
+                                        <option value="Mother">Mother</option>
+                                        <option value="Sibling">Sibling</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <br>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone</label>
+                                    <input type="text" class="form-control disabled-input" value="<?php echo isset($_POST['phone']) ? $_POST['phone'] : $phone; ?>" name="phone"><br>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <input type="text" class="form-control disabled-input" value="<?php echo isset($_POST['address']) ? $_POST['address'] : $address; ?>" name="address"><br>
+                                </div>
+                            <?php
+                            } else {
+                            ?>
+                                <em>Emergency Contact</em><br><br>
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" placeholder="Enter Name" value="<?php echo isset($_POST['name']) ? $_POST['name'] : ''; ?>" name="name"><br>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="relationship">Relationship<span class="text-danger"> *</span></label>
+                                    <select class="form-control" name="relationship" id="relationship" required>
+                                        <option value="" disabled selected>Select Relationship</option>
+                                        <option value="Spouse" <?php echo (isset($_POST['relationship']) && $_POST['relationship'] === 'Spouse') ? 'selected' : ''; ?>>Spouse</option>
+                                        <option value="Father" <?php echo (isset($_POST['relationship']) && $_POST['relationship'] === 'Father') ? 'selected' : ''; ?>>Father</option>
+                                        <option value="Mother" <?php echo (isset($_POST['relationship']) && $_POST['relationship'] === 'Mother') ? 'selected' : ''; ?>>Mother</option>
+                                        <option value="Sibling" <?php echo (isset($_POST['relationship']) && $_POST['relationship'] === 'Sibling') ? 'selected' : ''; ?>>Sibling</option>
+                                        <option value="Other" <?php echo (isset($_POST['relationship']) && $_POST['relationship'] === 'Other') ? 'selected' : ''; ?>>Other</option>
+                                    </select>
+                                    <br>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone</label>
+                                    <input type="text" class="form-control" placeholder="Enter Phone Number" value="<?php echo isset($_POST['phone']) ? $_POST['phone'] : ''; ?>" name="phone"><br>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <input type="text" class="form-control" placeholder="Enter Address" value="<?php echo isset($_POST['address']) ? $_POST['address'] : ''; ?>" name="address"><br>
+                                </div>
+
+
+                            <?php
                             }
                             ?>
-                            <em>Emergency Contact</em><br><br>
-                            <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo isset($_POST['name']) ? $_POST['name'] : $name; ?>" name="name"><br>
-                            </div>
 
-                            <div class="form-group">
-                                <label for="relationship">Relationship<span class="text-danger"> *</span></label>
-                                <select class="form-control" name="relationship" id="relationship" required>
-                                    <option value="<?php echo isset($_POST['relationship']) ? $_POST['relationship'] : $relationship; ?>" selected disabled><?php echo isset($_POST['relationship']) ? $_POST['relationship'] : $relationship; ?></option>
-                                    <option value="Spouse">Spouse</option>
-                                    <option value="Father">Father</option>
-                                    <option value="Mother">Mother</option>
-                                    <option value="Sibling">Sibling</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                                <br>
-                            </div>
-                            <div class="form-group">
-                                <label for="phone">Phone</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo isset($_POST['phone']) ? $_POST['phone'] : $phone; ?>" name="phone"><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="address">Address</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo isset($_POST['address']) ? $_POST['address'] : $address; ?>" name="address"><br>
-                            </div>
 
                             <?php
                             // Check if the form is submitted
@@ -510,13 +546,27 @@ $stmt->close();
                                     echo 'Error: ' . $stmt->error; // Print any error message
                                 }
 
-                                // Update emergency contact
-                                $stmt = $db->prepare("UPDATE emergency SET name=?, relationship=?, phone=?, address=? WHERE user_id=?");
-                                $stmt->bind_param("ssssi", $name, $relationship, $phone, $address, $userid);
+                                // Update or insert emergency contact
+                                $stmt = $db->prepare("SELECT * FROM emergency WHERE user_id=?");
+                                $stmt->bind_param("i", $userid);
                                 $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                if ($result->num_rows > 0) {
+                                    // Update existing emergency contact
+                                    $stmt = $db->prepare("UPDATE emergency SET name=?, relationship=?, phone=?, address=? WHERE user_id=?");
+                                    $stmt->bind_param("ssssi", $name, $relationship, $phone, $address, $userid);
+                                    $stmt->execute();
+                                } else {
+                                    // Insert new emergency contact
+                                    $stmt = $db->prepare("INSERT INTO emergency (name, relationship, phone, address, user_id) VALUES (?, ?, ?, ?, ?)");
+                                    $stmt->bind_param("ssssi", $name, $relationship, $phone, $address, $userid);
+                                    $stmt->execute();
+                                }
 
                                 mysqli_close($db);
                             }
+
                             ?>
 
 

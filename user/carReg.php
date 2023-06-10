@@ -122,11 +122,11 @@ if ($result->num_rows == 1) {
 
                                         while ($row = $result->fetch_assoc()) {
                                             $id = $row['user_id'];
-
+                                            $car_id = $row['car_id'];
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td><img src='../assets/img/car/" . $row['profile_photo'] . "' alt='Profile Photo' width='50' height='50'></td>";
+                                            echo "<td><img src='../assets/img/car/" . $row['car_photo'] . "' alt='Profile Photo' width='50' height='50'></td>";
                                             echo "<td>" . $row['type'] . "</td>";
                                             echo "<td>" . $row['brand'] . " " . $row['model'] . " " . $row['color'] . "</td>";
                                             echo "<td>" . $row['or_number'] . "</td>";
@@ -142,10 +142,10 @@ if ($result->num_rows == 1) {
                                                     <a href="editCarReg.php?user_id=<?php echo $id; ?>&status=Pending">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-pencil"></i>&nbsp;&nbsp;</button>
                                                     </a>
-                                                    <a href="approveCarReg.php?user_id=<?php echo $id; ?>">
+                                                    <a href="approveCarReg.php?user_id=<?php echo $id; ?>&status=Pending&car_id=<?php echo $car_id; ?>">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;&nbsp;</button>
                                                     </a>
-                                                    <a href="denyCarReg.php?user_id=<?php echo $id; ?>">
+                                                    <a href="denyCarReg.php?user_id=<?php echo $id; ?>&status=Pending&car_id=<?php echo $car_id; ?>">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-ban"></i>&nbsp;&nbsp;</button>
                                                     </a>
                                                 </td>
@@ -237,11 +237,11 @@ if ($result->num_rows == 1) {
 
                                         while ($row = $result->fetch_assoc()) {
                                             $id = $row['user_id'];
-
+                                            $car_id = $row['car_id'];
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td><img src='../assets/img/car/" . $row['profile_photo'] . "' alt='Profile Photo' width='50' height='50'></td>";
+                                            echo "<td><img src='../assets/img/car/" . $row['car_photo'] . "' alt='Profile Photo' width='50' height='50'></td>";
                                             echo "<td>" . $row['type'] . "</td>";
                                             echo "<td>" . $row['brand'] . " " . $row['model'] . " " . $row['color'] . "</td>";
                                             echo "<td>" . $row['or_number'] . "</td>";
@@ -254,13 +254,13 @@ if ($result->num_rows == 1) {
                                                     <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Active">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                     </a>
-                                                    <a href="denyCarReg.php?user_id=<?php echo $id; ?>">
+                                                    <a href="denyCarReg.php?user_id=<?php echo $id; ?>&status=Active&car_id=<?php echo $car_id; ?>">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-ban"></i>&nbsp;Deny&nbsp;&nbsp;</button>
                                                     </a>
-                                                </td>
-                                            <?php
+
+                                                <?php
                                             } else {
-                                            ?>
+                                                ?>
                                                 <td>
                                                     <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Active">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
@@ -324,7 +324,6 @@ if ($result->num_rows == 1) {
                                         <tbody>
                                             <?php
                                             $city_id = $_SESSION['city_id'];
-
                                             $ret = "SELECT car.*, user_profile.*, car_identification.*, city.city_name
                                             FROM car
                                             INNER JOIN user_profile ON car.user_id = user_profile.user_id
@@ -338,11 +337,12 @@ if ($result->num_rows == 1) {
 
                                             while ($row = $result->fetch_assoc()) {
                                                 $id = $row['user_id'];
+                                                $car_id = $row['car_id'];
 
                                                 echo "<tr>";
                                                 echo "<td>" . $cnt . "</td>";
                                                 echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . "</td>";
-                                                echo "<td><img src='../assets/img/car/" . $row['profile_photo'] . "' alt='Profile Photo' width='50' height='50'></td>";
+                                                echo "<td><img src='../assets/img/car/" . $row['car_photo'] . "' alt='Profile Photo' width='50' height='50'></td>";
                                                 echo "<td>" . $row['type'] . "</td>";
                                                 echo "<td>" . $row['brand'] . " " . $row['model'] . " " . $row['color'] . "</td>";
                                                 echo "<td>" . $row['or_number'] . "</td>";
@@ -355,9 +355,10 @@ if ($result->num_rows == 1) {
                                                         <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Denied">
                                                             <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                         </a>
-                                                        <a href="approveCarReg.php?user_id=<?php echo $id; ?>">
+                                                        <a href="approveCarReg.php?user_id=<?php echo $id; ?>&status=Denied&car_id=<?php echo $car_id; ?>">
                                                             <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Approve&nbsp;&nbsp;</button>
                                                         </a>
+
                                                     </td>
                                                 <?php
                                                 } else {

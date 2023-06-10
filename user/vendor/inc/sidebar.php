@@ -129,8 +129,8 @@
   ?>
     <li class="nav-item">
       <a class="nav-link" href="cash-in.php">
-        <i class="fas fa-fw fa-bus"></i>
-        <span>City Admins</span></a>
+        <i class="fas fa-fw fa-wallet"></i>
+        <span>Cash-In</span></a>
     </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -139,9 +139,9 @@
       </a>
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
         <h6 class="dropdown-header">Users</h6>
-        <a class="dropdown-item" href="cash-in.php">Cash-In</a>
+        <a class="dropdown-item" href="cash-in-history.php">Cash-In</a>
 
-        <a class="dropdown-item" href="cash-out.php">Cash-Out</a>
+        <a class="dropdown-item" href="cash-out-history.php">Cash-Out</a>
       </div>
     </li>
   <?php
