@@ -160,7 +160,16 @@
         <a class="dropdown-item" href="cityAdmins.php">Manage</a>
       </div>
     </li>
-
+    <li class="nav-item">
+      <a class="nav-link" href="cityUsers.php?list=Full">
+        <i class="fas fa-users"></i>
+        <span>City Users</span></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="carReg.php?status=Active">
+        <i class="fas fa-car"></i>
+        <span>Active Cars</span></a>
+    </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-fw fa-book"></i> <!-- Change the icon class here -->

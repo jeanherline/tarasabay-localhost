@@ -287,7 +287,7 @@ if ($result->num_rows == 1) {
                   ?>
                   <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $driver; ?></span> City Admins</div>
                 </div>
-                <a class="card-footer text-white clearfix small z-1" href="registeredCars.php">
+                <a class="card-footer text-white clearfix small z-1" href="cityAdmins.php">
                   <span class="float-left">View Details</span>
                   <span class="float-right">
                     <i class="fas fa-angle-right"></i>
@@ -307,7 +307,7 @@ if ($result->num_rows == 1) {
                   ?>
                   <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $passenger; ?></span> TaraSabay Passengers</div>
                 </div>
-                <a class="card-footer text-white clearfix small z-1" href="pendingCars.php">
+                <a class="card-footer text-white clearfix small z-1" href="cityUsers.php?list=Full">
                   <span class="float-left">View Details</span>
                   <span class="float-right">
                     <i class="fas fa-angle-right"></i>
@@ -327,7 +327,7 @@ if ($result->num_rows == 1) {
                   ?>
                   <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $driver; ?></span> TaraSabay Drivers</div>
                 </div>
-                <a class="card-footer text-white clearfix small z-1" href="pendingCars.php">
+                <a class="card-footer text-white clearfix small z-1" href="cityUsers.php?list=Full">
                   <span class="float-left">View Details</span>
                   <span class="float-right">
                     <i class="fas fa-angle-right"></i>
@@ -348,13 +348,75 @@ if ($result->num_rows == 1) {
                   ?>
                   <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $vehicle; ?></span> Active Cars</div>
                 </div>
-                <a class="card-footer text-white clearfix small z-1" href="pendingCars.php">
+                <a class="card-footer text-white clearfix small z-1" href="carReg.php?status=Active">
                   <span class="float-left">View Details</span>
                   <span class="float-right">
                     <i class="fas fa-angle-right"></i>
                   </span>
                 </a>
               </div>
+            </div>
+          </div>
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fas fa-table"></i>
+              City Admins
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Full Name</th>
+                      <th>Email Address</th>
+                      <th>Designated City</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <?php
+                    $ret = "SELECT * FROM user_profile
+                                                    WHERE role = 'City Admin' OR role = 'Previous City Admin'";
+                    $stmt = $db->prepare($ret);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $cnt = 1;
+                    while ($row = $result->fetch_assoc()) {
+                      $cityAdminID = $row['user_id'];
+
+                      echo "<tr>";
+                      echo "<td>" . $cnt . "</td>";
+                      echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . "</td>";
+                      echo "<td>" . $row['email'] . "</td>";
+
+                      $city_query = "SELECT city_name FROM city WHERE city_id = ?";
+                      $city_statement = mysqli_prepare($db, $city_query);
+                      mysqli_stmt_bind_param($city_statement, "i", $row['city_id']);
+                      mysqli_stmt_execute($city_statement);
+                      mysqli_stmt_bind_result($city_statement, $city_name);
+                      mysqli_stmt_fetch($city_statement);
+
+                      echo "<td>" . $city_name . "</td>";
+                      echo "<td>" . $row['role'] . "</td>";
+
+                    ?>
+                    <?php
+                      echo "</tr>";
+                      $cnt++;
+                    }
+                    ?>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer small text-muted">
+              <?php
+              date_default_timezone_set("Africa/Nairobi");
+              echo "Generated : " . date("h:i:sa");
+              ?>
             </div>
           </div>
         <?php

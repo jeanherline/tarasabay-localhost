@@ -193,9 +193,22 @@ if ($result->num_rows == 1) {
                 ?>
                     <!-- Breadcrumbs-->
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#">Registrations</a>
-                        </li>
+                        <?php
+                        if ($_SESSION['role'] == 'City Admin') {
+                        ?>
+                            <li class="breadcrumb-item">
+                                <a href="#">Registrations</a>
+                            </li>
+                        <?php
+                        } else {
+                        ?>
+                            <li class="breadcrumb-item">
+                                <a href="#">Active Cars</a>
+                            </li>
+                        <?php
+                        }
+                        ?>
+
                         <li class="breadcrumb-item active">Active</li>
                     </ol>
                     <div class="card mb-3">

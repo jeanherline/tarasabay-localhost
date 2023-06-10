@@ -98,7 +98,7 @@ if ($result->num_rows == 1) {
                             <?php
                             } else {
                             ?>
-                                <a href="carReg.php?status=<?php echo $list; ?>">Registrations</a>
+                                <a href="carReg.php?status=<?php echo $list; ?>">Active Cars</a>
 
                             <?php
                             }
