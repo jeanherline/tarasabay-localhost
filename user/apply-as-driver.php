@@ -509,7 +509,7 @@ $userid = $_SESSION['user_id'];
                                             $stmt->bind_param("siis", $profile_photo, $is_vaxxed, $vax_card, $user_id);
                                             $stmt->execute();
 
-                                            $stmt = $db->prepare("UPDATE driver_identification SET disability = ?, pwd_docx = ?, license_front = ?, license_back = ?, license_expiration = ?, is_above_60 = ?, nbi_police_cbi = ?, cbi_date_issued = ?, years_experience = ?, driver_stat = 'Pending' WHERE user_id = ?");
+                                            $stmt = $db->prepare("UPDATE driver_identification SET disability = ?, pwd_docx = ?, license_front = ?, license_back = ?, license_expiration = ?, is_above_60 = ?, nbi_police_cbi = ?, cbi_date_issued = ?, years_experience = ?, driver_stat = 'Renew' WHERE user_id = ?");
                                             $stmt->bind_param("sssssissis", $otherDisability, $pwd_docx, $driver_license_front, $driver_license_back, $license_expiration, $is_above_60, $nbi_police_cbi_photo_filename, $date_issued, $years_experience, $user_id);
                                             $stmt->execute();
                                             $stmt->close();

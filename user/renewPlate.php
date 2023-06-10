@@ -1,13 +1,13 @@
 <?php
 include('../db.php');
 
-if (isset($_GET['user_id'])) {
+if (isset($_GET['user_id']) && isset($_GET['car_id'])) {
     $user_id = $_GET['user_id'];
-
+    $car_id = $_GET['car_id'];
     $status = "Active";
 
-    $stmt = $db->prepare("UPDATE car SET car_status = ? WHERE user_id = ?");
-    $stmt->bind_param("si", $status, $user_id);
+    $stmt = $db->prepare("UPDATE car SET car_status = ? WHERE user_id = ? AND car_id = ?");
+    $stmt->bind_param("sii", $status, $user_id, $car_id);
     $stmt->execute();
 
     if ($stmt) {

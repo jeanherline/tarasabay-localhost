@@ -123,53 +123,66 @@ if (isset($_POST['submit'])) {
                                 <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Transaction ID</th>
+                                            <th>Transaction #</th>
                                             <th>Name</th>
+                                            <th>GCash Mobile Number</th>
                                             <th>From Peso Amount</th>
                                             <th>To Ticket Amount</th>
-                                            <th>Convenience Fee</th>
+                                            <th>Conv. Fee</th>
+                                            <th>Reference Number</th>
+                                            <th>Method Type</th>
+                                            <th>Date and Time</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $query = "SELECT cico.*
-                                                FROM cico
-                                                INNER JOIN user_profile up ON cico.user_id = up.user_id
-                                                WHERE cico.peso_amount > 0 AND cico.trans_type = 'cash-in'
-                                                AND cico.trans_stat = 'Successful'
-                                                ORDER BY cico.created_at ASC";
+                                        $query = "SELECT cico.*, user_profile.*
+                                     FROM cico
+                                     INNER JOIN user_profile ON cico.user_id = user_profile.user_id
+                                     WHERE cico.peso_amount > 0
+                                     AND cico.trans_type = 'cash-in'
+                                     AND cico.trans_stat = 'Successful'
+                                     ORDER BY cico.created_at ASC";
+
                                         $stmt = $db->prepare($query);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
                                         $totalPesoAmount = 0;
                                         $totalTicketAmount = 0;
                                         $totalConvenienceFee = 0;
+                                        $count = 1;
 
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
-                                            echo "<td>" . $row['cico_id'] . "</td>";
+                                            echo "<td>" . $count . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td>" . number_format($row['peso_amount'], 2) . "</td>";
+                                            echo "<td>" . $row['gcash_mobile_number'] . "</td>";
+                                            echo "<td>₱ " . number_format($row['peso_amount'], 2) . "</td>";
                                             echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
-                                            echo "<td>" . number_format($row['convenience_fee'], 2) . "</td>";
+                                            echo "<td>₱ " . number_format($row['convenience_fee'], 2) . "</td>";
+                                            echo "<td>" . $row['reference_number'] . "</td>";
+                                            echo "<td>" . $row['method_type'] . "</td>";
+                                            echo "<td>" . $row['created_at'] . "</td>";
                                             echo "</tr>";
                                             $totalPesoAmount += $row['peso_amount'];
                                             $totalTicketAmount += $row['ticket_amount'];
                                             $totalConvenienceFee += $row['convenience_fee'];
+                                            $count++;
                                         }
                                         ?>
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="2"><b>Total Peso Amount</b></td>
-                                            <td colspan="2"><?php echo number_format($totalPesoAmount, 2); ?></td>
-                                            <td><?php echo number_format($totalConvenienceFee, 2); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2"><b>Total Ticket Amount</b></td>
-                                            <td colspan="2"><?php echo number_format($totalTicketAmount, 2); ?></td>
+                                            <td colspan="3"><b>Total Amount</b></td>
+                                            <td colspan="1"><?php echo "₱" . " " . number_format($totalPesoAmount, 2); ?></td>
+                                            <td colspan="1"><?php echo number_format($totalTicketAmount, 2); ?></td>
+
+                                            <td><?php echo "₱" . " " . number_format($totalConvenienceFee, 2); ?></td>
+                                            <td></td>
+                                            <td></td>
                                             <td></td>
                                         </tr>
+
                                     </tfoot>
                                 </table>
 

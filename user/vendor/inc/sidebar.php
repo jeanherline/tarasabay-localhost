@@ -91,9 +91,11 @@
         <h6 class="dropdown-header">Driver</h6>
         <a class="dropdown-item" href="apply-as-driver.php">Apply</a>
         <a class="dropdown-item" href="addCar.php">Add Car</a>
-        <a class="dropdown-item" href="registeredCars.php">Registered Cars</a>
-        <a class="dropdown-item" href="pendingCars.php">Pending Cars</a>
-        <a class="dropdown-item" href="declinedCars.php">Declined Cars</a>
+
+        <a class="dropdown-item" href="driverCars.php?list=Registered">Registered Cars</a>
+        <a class="dropdown-item" href="driverCars.php?list=Pending">Pending Cars</a>
+        <a class="dropdown-item" href="driverCars.php?list=Declined">Declined Cars</a>
+        <a class="dropdown-item" href="driverCars.php?list=Expired">Expired Cars</a>
       </div>
     </li>
     <li class="nav-item dropdown">

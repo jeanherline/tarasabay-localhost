@@ -93,7 +93,6 @@ session_start();
                 <input type="password" id="pswd" name="pswd" minlength="4" class="input-field" autocomplete="off" required />
                 <label id="pswd">Password</label>
               </div>
-
               <?php
               if (isset($_SESSION['user_id'])) {
                 header('Location: index.php');
@@ -153,6 +152,16 @@ session_start();
                         $stmt = $db->prepare("UPDATE driver_identification SET driver_stat = 'Expired' WHERE user_id = ?");
                         $stmt->bind_param("i", $user['user_id']);
                         $stmt->execute();
+
+                        // Mark all active routes of the driver as Cancelled with cancellation reason "Expired Driver's License"
+                        $stmt = $db->prepare("UPDATE route SET route_status = 'Cancelled', cancellation_reason = 'Expired Driver\'s License' WHERE car_id IN (SELECT car_id FROM car WHERE user_id = ?) AND route_status = 'Active'");
+                        $stmt->bind_param("i", $user['user_id']);
+                        $stmt->execute();
+
+                        // Cancel all associated seats
+                        $stmt = $db->prepare("UPDATE seat SET seat_status = 'Cancelled' WHERE route_id IN (SELECT route_id FROM route WHERE car_id IN (SELECT car_id FROM car WHERE user_id = ?))");
+                        $stmt->bind_param("i", $user['user_id']);
+                        $stmt->execute();
                       }
                     }
 
@@ -169,6 +178,16 @@ session_start();
                           $stmt = $db->prepare("UPDATE car SET car_status = 'Expired' WHERE car_id = ?");
                           $stmt->bind_param("i", $row['car_id']);
                           $stmt->execute();
+
+                          // Mark all active routes of the car as Cancelled with cancellation reason "Expired Car License Plate"
+                          $stmt = $db->prepare("UPDATE route SET route_status = 'Cancelled', cancellation_reason = 'Expired Car License Plate' WHERE car_id = ? AND route_status = 'Active'");
+                          $stmt->bind_param("i", $row['car_id']);
+                          $stmt->execute();
+
+                          // Cancel all associated seats
+                          $stmt = $db->prepare("UPDATE seat SET seat_status = 'Cancelled' WHERE route_id IN (SELECT route_id FROM route WHERE car_id = ?)");
+                          $stmt->bind_param("i", $row['car_id']);
+                          $stmt->execute();
                         }
                       }
                     }
@@ -177,13 +196,13 @@ session_start();
                     exit();
                   } else {
                     echo '<div style="text-align: center;">
-                <h5 style="color: red">Invalid Password</h5>
-            </div><br>';
+                  <h5 style="color: red">Invalid Password</h5>
+              </div><br>';
                   }
                 } else {
                   echo '<div style="text-align: center;">
-            <h5 style="color: red">Invalid Email</h5>
-        </div><br>';
+              <h5 style="color: red">Invalid Email</h5>
+          </div><br>';
                 }
               }
 

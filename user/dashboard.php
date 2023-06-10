@@ -198,7 +198,6 @@ if ($result->num_rows == 1) {
                       <th>OR No.</th>
                       <th>CR No.</th>
                       <th>Plate No.</th>
-                      <th>Actions</th>
                     </tr>
                   </thead>
 
@@ -229,30 +228,15 @@ if ($result->num_rows == 1) {
                       echo "<td>" . $row['or_number'] . "</td>";
                       echo "<td>" . $row['cr_number'] . "</td>";
                       echo "<td>" . $row['plate_number'] . "</td>";
-
-                      if ($_SESSION['role'] == "City Admin") {
+                    }
                     ?>
-                        <td>
-                          <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Pending">
-                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
-                          </a>
-                        </td>
-                      <?php
-                      } else {
-                      ?>
-                        <td>
-                          <a href="viewAdminProfile.php?user_id=<?php echo $id; ?>">
-                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
-                          </a>
-                        </td>
-                      <?php
-                      }
-                      ?>
 
                     <?php
-                      echo "</tr>";
-                      $cnt++;
-                    }
+                    ?>
+
+                    <?php
+                    echo "</tr>";
+                    $cnt++;
                     ?>
                   </tbody>
 

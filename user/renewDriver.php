@@ -11,7 +11,7 @@ if (isset($_GET['user_id'])) {
     $stmt->execute();
 
     if ($stmt) {
-        header('Location: cityUsers.php?list=Expired');
+        header('Location: renewal.php?list=Driver');
     } else {
         echo '<div style="text-align: center;"><h5 style="color: red">Failed</h5></div>';
     }

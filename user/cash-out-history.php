@@ -126,9 +126,10 @@ if (isset($_POST['submit'])) {
                                     <thead>
                                         <tr>
                                             <th>Transaction #</th>
+                                            <th>Name</th>
                                             <th>GCash Mobile Number</th>
-                                            <th>From Ticket</th>
-                                            <th>To Peso</th>
+                                            <th>From Ticket Amount</th>
+                                            <th>To Peso Amount</th>
                                             <th>Process. Fee</th>
                                             <th>Reference Number</th>
                                             <th>Method Type</th>
@@ -137,11 +138,13 @@ if (isset($_POST['submit'])) {
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $query = "SELECT c.*
-                FROM cico c
-                INNER JOIN user_profile up ON c.user_id = up.user_id
-                WHERE c.ticket_amount > 0 AND c.trans_stat = 'Cash-Out'
-                ORDER BY c.created_at ASC";
+                                        $query = "SELECT cico.*, user_profile.*
+                                        FROM cico
+                                        INNER JOIN user_profile ON cico.user_id = user_profile.user_id
+                                        WHERE cico.peso_amount > 0
+                                        AND cico.trans_type = 'cash-out'
+                                        AND cico.trans_stat = 'Successful'
+                                        ORDER BY cico.created_at ASC";
                                         $stmt = $db->prepare($query);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
@@ -152,7 +155,8 @@ if (isset($_POST['submit'])) {
 
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
-                                            echo "<td>" . $row['cico_id'] . "</td>";
+                                            echo "<td>" . $count . "</td>";
+                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
                                             echo "<td>" . $row['gcash_mobile_number'] . "</td>";
                                             echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
                                             echo "<td>₱ " . number_format($row['peso_amount'], 2) . "</td>";
@@ -170,7 +174,7 @@ if (isset($_POST['submit'])) {
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="2"><b>Total Ticket Amount</b></td>
+                                            <td colspan="3"><b>Total Amount</b></td>
                                             <td><?php echo number_format($totalTicketAmount, 2); ?></td>
                                             <td><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
                                             <td><?php echo "₱ " . number_format($totalProcessingFee, 2); ?></td>

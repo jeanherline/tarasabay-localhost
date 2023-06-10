@@ -108,7 +108,7 @@ if ($result->num_rows == 1) {
                                         $ret = "SELECT up.*, di.*
                                         FROM user_profile up
                                         INNER JOIN driver_identification di ON up.user_id = di.user_id
-                                        WHERE (up.role = 'Driver' AND di.driver_stat = 'Expired') AND up.city_id = '$city_id'";
+                                        WHERE (up.role = 'Driver' AND di.driver_stat = 'Renew') AND up.city_id = '$city_id'";
 
                                         $stmt = $db->prepare($ret);
                                         $stmt->execute();
@@ -116,7 +116,6 @@ if ($result->num_rows == 1) {
                                         $cnt = 1;
                                         while ($row = $result->fetch_assoc()) {
                                             $user = $row['user_id'];
-
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . "</td>";
@@ -183,7 +182,6 @@ if ($result->num_rows == 1) {
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-
                                     <tbody>
                                         <?php
                                         $city_id = $_SESSION['city_id'];
@@ -192,7 +190,7 @@ if ($result->num_rows == 1) {
                                                 FROM user_profile up
                                                 INNER JOIN car di ON up.user_id = di.user_id
                                                 INNER JOIN car_identification ci ON di.car_id = ci.car_id
-                                                WHERE (up.role = 'Driver' AND di.car_status = 'Expired') AND up.city_id = '$city_id'";
+                                                WHERE (up.role = 'Driver' AND di.car_status = 'Renew') AND up.city_id = '$city_id'";
 
                                         $stmt = $db->prepare($ret);
                                         $stmt->execute();
@@ -200,6 +198,7 @@ if ($result->num_rows == 1) {
                                         $cnt = 1;
                                         while ($row = $result->fetch_assoc()) {
                                             $user = $row['user_id'];
+                                            $car_id = $row['car_id'];
 
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
@@ -211,7 +210,7 @@ if ($result->num_rows == 1) {
                                                 <a href="viewCarReg.php?user_id=<?php echo $user; ?>&status=Expired">
                                                     <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
                                                 </a>
-                                                <a href="renewPlate.php?user_id=<?php echo $user; ?>">
+                                                <a href="renewPlate.php?user_id=<?php echo $user; ?>&car_id=<?php echo $car_id?>">
                                                     <button><i class="fa fa-check"></i>&nbsp;Renew&nbsp;</button>
                                                 </a>
                                             </td>
