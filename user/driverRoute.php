@@ -112,17 +112,34 @@ if ($result->num_rows == 1) {
                                         $result = $stmt->get_result();
                                         $cnt = 1;
                                         while ($row = $result->fetch_assoc()) {
+                                            $car_id = $row['car_id'];
+                                            $route_id = $row['route_id'];
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
-                                            echo "<td>" . $row['pickup_loc'] . "</td>";
-                                            echo "<td>" . $row['dropoff_loc'] . "</td>";
-                                            echo "<td>" . $row['departure'] . "</td>";
-                                            echo "<td>" . $row['est_arrival_time'] . "</td>";
+                                            echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
+                                            echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
                                             echo "<td>" . $row['route_status'] . "</td>";
                                         ?>
                                             <td>
-                                                <a href="driverManageRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Active">
+                                                <a href="viewRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Active&route_id=<?php echo $route_id ?>">
                                                     <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                </a>
+                                                <a href="#" onclick="confirmMarkAsDone(<?php echo $row['user_id']; ?>, <?php echo $car_id; ?>, <?php echo $route_id; ?>);">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Done&nbsp;&nbsp;</button>
+                                                </a>
+
+                                                <script>
+                                                    function confirmMarkAsDone(user_id, car_id, route_id) {
+                                                        if (confirm("Are you sure you want to mark this as done?")) {
+                                                            window.location.href = "previousRoute.php?user_id=" + user_id + "&car_id=" + car_id + "&route_id=" + route_id;
+                                                        }
+                                                    }
+                                                </script>
+
+                                                <a href="cancelRoute.php?user_id=<?php echo $row['user_id']; ?>&car_id=<?php echo $car_id ?>&route_id=<?php echo $route_id ?>">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-ban"></i>&nbsp;Cancel&nbsp;&nbsp;</button>
                                                 </a>
                                             </td>
                                         <?php
@@ -132,7 +149,6 @@ if ($result->num_rows == 1) {
                                         ?>
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                         <div class="card-footer small text-muted">
@@ -189,17 +205,19 @@ if ($result->num_rows == 1) {
                                         $result = $stmt->get_result();
                                         $cnt = 1;
                                         while ($row = $result->fetch_assoc()) {
+                                            $car_id = $row['car_id'];
+                                            $route_id = $row['route_id'];
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
-                                            echo "<td>" . $row['pickup_loc'] . "</td>";
-                                            echo "<td>" . $row['dropoff_loc'] . "</td>";
-                                            echo "<td>" . $row['departure'] . "</td>";
-                                            echo "<td>" . $row['est_arrival_time'] . "</td>";
+                                            echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
+                                            echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
                                             echo "<td>" . $row['route_status'] . "</td>";
                                         ?>
                                             <td>
-                                                <a href="driverManageRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Active">
-                                                    <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                <a href="viewRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Previous&route_id=<?php echo $route_id ?>">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
                                             </td>
                                         <?php
@@ -265,17 +283,19 @@ if ($result->num_rows == 1) {
                                         $result = $stmt->get_result();
                                         $cnt = 1;
                                         while ($row = $result->fetch_assoc()) {
+                                            $car_id = $row['car_id'];
+                                            $route_id = $row['route_id'];
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
-                                            echo "<td>" . $row['pickup_loc'] . "</td>";
-                                            echo "<td>" . $row['dropoff_loc'] . "</td>";
-                                            echo "<td>" . $row['departure'] . "</td>";
-                                            echo "<td>" . $row['est_arrival_time'] . "</td>";
+                                            echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
+                                            echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
                                             echo "<td>" . $row['route_status'] . "</td>";
                                         ?>
                                             <td>
-                                                <a href="driverManageRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Active">
-                                                    <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                <a href="viewRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Cancelled&route_id=<?php echo $route_id ?>">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
                                             </td>
                                         <?php

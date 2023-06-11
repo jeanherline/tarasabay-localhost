@@ -138,6 +138,7 @@ if ($result->num_rows == 1) {
                                             </td>
 
                                         <?php
+                                        $cnt++;                                        
                                         }
                                         ?>
 
@@ -222,7 +223,7 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . $row['plate_number'] . "</td>";
                                         ?>
                                             <td>
-                                                <a href="viewDriverCars.php?user_id=<?php echo $id; ?>&status=Registered&car_id=<?php echo $car_id; ?>">
+                                                <a href="viewDriverCars.php?user_id=<?php echo $id; ?>&status=Pending&car_id=<?php echo $car_id; ?>">
                                                     <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
                                             </td>
@@ -309,7 +310,7 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . $row['plate_number'] . "</td>";
                                         ?>
                                             <td>
-                                                <a href="viewDriverCars.php?user_id=<?php echo $id; ?>&status=Registered&car_id=<?php echo $car_id; ?>">
+                                                <a href="viewDriverCars.php?user_id=<?php echo $id; ?>&status=Declined&car_id=<?php echo $car_id; ?>">
                                                     <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
                                             </td>
@@ -376,7 +377,7 @@ if ($result->num_rows == 1) {
                                                 INNER JOIN user_profile ON car.user_id = user_profile.user_id
                                                 INNER JOIN car_identification ON car.car_id = car_identification.car_id
                                                 INNER JOIN city ON user_profile.city_id = city.city_id
-                                                WHERE car.car_status = 'Expired' AND user_profile.user_id = '$user_id'";
+                                                WHERE car.car_status = 'Expired' OR car.car_status = 'Renew' AND user_profile.user_id = '$user_id'";
                                         $stmt = $db->prepare($ret);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
@@ -385,6 +386,7 @@ if ($result->num_rows == 1) {
                                         while ($row = $result->fetch_assoc()) {
                                             $id = $row['user_id'];
                                             $car_id = $row['car_id'];
+                                            $status = $row['car_status'];
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
                                             echo "<td><img src='../assets/img/car/" . $row['car_photo'] . "' alt='Profile Photo' width='50' height='50'></td>";
@@ -393,17 +395,27 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . $row['or_number'] . "</td>";
                                             echo "<td>" . $row['cr_number'] . "</td>";
                                             echo "<td>" . $row['plate_number'] . "</td>";
-                                        ?>
-                                            <td>
-                                                <a href="viewDriverCars.php?user_id=<?php echo $id; ?>&status=Registered&car_id=<?php echo $car_id; ?>">
-                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
-                                                </a>
-                                                <a href="viewDriverCars.php?user_id=<?php echo $id; ?>&status=Registered&car_id=<?php echo $car_id; ?>">
-                                                    <button>&nbsp;&nbsp;<i class="fa fa-car"></i>&nbsp;Renew&nbsp;&nbsp;</button>
-                                                </a>
-                                            </td>
 
+                                            if ($status == 'Expired') {
+                                        ?>
+                                                <td>
+                                                    <a href="viewDriverCars.php?user_id=<?php echo $id; ?>&status=Expired&car_id=<?php echo $car_id; ?>">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                    </a>
+                                                    <a href="driverRenewCar.php?user_id=<?php echo $id; ?>&status=Expired&car_id=<?php echo $car_id; ?>">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-car"></i>&nbsp;Renew&nbsp;&nbsp;</button>
+                                                    </a>
+                                                </td>
+                                            <?php
+                                            } else {
+                                            ?>
+                                                <td>
+                                                    <a href="viewDriverCars.php?user_id=<?php echo $id; ?>&status=Expired&car_id=<?php echo $car_id; ?>">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                    </a>
+                                                </td>
                                         <?php
+                                            }
                                         }
                                         ?>
 

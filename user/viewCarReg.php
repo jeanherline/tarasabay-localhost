@@ -232,7 +232,7 @@ if ($result->num_rows == 1) {
                             <div class="form-group text-center">
                                 <label for="license_front">License Front:</label>
                                 <br>
-                                <div class="license" style="width: 300px; margin: 0 auto;">
+                                <div class="vax-card" style="width: 500px; margin: 0 auto;">
                                     <img src="../assets/img/license/<?php echo $license_front; ?>" alt="license_front" class="card-preview">
                                 </div>
                             </div>
@@ -241,7 +241,7 @@ if ($result->num_rows == 1) {
                             <div class="form-group text-center">
                                 <label for="license_front">License Back:</label>
                                 <br>
-                                <div class="license" style="width: 300px; margin: 0 auto;">
+                                <div class="vax-card" style="width: 500px; margin: 0 auto;">
                                     <img src="../assets/img/license/<?php echo $license_back; ?>" alt="license_back" class="card-preview">
                                 </div>
                             </div>
@@ -276,7 +276,7 @@ if ($result->num_rows == 1) {
                             <div class="form-group text-center">
                                 <label for="pwd_docx">Car Photo:</label>
                                 <br>
-                                <div class="vax-card" style="width: 300px; margin: 0 auto;">
+                                <div class="vax-card" style="width: 500px; margin: 0 auto;">
                                     <img src="../assets/img/car/<?php echo $car_photo; ?>" alt="car_photo" class="card-preview">
                                 </div>
                             </div>

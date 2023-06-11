@@ -20,7 +20,7 @@ $userid = $_SESSION['user_id'];
 
 <!DOCTYPE html>
 <html lang="en">
-<title>Add Car</title>
+<title>Renew Car</title>
 
 <link rel="icon" href="../assets/img/logo.png" type="images" />
 
@@ -63,14 +63,14 @@ $userid = $_SESSION['user_id'];
                 <!-- Breadcrumbs-->
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="#">Register A Car</a>
+                        <a href="driverCars.php?list=Expired">Expired Cars</a>
                     </li>
-                    <li class="breadcrumb-item active">Add Car</li>
+                    <li class="breadcrumb-item active">Renew Car</li>
                 </ol>
                 <hr>
                 <div class="card">
                     <div class="card-header">
-                        <b>Earn with TaraSabay: Car Registration</b><br>
+                        <b>Earn with TaraSabay: Car Renewal</b><br>
                         <em>Note: You must sign up with the car that you own</em>
                         <!-- Icon Cards-->
                         <br><br>
@@ -94,7 +94,7 @@ $userid = $_SESSION['user_id'];
                                         </div>
                                         <?php
                                         // Code for counting the ticket balance by user ID
-                                        $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Active' AND user_id = '$userid'");
+                                        $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Approved' AND user_id = '$userid'");
                                         $cars = $result->fetch_row()[0];
                                         ?>
                                         <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fa fa-car"></i>&nbsp;&nbsp;<?php echo $cars; ?></span> Registered Cars</div>
@@ -134,94 +134,6 @@ $userid = $_SESSION['user_id'];
                                     <br>4. Include the entire car within the frame, with all relevant details visible.
                                 </small>
                                 <br>
-                                <div class="form-group">
-                                    <label for="brand">Vehicle Brand<span class="text-danger"> *</span></label>
-                                    <input type="text" class="form-control" placeholder="Enter Car Brand" name="brand" required>
-                                    <br>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="model">Vehicle Model<span class="text-danger"> *</span></label>
-                                    <input type="text" class="form-control" placeholder="Enter Car Model" name="model" required><br>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="color">Vehicle Color<span class="text-danger"> *</span></label>
-                                    <input type="text" class="form-control" placeholder="Enter Car Color" name="color" required><br>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="type">Vehicle Type<span class="text-danger"> *</span></label>
-                                    <select class="form-control" name="type" id="type" required>
-                                        <option value="" selected disabled>Select Car Type</option>
-                                        <option value="Wagon" data-seats="4">Wagon</option>
-                                        <option value="Sedan" data-seats="4">Sedan</option>
-                                        <option value="Hatchback" data-seats="4">Hatchback</option>
-                                        <option value="Coupe" data-seats="1-3">Coupe</option>
-                                        <option value="Crossover" data-seats="4-6">Crossover</option>
-                                        <option value="Regular Cab" data-seats="1">Pick-up (Regular Cab)</option>
-                                        <option value="Extended Cab" data-seats="3-4">Pick-up (Extended Cab)</option>
-                                        <option value="Crew Cab" data-seats="4-5">Pick-up (Crew Cab)</option>
-                                        <option value="SUV" data-seats="4-7">SUV (Sports Utility Vehicle)</option>
-                                        <option value="MPV" data-seats="5-7">MPV (Multi-Purpose Vehicle)</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group" id="seatCountContainer" style="display: none;">
-                                    <label for="seatCount">Available Seat Count (Passenger Capacity, Excluding Driver Seat)<span class="text-danger"> *</span></label>
-                                    <select class="form-control" name="seatCount" id="seatCount" required>
-                                        <option value="" selected disabled>Select Seat Count</option>
-                                    </select>
-                                    <br>
-                                    <small class="form-text text-muted">- Selecting the Seat Count or Passenger Capacity (Excluding Driver Seat)<br>Please note that the chosen seat count cannot be changed once submitted.
-                                        <br>
-                                        <br>Guidelines for Selecting Seat Count:
-                                        <br>1. Include the total number of passengers the vehicle can accommodate, excluding the driver's seat.
-                                        <br>2. If applicable, consider the middle seat on the back row as part of the seat count.
-                                        <br>3. Ensure the selected seat count accurately represents the maximum number of passengers the vehicle can hold.
-                                        <br>4. Take into account the available seating positions, including bench seats or optional third-row seating, if applicable.
-                                    </small>
-                                </div>
-
-                                <br>
-                                <script>
-                                    document.getElementById('type').addEventListener('change', function() {
-                                        var selectedValue = this.value;
-                                        var otherTypeContainer = document.getElementById('otherTypeContainer');
-                                        var seatCountContainer = document.getElementById('seatCountContainer');
-                                        var otherSeatCountContainer = document.getElementById('otherSeatCountContainer');
-                                        var seatCountSelect = document.getElementById('seatCount');
-
-                                        seatCountContainer.style.display = 'block';
-
-                                        var selectedOption = this.options[this.selectedIndex];
-                                        var seatCount = selectedOption.dataset.seats;
-
-                                        seatCountSelect.innerHTML = '';
-
-                                        if ((selectedValue === 'Coupe')) {
-                                            seatCountSelect.innerHTML = '<option value="' + 1 + '" selected>' + 1 + ' Seats</option>';
-                                            seatCountSelect.innerHTML += '<option value="' + 3 + '" selected>' + 3 + ' Seats</option>';
-                                        } else if ((selectedValue === 'Extended Cab')) {
-                                            seatCountSelect.innerHTML = '<option value="' + 3 + '" selected>' + 3 + ' Seats</option>';
-                                            seatCountSelect.innerHTML += '<option value="' + 4 + '" selected>' + 4 + ' Seats</option>';
-                                        } else if ((selectedValue === 'Crew Cab')) {
-                                            seatCountSelect.innerHTML = '<option value="' + 4 + '" selected>' + 4 + ' Seats</option>';
-                                            seatCountSelect.innerHTML += '<option value="' + 5 + '" selected>' + 5 + ' Seats</option>';
-                                        } else if ((selectedValue === 'SUV')) {
-                                            seatCountSelect.innerHTML = '<option value="' + 4 + '" selected>' + 4 + ' Seats</option>';
-                                            seatCountSelect.innerHTML += '<option value="' + 7 + '" selected>' + 7 + ' Seats</option>';
-                                        } else if ((selectedValue === 'Crossover')) {
-                                            seatCountSelect.innerHTML = '<option value="' + 4 + '" selected>' + 4 + ' Seats</option>';
-                                            seatCountSelect.innerHTML += '<option value="' + 6 + '" selected>' + 6 + ' Seats</option>';
-                                        } else if ((selectedValue === 'MPV')) {
-                                            seatCountSelect.innerHTML = '<option value="' + 5 + '" selected>' + 5 + ' Seats</option>';
-                                            seatCountSelect.innerHTML += '<option value="' + 7 + '" selected>' + 7 + ' Seats</option>';
-                                        } else {
-                                            seatCountSelect.innerHTML = '<option value="' + seatCount + '" selected>' + seatCount + ' Seat/s</option>';
-                                        }
-                                    });
-                                </script>
 
                                 <div class="form-group">
                                     <label for="or_photo">Upload LTO Official Receipt (OR)<span class="text-danger"> *</span></label>
@@ -282,18 +194,6 @@ $userid = $_SESSION['user_id'];
                                 <?php
                                 if (isset($_POST['submit'])) {
 
-                                    $brand = $_POST["brand"];
-                                    $model = $_POST["model"];
-                                    $color = $_POST["color"];
-
-                                    if ($_POST['type'] == 'Other') {
-                                        $type = isset($_POST['otherType']) ? $_POST['otherType'] : '';
-                                        $seat_count = isset($_POST['otherSeatCount']) ? $_POST['otherSeatCount'] : '';
-                                    } else {
-                                        $type = $_POST['type'];
-                                        $seat_count = $_POST['seatCount'];
-                                    }
-
                                     // Process and move uploaded files
                                     $car_photo_path = $_FILES["car_photo"]["tmp_name"];
                                     $car_photo_filename = $_FILES["car_photo"]["name"];
@@ -325,8 +225,9 @@ $userid = $_SESSION['user_id'];
                                             move_uploaded_file($sales_invoice_path, $sales_invoice_destination);
                                         }
                                     }
-
-
+                                    if (isset($_GET['car_id'])) {
+                                        $car_id = $_GET['car_id'];
+                                    }
                                     // Retrieve other form data
                                     $or_number = $_POST["or_number"];
                                     $cr_number = $_POST["cr_number"];
@@ -340,15 +241,12 @@ $userid = $_SESSION['user_id'];
                                     if ($plate_expiration < $minimumDate) {
                                         echo '<div style="text-align: center;"><h5 style="color: red; font-size: 18px;">The registration expiration date must be at least 6 months in the future from the current date.</h5></div>';
                                     } else {
-                                        // Insert car data into the database
-                                        $car_sql = "INSERT INTO car (user_id, car_photo, brand, model, color, type, seat_count, car_status)
- VALUES ('{$_SESSION['user_id']}', '$car_photo_filename', '$brand', '$model', '$color', '$type', '$seat_count', 'Pending')";
-                                        if ($db->query($car_sql) === TRUE) {
-                                            $last_car_id = $db->insert_id;
+                                        // Update car data in the database
+                                        $car_sql = "UPDATE car SET car_photo = '$car_photo_filename', car_status = 'Renew' WHERE user_id = '{$_SESSION['user_id']}' AND car_id = $car_id";
 
-                                            // Insert car identification data into the database
-                                            $identification_sql = "INSERT INTO car_identification (car_id, or_photo, or_number, cr_photo, cr_number, sales_invoice, plate_number, plate_expiration)
-             VALUES ('$last_car_id', '$or_photo_filename', '$or_number', '$cr_photo_filename', '$cr_number', '$sales_invoice', '$plate_number', '$plate_expiration')";
+                                        if ($db->query($car_sql) === TRUE) {
+                                            // Update car identification data in the database
+                                            $identification_sql = "UPDATE car_identification SET or_photo = '$or_photo_filename', or_number = '$or_number', cr_photo = '$cr_photo_filename', cr_number = '$cr_number', sales_invoice = '$sales_invoice', plate_number = '$plate_number', plate_expiration = '$plate_expiration' WHERE car_id = $car_id";
                                             if ($db->query($identification_sql) === TRUE) {
                                                 // Send verification email
                                                 $email = $_SESSION['email'];
@@ -388,86 +286,85 @@ $userid = $_SESSION['user_id'];
                                                     $mail->isHTML(true);
                                                     $mail->Subject = 'Car Verification';
                                                     $mail->Body = "
-                 <html>
-                 <head>
-                 <style>
-                     body {
-                         font-family: Arial, sans-serif;
-                         font-size: 16px;
-                         line-height: 1.6;
-                         color: #444;
-                     }
-                     h1 {
-                         font-size: 24px;
-                         font-weight: bold;
-                         color: #333;
-                         margin: 0 0 30px;
-                         text-align: center;
-                     }
-                     p {
-                         margin: 0 0 20px;
-                     }
-                     a {
-                         color: #0072C6;
-                         text-decoration: none;
-                     }
-                     a:hover {
-                         text-decoration: underline;
-                     }
-                     .container {
-                         max-width: 600px;
-                         margin: 0 auto;
-                     }
-                 </style>
-                 </head>
-                 <body>
-                 <div class=\"container\">
-                 <h1>Car Verification Required for Your TaraSabay App</h1>
-                 <p>Dear valued user,</p>
-                 <p>Thank you for choosing TaraSabay to find rides or offer your own. To ensure the security of your account, we need to verify your car before you can start using the app as a driver.</p>
-                 <p>Please bring your car to the nearest TaraSabay office in <b>$city</b> for verification and checking. Our representatives will inspect your car to ensure it meets the necessary requirements.</p>
-                 <p>During the visit, please provide the following documents:</p>
-                 <ul>
-                     <li>Original copy of the Certificate of Registration (CR)</li>
-                     <li>Original copy of the Official Receipt (OR)</li>
-                     <li>Photocopy of Driver's License</li>
-                     <li>Photocopy of the TIN (Tax Identification Number) ID</li>
-                     <li>Photocopy of Owner's Government ID with 3 Original Specimen Signatures</li>
-                     <li>Vehicle Sale Invoice and Delivery Receipt (Optional)</li>
-                     <li>LTFRB Documents (If applicable):
-                         <ul>
-                             <li>Provision Authority (PA)</li>
-                             <li>Certificate of Public Convenience (CPC)</li>
-                             <li>Motion for extension of PA</li>
-                         </ul>
-                         If any of the above, please provide the following of the Document:
-                         <ul>
-                             <li>Page 1</li>
-                             <li>Page 2</li>
-                         </ul>
-                     </li>
-                     <li>PAMI (Optional)</li>
-                 </ul>
-                 <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
-                 <p>Best regards,</p>
-                 <p>TaraSabay PH Team</p>
-                 </div>
-                 </body>
-                 </html>";
-                                                    $mail->AltBody = 'Car Verification Required for Your TaraSabay App';
+                                                    <html>
+                                                    <head>
+                                                    <style>
+                                                        body {
+                                                            font-family: Arial, sans-serif;
+                                                            font-size: 16px;
+                                                            line-height: 1.6;
+                                                            color: #444;
+                                                        }
+                                                        h1 {
+                                                            font-size: 24px;
+                                                            font-weight: bold;
+                                                            color: #333;
+                                                            margin: 0 0 30px;
+                                                            text-align: center;
+                                                        }
+                                                        p {
+                                                            margin: 0 0 20px;
+                                                        }
+                                                        a {
+                                                            color: #0072C6;
+                                                            text-decoration: none;
+                                                        }
+                                                        a:hover {
+                                                            text-decoration: underline;
+                                                        }
+                                                        .container {
+                                                            max-width: 600px;
+                                                            margin: 0 auto;
+                                                        }
+                                                    </style>
+                                                    </head>
+                                                    <body>
+                                                    <div class=\"container\">
+                                                    <h1>Car Renewal Required for Your TaraSabay App</h1>
+                                                    <p>Dear valued user,</p>
+                                                    <p>Thank you for choosing TaraSabay to find rides or offer your own. We would like to inform you that the registration of your car needs to be renewed.</p>
+                                                    <p>Please ensure to complete the car registration renewal process to continue using the app as a driver.</p>
+                                                    <p>During the car registration renewal process, please provide the following documents:</p>
+                                                    <ul>
+                                                        <li>Original copy of the Certificate of Registration (CR)</li>
+                                                        <li>Original copy of the Official Receipt (OR)</li>
+                                                        <li>Photocopy of Driver's License</li>
+                                                        <li>Photocopy of the TIN (Tax Identification Number) ID</li>
+                                                        <li>Photocopy of Owner's Government ID with 3 Original Specimen Signatures</li>
+                                                        <li>Vehicle Sale Invoice and Delivery Receipt (Optional)</li>
+                                                        <li>LTFRB Documents (If applicable):
+                                                            <ul>
+                                                                <li>Provision Authority (PA)</li>
+                                                                <li>Certificate of Public Convenience (CPC)</li>
+                                                                <li>Motion for extension of PA</li>
+                                                            </ul>
+                                                            If any of the above, please provide the following of the Document:
+                                                            <ul>
+                                                                <li>Page 1</li>
+                                                                <li>Page 2</li>
+                                                            </ul>
+                                                        </li>
+                                                        <li>PAMI (Optional)</li>
+                                                    </ul>
+                                                    <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
+                                                    <p>Best regards,</p>
+                                                    <p>TaraSabay PH Team</p>
+                                                    </div>
+                                                    </body>
+                                                    </html>";
 
                                                     $mail->send();
 
                                                     echo "<div style=\"text-align: center; font-family: 'Poppins', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;\">
-         <img src=\"../assets/img/checked.png\" alt=\"Car Registration\" style=\"margin-bottom: 20px; width: 100px\">
-         <h5 style=\"color: #4CAF50; font-size: 24px; margin-bottom: 20px;\">Car registration requirements received!</h5>
-         <p style=\"color: #333333; font-size: 16px; margin-bottom: 20px;\">An email has been sent to your email address with the requirements needed to be submitted to the nearest TaraSabay office in your city.</p>
-         <p style=\"color: #333333; font-size: 16px;\">These requirements are necessary to become an official driver of the TaraSabay app.</p>
-     </div>";
+                                                            <img src=\"../assets/img/checked.png\" alt=\"Car Registration\" style=\"margin-bottom: 20px; width: 100px\">
+                                                            <h5 style=\"color: #4CAF50; font-size: 24px; margin-bottom: 20px;\">Car Registration Renewal Received!</h5>
+                                                            <p style=\"color: #333333; font-size: 16px; margin-bottom: 20px;\">An email has been sent to your email address with the requirements needed to renew the registration of your car.</p>
+                                                            <p style=\"color: #333333; font-size: 16px;\">Please bring your car to the nearest TaraSabay office in your city for the car registration renewal process.</p>
+                                                        </div>";
                                                 } catch (Exception $e) {
                                                     echo '<div style="text-align: center;">
-     <h5 style="color: red">Error sending verification email: </h5>' . $mail->ErrorInfo . '
- </div>';
+                                                                <h5 style="color: red">Error sending verification email: </h5>' . $mail->ErrorInfo . '
+                                                            </div>';
                                                 }
                                             }
                                         } else {

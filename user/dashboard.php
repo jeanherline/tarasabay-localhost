@@ -254,6 +254,163 @@ if ($result->num_rows == 1) {
         <?php
 
 
+        } elseif ($_SESSION['role'] == "Driver") {
+          $user_id = $_SESSION['user_id'];
+
+        ?>
+          <!-- Icon Cards-->
+          <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-fw fa-ticket-alt"></i>
+                  </div>
+                  <?php
+                  $result = $db->query("SELECT ticket_balance FROM user_profile WHERE role = 'Driver' AND user_id = $user_id");
+                  $passenger = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $passenger; ?></span> Wallet Tickets</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="cash-in.php">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-city"></i>
+                  </div>
+                  <?php
+                  $result = $db->query("SELECT COUNT(*) AS active_route_count
+                  FROM route
+                  INNER JOIN car ON route.car_id = car.car_id
+                  WHERE car.user_id = '$user_id'
+                  AND route.route_status = 'Active';
+                  ");
+                  $driver = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $driver; ?></span> Active Routes</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="driverRoute.php?status=Active">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-fw fa fa-car"></i>
+                  </div>
+                  <?php
+                  // Code for counting the number of pending cars with status "pending" by user ID
+                  $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Active' AND user_id = $user_id");
+                  $vehicle = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $vehicle; ?></span> Active Cars</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="carReg.php?status=Active">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-id-card"></i>
+                  </div>
+                  <?php
+                  $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Expired' AND user_id = $user_id");
+                  $driver = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $driver; ?></span> Expired Car Plates</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="driverCars.php?list=Expired">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fas fa-table"></i>
+              Pending Bookings
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Seat Type</th>
+                      <th>Fare</th>
+                      <th>Pickup Location</th>
+                      <th>Drop-Off Location</th>
+                      <th>Departure</th>
+                      <th>Est Arrival Time</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                    $user_id = $_SESSION['user_id'];
+                    $ret = "SELECT r.*, up.first_name, up.last_name, s.seat_type, s.fare FROM route r
+                                                INNER JOIN car c ON r.car_id = c.car_id
+                                                INNER JOIN user_profile up ON r.car_id = up.user_id
+                                                INNER JOIN seat s ON r.route_id = s.route_id
+                                                INNER JOIN booking b ON s.seat_id = b.seat_id
+                                                WHERE (c.user_id = ? AND r.route_status = 'Active' AND b.booking_status = 'Pending')";
+                    $stmt = $db->prepare($ret);
+                    $stmt->bind_param("s", $user_id);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $cnt = 1;
+                    while ($row = $result->fetch_assoc()) {
+                      echo "<tr>";
+                      echo "<td>" . $cnt . "</td>";
+                      echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                      echo "<td>" . $row['seat_type'] . "</td>";
+                      echo "<td>" . $row['fare'] . "</td>";
+                      echo "<td>" . $row['pickup_loc'] . "</td>";
+                      echo "<td>" . $row['dropoff_loc'] . "</td>";
+                      echo "<td>" . $row['departure'] . "</td>";
+                      echo "<td>" . $row['est_arrival_time'] . "</td>";
+                      echo "</tr>";
+                      $cnt++;
+                    }
+                    ?>
+                  </tbody>
+
+                </table>
+              </div>
+            </div>
+            <div class="card-footer small text-muted">
+              <?php
+              date_default_timezone_set("Africa/Nairobi");
+              echo "Generated : " . date("h:i:sa");
+              ?>
+            </div>
+          </div>
+        <?php
         } elseif ($_SESSION['role'] == "Main Admin") {
         ?>
           <!-- Icon Cards-->
@@ -362,7 +519,7 @@ if ($result->num_rows == 1) {
                   <tbody>
                     <?php
                     $ret = "SELECT * FROM user_profile
-                                                    WHERE role = 'City Admin' OR role = 'Previous City Admin'";
+                                                      WHERE role = 'City Admin' OR role = 'Previous City Admin'";
                     $stmt = $db->prepare($ret);
                     $stmt->execute();
                     $result = $stmt->get_result();
@@ -404,7 +561,6 @@ if ($result->num_rows == 1) {
             </div>
           </div>
         <?php
-        } elseif ($_SESSION['role'] == "City Admin") {
         }
         ?>
         <!-- /.container-fluid -->

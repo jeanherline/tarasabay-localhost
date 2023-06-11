@@ -325,7 +325,7 @@ if ($result->num_rows == 1) {
                   <div class="form-group text-center">
                     <label for="license_front">License Front:</label>
                     <br>
-                    <div class="license" style="width: 300px; margin: 0 auto;">
+                    <div class="card" style="width: 300px; margin: 0 auto;">
                       <img src="../assets/img/license/<?php echo $license_front; ?>" alt="license_front" class="card-preview">
                     </div>
                   </div>
@@ -334,7 +334,7 @@ if ($result->num_rows == 1) {
                   <div class="form-group text-center">
                     <label for="license_front">License Back:</label>
                     <br>
-                    <div class="license" style="width: 300px; margin: 0 auto;">
+                    <div class="card" style="width: 300px; margin: 0 auto;">
                       <img src="../assets/img/license/<?php echo $license_back; ?>" alt="license_back" class="card-preview">
                     </div>
 
@@ -406,6 +406,85 @@ if ($result->num_rows == 1) {
                 }
                 ?>
                 <br>
+                <?php
+                if ($_SESSION['role'] == 'Driver') {
+                  $stmt = $db->prepare("SELECT * FROM driver_identification WHERE user_id = ?");
+                  $stmt->bind_param("s", $userid);
+                  $stmt->execute();
+                  $result = $stmt->get_result();
+
+                  if ($result->num_rows == 1) {
+                    $row = $result->fetch_assoc(); // Add this line to fetch the row
+
+                    $disability = $row['disability'];
+                    $pwd_docx = $row['pwd_docx'];
+                    $license_front = $row['license_front'];
+                    $license_back = $row['license_back'];
+                    $license_expiration = $row['license_expiration'];
+                    $nbi_police_cbi = $row['nbi_police_cbi'];
+                    $cbi_date_issued = $row['cbi_date_issued'];
+                    $years_experience = $row['years_experience'];
+                ?>
+                    <em>Driver Information</em>
+                    <br> <br>
+                    <div class="form-group">
+                      <label for="disability">Disability</label>
+                      <input type="text" class="form-control disabled-input" value="<?php echo $disability ?>" name="disability" disabled><br>
+                    </div>
+
+                    <div class="form-group text-center">
+                      <label for="pwd_docx">PWD ID / Certificate:</label>
+                      <br>
+                      <div class="vax-card" style="width:200px;">
+                        <?php if (!empty($pwd_docx)) { ?>
+                          <img src="../assets/img/pwd/<?php echo $pwd_docx; ?>" alt="PWD" class="card-preview">
+                        <?php } else { ?>
+                        <?php } ?>
+                      </div>
+                    </div>
+
+                    <div class="form-group text-center">
+                      <label for="license_front">License Front:</label>
+                      <br>
+                      <div class="vax-card" style="width: 500px; margin: 0 auto;">
+                        <img src="../assets/img/license/<?php echo $license_front; ?>" alt="license_front" class="card-preview">
+                      </div>
+                    </div>
+
+                    <div class="form-group text-center">
+                      <label for="license_back">License Back:</label>
+                      <br>
+                      <div class="vax-card" style="width: 500px; margin: 0 auto;">
+                        <img src="../assets/img/license/<?php echo $license_back; ?>" alt="license_back" class="card-preview">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="license_expiration">License Expiration</label>
+                      <input type="date" class="form-control disabled-input" value="<?php echo $license_expiration ?>" name="license_expiration" disabled><br>
+                    </div>
+
+                    <div class="form-group text-center">
+                      <label for="nbi_police_cbi">NBI / Police / CBI:</label>
+                      <br>
+                      <div class="vax-card" style="width:200px;">
+                        <img src="../assets/img/docx/<?php echo $nbi_police_cbi; ?>" alt="nbi_police_cbi" class="card-preview">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="cbi_date_issued"><em><b>IF:</b></em> CBI Date of Issuance</label>
+                      <input type="date" class="form-control disabled-input" value="<?php echo $cbi_date_issued ?>" name="cbi_date_issued" disabled><br>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="years_experience">Years of Experience</label>
+                      <input type="text" class="form-control disabled-input" value="<?php echo $years_experience ?>" name="years_experience" disabled><br>
+                    </div>
+                <?php
+                  }
+                }
+                ?>
 
               </form>
             </div>

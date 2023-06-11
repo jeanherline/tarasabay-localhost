@@ -200,7 +200,7 @@ $userid = $_SESSION['user_id'];
                     <input type="number" class="form-control" placeholder="Enter Ticket Fare" name="FPS" required>
                     <br>
                 </div>`;
-                                            } else if (carSeatCount === 3) {
+                                            } else if (carSeatCount === '3') {
                                                 seatFareContainer.innerHTML = `
             <div class="form-group">
                 <label for="FPS">Front Passenger Seat<span class="text-danger"> *</span></label>

@@ -93,7 +93,7 @@ if ($result->num_rows == 1) {
                             <?php
                             if ($list == 'Expired') {
                             ?>
-                                <a href="renewal.php?list=Plate">Renewal</a>
+                                <a href="driverCars.php?list=Expired">Expired Car</a>
 
                             <?php
                             } else if ($list == 'Registered') {
@@ -117,7 +117,6 @@ if ($result->num_rows == 1) {
                     <li class="breadcrumb-item active">View <?php echo $list ?></li>
                 </ol>
                 <hr>
-                <br><br>
                 <?php
                 if (isset($_GET['user_id']) && isset($_GET['car_id'])) {
                     $user_id = $_GET['user_id'];
@@ -169,22 +168,6 @@ if ($result->num_rows == 1) {
                     $plate_expiration = $row['plate_expiration'];
                 }
                 ?>
-                <div class="profile-photo">
-                    <?php if (!empty($profile_photo)) { ?>
-                        <img src="../assets/img/profile-photo/<?php echo $profile_photo; ?>" alt="Profile Photo" class="photo-preview">
-                    <?php } ?>
-
-                </div>
-                <br>
-                <p class="role" style="font-size: 22px; font-weight: bold;
-                                                text-align: center; color: #000;">
-                    <?php echo $first_name . " " . $last_name; ?> ✔️
-                </p>
-                <p class="role" style="font-size: 18px; font-weight: bold;
-                                                text-align: center; color: green;">
-                    <?php echo $role; ?>
-                </p>
-                <br>
                 <style>
                     .form-container {
                         display: flex;
@@ -292,14 +275,11 @@ if ($result->num_rows == 1) {
                             </div>
 
                             <?php
-                            if ($car_status == 'Pending') {
-                            ?>
-                                <a href="approveCarReg.php"><button style="float:right; margin-right: 1%;" class="btn btn-success">Approve</button></a>
-                                <a href="denyCarReg.php"><button style="float:right; margin-right: 1%;" class="btn btn-success">Deny</button></a>
-                            <?php
-                            }
-
-                            ?>
+                                if ($car_status == 'Pending' && $_SESSION['role'] == 'City Admin') {
+                                    echo '<a href="approveCarReg.php"><button style="float:right; margin-right: 1%;" class="btn btn-success">Approve</button></a>';
+                                    echo '<a href="denyCarReg.php"><button style="float:right; margin-right: 1%;" class="btn btn-success">Deny</button></a>';
+                                }
+                                ?>
 
                         </form>
                         <!-- End Form-->

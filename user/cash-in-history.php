@@ -137,12 +137,12 @@ if (isset($_POST['submit'])) {
                                     <tbody>
                                         <?php
                                         $query = "SELECT cico.*, user_profile.*
-                                     FROM cico
-                                     INNER JOIN user_profile ON cico.user_id = user_profile.user_id
-                                     WHERE cico.peso_amount > 0
-                                     AND cico.trans_type = 'cash-in'
-                                     AND cico.trans_stat = 'Successful'
-                                     ORDER BY cico.created_at ASC";
+                                                FROM cico
+                                                INNER JOIN user_profile ON cico.user_id = user_profile.user_id
+                                                WHERE cico.peso_amount > 0
+                                                AND cico.trans_type = 'cash-in'
+                                                AND cico.trans_stat = 'Successful'
+                                                ORDER BY cico.created_at ASC";
 
                                         $stmt = $db->prepare($query);
                                         $stmt->execute();

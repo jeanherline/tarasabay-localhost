@@ -79,7 +79,8 @@
         <h6 class="dropdown-header">Reservations</h6>
         <a class="dropdown-item" href="driverBooking.php?list=Pending">Pending</a>
         <a class="dropdown-item" href="driverBooking.php?list=Approved">Approved</a>
-        <a class="dropdown-item" href="driverBooking.php?list=Cancelled">Cancelled</a>
+        <a class="dropdown-item" href="driverBooking.php?list=Previous">Previous</a>
+        <a class="dropdown-item" href="driverBooking.php?list=Declined">Declined</a>
       </div>
     </li>
     <li class="nav-item dropdown">
@@ -129,6 +130,30 @@
   <?php
   if ($_SESSION['role'] == "Passenger") {
   ?>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-fw fa-route"></i>
+        <span>Routes</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Book A Ride</h6>
+        <a class="dropdown-item" href="passengerRoute.php?list=All">View All</a>
+        <a class="dropdown-item" href="passengerRoute.php?list=From">From My City</a>
+        <a class="dropdown-item" href="passengerRoute.php?list=To">To My City</a>
+      </div>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-fw fa-car"></i>
+        <span>Bookings</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Shared Ride</h6>
+        <a class="dropdown-item" href="passengerBooking.php?list=Booked">Booked</a>
+        <a class="dropdown-item" href="passengerBooking.php?list=Previous">Previous</a>
+        <a class="dropdown-item" href="passengerBooking.php?list=Cancelled">Cancelled</a>
+      </div>
+    </li>
     <li class="nav-item">
       <a class="nav-link" href="cash-in.php">
         <i class="fas fa-fw fa-wallet"></i>

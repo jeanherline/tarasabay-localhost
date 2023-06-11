@@ -251,19 +251,18 @@ if (isset($_POST['submit'])) {
                                     echo "<td>" . $row['reference_number'] . "</td>";
                                     echo "<td>" . $row['method_type'] . "</td>";
                                     echo "<td>" . $row['created_at'] . "</td>";
-
                                     echo "</tr>";
                                     $count++;
                                     $totalTicketAmount += $row['ticket_amount'];
                                     $totalPesoAmount += $row['peso_amount'];
-                                    $totalProcessingFee += $row['convenience_fee'];
+                                    $totalProcessingFee += $row['processing_fee'];
                                 }
                                 ?>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="2"><b>Total Ticket Amount</b></td>
-                                    <td><?php echo "₱ " . number_format($totalTicketAmount, 2); ?></td>
+                                    <td colspan="2"><b>Total Amount</b></td>
+                                    <td><?php echo number_format($totalTicketAmount, 2); ?></td>
                                     <td><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
                                     <td><?php echo "₱ " . number_format($totalProcessingFee, 2); ?></td>
                                     <td></td>

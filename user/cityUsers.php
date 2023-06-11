@@ -117,11 +117,10 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . "</td>";
                                             echo "<td>" . $row['email'] . "</td>";
                                             echo "<td>" . $row['role'] . "</td>";
-
                                         ?>
                                             <td>
                                                 <a href="viewAdminProfile.php?user_id=<?php echo $user; ?>&list=Full">
-                                                    <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
                                             </td>
                                             <?php

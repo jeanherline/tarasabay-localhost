@@ -160,9 +160,14 @@ if (isset($_POST['submit'])) {
                                         }
                                         echo "</td>";
                                         echo "<td>
-                                                <a href='approveCashout.php?cico_id=" . $row['cico_id'] . "&amount=" . $row['peso_amount'] . "' class='badge badge-success'><i class='fa fa-check'></i> Approve</a>
-                                                <a href='../declineCashout.php?cico_id=" . $row['cico_id'] . "&amount=" . $row['peso_amount'] . "' class='badge badge-danger'><i class='fa fa-ban'></i> Decline</a>
-                                            </td>";
+                                        <a href='approveCashout.php?cico_id=" . $row['cico_id'] . "&amount=" . $row['peso_amount'] . "' class='badge badge-success' onclick=\"return confirm('Are you sure you want to approve?')\">
+                                            <i class='fa fa-check'></i> Approve
+                                        </a>
+                                        <a href='../declineCashout.php?cico_id=" . $row['cico_id'] . "&amount=" . $row['peso_amount'] . "' class='badge badge-danger' onclick=\"return confirm('Are you sure you want to decline?')\">
+                                            <i class='fa fa-ban'></i> Decline
+                                        </a>
+                                    </td>";
+                                    
                                         echo "</tr>";
                                     }
                                     ?>

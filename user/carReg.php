@@ -142,10 +142,10 @@ if ($result->num_rows == 1) {
                                                     <a href="editCarReg.php?user_id=<?php echo $id; ?>&status=Pending">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-pencil"></i>&nbsp;&nbsp;</button>
                                                     </a>
-                                                    <a href="approveCarReg.php?user_id=<?php echo $id; ?>&status=Pending&car_id=<?php echo $car_id; ?>">
+                                                    <a href="approveCarReg.php?user_id=<?php echo $id; ?>&status=Pending&car_id=<?php echo $car_id; ?>"onclick="return confirm('Are you sure you want to approve?')">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;&nbsp;</button>
                                                     </a>
-                                                    <a href="denyCarReg.php?user_id=<?php echo $id; ?>&status=Pending&car_id=<?php echo $car_id; ?>">
+                                                    <a href="denyCarReg.php?user_id=<?php echo $id; ?>&status=Pending&car_id=<?php echo $car_id; ?>"onclick="return confirm('Are you sure you want to deny?')">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-ban"></i>&nbsp;&nbsp;</button>
                                                     </a>
                                                 </td>
@@ -267,7 +267,7 @@ if ($result->num_rows == 1) {
                                                     <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Active">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                     </a>
-                                                    <a href="denyCarReg.php?user_id=<?php echo $id; ?>&status=Active&car_id=<?php echo $car_id; ?>">
+                                                    <a href="denyCarReg.php?user_id=<?php echo $id; ?>&status=Active&car_id=<?php echo $car_id; ?>"onclick="return confirm('Are you sure you want to deny?')">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-ban"></i>&nbsp;Deny&nbsp;&nbsp;</button>
                                                     </a>
 
@@ -368,7 +368,7 @@ if ($result->num_rows == 1) {
                                                         <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Denied">
                                                             <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                         </a>
-                                                        <a href="approveCarReg.php?user_id=<?php echo $id; ?>&status=Denied&car_id=<?php echo $car_id; ?>">
+                                                        <a href="approveCarReg.php?user_id=<?php echo $id; ?>&status=Denied&car_id=<?php echo $car_id; ?>" onclick="return confirm('Are you sure you want to approve?')">
                                                             <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Approve&nbsp;&nbsp;</button>
                                                         </a>
 

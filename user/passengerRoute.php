@@ -47,7 +47,7 @@ if ($result->num_rows == 1) {
     <meta name="author" content="MartDevelopers">
     <link rel="icon" href="../assets/img/logo.png" type="images" />
 
-    <title>Booking</title>
+    <title>City Users</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -74,19 +74,19 @@ if ($result->num_rows == 1) {
 
             <div class="container-fluid">
                 <?php
-                if (isset($_GET['list']) && $_GET['list'] === 'Pending') {
+                if (isset($_GET['list']) && $_GET['list'] === 'All') {
                 ?>
                     <!-- Breadcrumbs-->
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="">Route</a>
+                            <a href="#">Route</a>
                         </li>
-                        <li class="breadcrumb-item active">Pending Booking</li>
+                        <li class="breadcrumb-item active">View All Routes</li>
                     </ol>
                     <div class="card mb-3">
                         <div class="card-header">
                             <i class="fas fa-table"></i>
-                            Manage Booking
+                            All Routes
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -94,76 +94,64 @@ if ($result->num_rows == 1) {
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Seat Type</th>
-                                            <th>Fare</th>
                                             <th>Pickup Location</th>
                                             <th>Drop-Off Location</th>
                                             <th>Departure</th>
                                             <th>Est Arrival Time</th>
+                                            <th>Route Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $user_id = $_SESSION['user_id'];
-
-                                        $ret = "SELECT r.*, up.first_name, up.last_name, s.* FROM route r
-                                                INNER JOIN car c ON r.car_id = c.car_id
-                                                INNER JOIN user_profile up ON c.user_id = up.user_id
-                                                INNER JOIN seat s ON r.route_id = s.route_id
-                                                INNER JOIN booking b ON s.seat_id = b.seat_id
-                                                WHERE c.user_id = ? AND r.route_status = 'Active' AND b.booking_status = 'Pending'";
-
+                                        $ret = "SELECT * FROM route WHERE route_status = 'Active' OR route_status = 'Fully Booked'";
                                         $stmt = $db->prepare($ret);
-                                        $stmt->bind_param("i", $user_id);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
                                         $cnt = 1;
-
                                         while ($row = $result->fetch_assoc()) {
-                                            $seat_id = $row['seat_id'];
+                                            $car_id = $row['car_id'];
+                                            $route_id = $row['route_id'];
+                                            echo "<tr>";
+                                            echo "<td>" . $cnt . "</td>";
+                                            echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
+                                            echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
 
-                                            // Fetch the passenger's user_id from the seat table
-                                            $passenger_user_id = null;
-                                            $seat_user_id_query = "SELECT user_id FROM booking WHERE seat_id = ?";
-                                            $seat_stmt = $db->prepare($seat_user_id_query);
-                                            $seat_stmt->bind_param("i", $seat_id);
-                                            $seat_stmt->execute();
-                                            $seat_result = $seat_stmt->get_result();
-                                            if ($seat_row = $seat_result->fetch_assoc()) {
-                                                $passenger_user_id = $seat_row['user_id'];
+                                            // Check if the user has already booked the route
+                                            $checkBookingSql = "SELECT * FROM booking WHERE user_id = ? AND seat_id IN (SELECT seat_id FROM seat WHERE route_id = ?) AND booking_status = 'Pending' OR booking_status = 'Booked'";
+                                            $stmt = $db->prepare($checkBookingSql);
+                                            $stmt->bind_param("ii", $user_id, $route_id);
+                                            $stmt->execute();
+                                            $existingBooking = $stmt->get_result()->fetch_assoc();
+
+                                            if ($existingBooking) {
+                                                echo "<td>Booked</td>";
+                                            } else {
+                                                echo "<td>" . $row['route_status'] . "</td>";
                                             }
-
-                                            echo "<tr>";
-                                            echo "<td>" . $cnt . "</td>";
-                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td>" . $row['seat_type'] . "</td>";
-                                            echo "<td>" . $row['fare'] . "</td>";
-                                            echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
-                                            echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
-                                            echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
-                                            echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
-                                            echo "<td>
-                                                <a href='viewRoute.php?user_id=" . $user_id . "&route_id=" . $row['route_id'] . "&list=PendingBooking&car_id=" . $row['car_id'] . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                        ?>
+                                            <td>
+                                                <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
-                                                <a href='approvePassengerBooking.php?user_id=" . $passenger_user_id . "&route_id=" . $row['route_id'] . "&list=PendingBooking&seat_id=" . $seat_id . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-check'></i>&nbsp;Approve&nbsp;&nbsp;</button>
-                                                </a>
-                                            </td>";
+                                                <?php if ($existingBooking) { ?>
+                                                    <button disabled>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Booked&nbsp;&nbsp;</button>
+                                                <?php } else { ?>
+                                                    <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
+                                                    </a>
+                                                <?php } ?>
+                                            </td>
+                                        <?php
                                             echo "</tr>";
                                             $cnt++;
                                         }
                                         ?>
-
-
-
                                     </tbody>
-
                                 </table>
-
-
 
                             </div>
                         </div>
@@ -177,25 +165,22 @@ if ($result->num_rows == 1) {
                     <?php
 
                     ?>
-                    <!-- /.container-fluid -->
 
-                    <!-- Sticky Footer -->
-                    <?php include("vendor/inc/footer.php"); ?>
 
                 <?php
-                } elseif (isset($_GET['list']) && $_GET['list'] === 'Approved') {
+                } else if (isset($_GET['list']) && $_GET['list'] === 'From') {
                 ?>
                     <!-- Breadcrumbs-->
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="">Route</a>
+                            <a href="#">Routes</a>
                         </li>
-                        <li class="breadcrumb-item active">Approved Booking</li>
+                        <li class="breadcrumb-item active">From My City</li>
                     </ol>
                     <div class="card mb-3">
                         <div class="card-header">
                             <i class="fas fa-table"></i>
-                            Manage Routes
+                            Routes From My City
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -203,60 +188,49 @@ if ($result->num_rows == 1) {
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Seat Type</th>
-                                            <th>Fare</th>
                                             <th>Pickup Location</th>
                                             <th>Drop-Off Location</th>
                                             <th>Departure</th>
                                             <th>Est Arrival Time</th>
+                                            <th>Route Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $user_id = $_SESSION['user_id'];
-
-                                        $ret = "SELECT r.*, up.first_name, up.last_name, s.* FROM route r
-                                                INNER JOIN car c ON r.car_id = c.car_id
-                                                INNER JOIN user_profile up ON c.user_id = up.user_id
-                                                INNER JOIN seat s ON r.route_id = s.route_id
-                                                INNER JOIN booking b ON s.seat_id = b.seat_id
-                                                WHERE c.user_id = ? AND b.booking_status = 'Approved'";
-
+                                        $city_name = $_SESSION['city_name'];
+                                        $ret = "SELECT * FROM route WHERE pickup_loc LIKE '%$city_name%'";
                                         $stmt = $db->prepare($ret);
-                                        $stmt->bind_param("i", $user_id);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
                                         $cnt = 1;
-
                                         while ($row = $result->fetch_assoc()) {
-                                            $seat_id = $row['seat_id'];
-
+                                            $car_id = $row['car_id'];
+                                            $route_id = $row['route_id'];
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
-                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td>" . $row['seat_type'] . "</td>";
-                                            echo "<td>" . $row['fare'] . "</td>";
                                             echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
                                             echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
                                             echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
                                             echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
-                                            echo "<td>
-                                                <a href='viewRoute.php?user_id=" . $user_id . "&route_id=" . $row['route_id'] . "&list=PendingBooking&car_id=" . $row['car_id'] . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                            echo "<td>" . $row['route_status'] . "</td>";
+                                        ?>
+                                            <td>
+                                                <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=From&car_id=<?php echo $car_id ?>">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
-                                            </td>";
+                                                <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=From&car_id=<?php echo $car_id ?>">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
+                                                </a>
+                                            </td>
+                                        <?php
                                             echo "</tr>";
                                             $cnt++;
                                         }
                                         ?>
-
-
-
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                         <div class="card-footer small text-muted">
@@ -266,178 +240,70 @@ if ($result->num_rows == 1) {
                             ?>
                         </div>
                     </div>
-                    <?php
-
-                    ?>
-                    <!-- /.container-fluid -->
-
-                    <!-- Sticky Footer -->
-                <?php include("vendor/inc/footer.php");
-                } elseif (isset($_GET['list']) && $_GET['list'] === 'Previous') {
-                ?>
-                    <!-- Breadcrumbs-->
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="">Route</a>
-                        </li>
-                        <li class="breadcrumb-item active">Previous Route</li>
-                    </ol>
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <i class="fas fa-table"></i>
-                            Manage Routes
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th>Seat Type</th>
-                                            <th>Fare</th>
-                                            <th>Pickup Location</th>
-                                            <th>Drop-Off Location</th>
-                                            <th>Departure</th>
-                                            <th>Est Arrival Time</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $user_id = $_SESSION['user_id'];
-
-                                        $ret = "SELECT r.*, up.first_name, up.last_name, s.* FROM route r
-                                                INNER JOIN car c ON r.car_id = c.car_id
-                                                INNER JOIN user_profile up ON c.user_id = up.user_id
-                                                INNER JOIN seat s ON r.route_id = s.route_id
-                                                INNER JOIN booking b ON s.seat_id = b.seat_id
-                                                WHERE c.user_id = ? AND b.booking_status = 'Done'";
-
-                                        $stmt = $db->prepare($ret);
-                                        $stmt->bind_param("i", $user_id);
-                                        $stmt->execute();
-                                        $result = $stmt->get_result();
-                                        $cnt = 1;
-
-                                        while ($row = $result->fetch_assoc()) {
-                                            $seat_id = $row['seat_id'];
-
-                                            echo "<tr>";
-                                            echo "<td>" . $cnt . "</td>";
-                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td>" . $row['seat_type'] . "</td>";
-                                            echo "<td>" . $row['fare'] . "</td>";
-                                            echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
-                                            echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
-                                            echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
-                                            echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
-                                            echo "<td>
-                                                <a href='viewRoute.php?user_id=" . $user_id . "&route_id=" . $row['route_id'] . "&list=PendingBooking&car_id=" . $row['car_id'] . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
-                                                </a>
-                                            </td>";
-                                            echo "</tr>";
-                                            $cnt++;
-                                        }
-                                        ?>
-
-
-
-                                    </tbody>
-                                </table>
-
-                            </div>
-                        </div>
-                        <div class="card-footer small text-muted">
-                            <?php
-                            date_default_timezone_set("Africa/Nairobi");
-                            echo "Generated : " . date("h:i:sa");
-                            ?>
-                        </div>
-                    </div>
-                    <?php
-
-                    ?>
-                    <!-- /.container-fluid -->
-
-                    <!-- Sticky Footer -->
-                    <?php include("vendor/inc/footer.php"); ?>
                 <?php
-                } elseif (isset($_GET['list']) && $_GET['list'] === 'Declined') {
+                } else if (isset($_GET['list']) && $_GET['list'] === 'To') {
                 ?>
                     <!-- Breadcrumbs-->
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="">Route</a>
+                            <a href="#">Routes</a>
                         </li>
-                        <li class="breadcrumb-item active">Declined Route</li>
+                        <li class="breadcrumb-item active">To My City</li>
                     </ol>
                     <div class="card mb-3">
                         <div class="card-header">
                             <i class="fas fa-table"></i>
-                            Manage Routes
+                            Routes To My City
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Seat Type</th>
-                                            <th>Fare</th>
                                             <th>Pickup Location</th>
                                             <th>Drop-Off Location</th>
                                             <th>Departure</th>
                                             <th>Est Arrival Time</th>
+                                            <th>Route Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $user_id = $_SESSION['user_id'];
-
-                                        $ret = "SELECT r.*, up.first_name, up.last_name, s.* FROM route r
-                                                INNER JOIN car c ON r.car_id = c.car_id
-                                                INNER JOIN user_profile up ON c.user_id = up.user_id
-                                                INNER JOIN seat s ON r.route_id = s.route_id
-                                                INNER JOIN booking b ON s.seat_id = b.seat_id
-                                                WHERE c.user_id = ? AND b.booking_status = 'Declined'";
-
+                                        $city_name = $_SESSION['city_name'];
+                                        $ret = "SELECT * FROM route WHERE dropoff_loc LIKE '%$city_name%'";
                                         $stmt = $db->prepare($ret);
-                                        $stmt->bind_param("i", $user_id);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
                                         $cnt = 1;
-
                                         while ($row = $result->fetch_assoc()) {
-                                            $seat_id = $row['seat_id'];
-
+                                            $car_id = $row['car_id'];
+                                            $route_id = $row['route_id'];
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
-                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td>" . $row['seat_type'] . "</td>";
-                                            echo "<td>" . $row['fare'] . "</td>";
                                             echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
                                             echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
                                             echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
                                             echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
-                                            echo "<td>
-                                                <a href='viewRoute.php?user_id=" . $user_id . "&route_id=" . $row['route_id'] . "&list=PendingBooking&car_id=" . $row['car_id'] . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                            echo "<td>" . $row['route_status'] . "</td>";
+                                        ?>
+                                            <td>
+                                                <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=To&car_id=<?php echo $car_id ?>">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
-                                            </td>";
+                                                <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=To&car_id=<?php echo $car_id ?>">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
+                                                </a>
+                                            </td>
+                                        <?php
                                             echo "</tr>";
                                             $cnt++;
                                         }
                                         ?>
-
-
-
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                         <div class="card-footer small text-muted">
@@ -447,16 +313,14 @@ if ($result->num_rows == 1) {
                             ?>
                         </div>
                     </div>
-                    <?php
-
-                    ?>
-                    <!-- /.container-fluid -->
-
-                    <!-- Sticky Footer -->
-                    <?php include("vendor/inc/footer.php"); ?>
                 <?php
                 }
                 ?>
+                <!-- /.container-fluid -->
+
+                <!-- Sticky Footer -->
+                <?php include("vendor/inc/footer.php"); ?>
+
             </div>
             <!-- /.content-wrapper -->
 

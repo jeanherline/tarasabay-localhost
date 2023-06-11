@@ -124,10 +124,10 @@ if ($result->num_rows == 1) {
                                         ?>
                                             <td>
                                                 <a href="viewRenewalProfile.php?user_id=<?php echo $user; ?>&list=Driver">
-                                                    <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
-                                                <a href="renewDriver.php?user_id=<?php echo $user; ?>&list=Driver">
-                                                    <button><i class="fa fa-check"></i>&nbsp;Renew&nbsp;</button>
+                                                <a href="renewDriver.php?user_id=<?php echo $user; ?>&list=Driver" onclick="return confirm('Are you sure you want to renew?')">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Renew&nbsp;&nbsp;</button>
                                                 </a>
                                             </td>
                                             <?php
@@ -207,12 +207,14 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . $row['plate_expiration'] . "</td>";
                                         ?>
                                             <td>
-                                                <a href="viewCarReg.php?user_id=<?php echo $user; ?>&status=Expired">
-                                                    <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                <a href="viewRenewalProfile.php?user_id=<?php echo $user; ?>&list=Plate">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
-                                                <a href="renewPlate.php?user_id=<?php echo $user; ?>&car_id=<?php echo $car_id?>">
-                                                    <button><i class="fa fa-check"></i>&nbsp;Renew&nbsp;</button>
+
+                                                <a href="renewPlate.php?user_id=<?php echo $user; ?>&car_id=<?php echo $car_id ?>" onclick="return confirm('Are you sure you want to renew?')">
+                                                    <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Renew&nbsp;&nbsp;</button>
                                                 </a>
+
                                             </td>
                                             <?php
                                             ?>
