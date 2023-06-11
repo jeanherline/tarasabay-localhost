@@ -202,12 +202,12 @@ if (isset($_POST['submit'])) {
 
 
         <?php
-                } else {
+                } elseif ($_SESSION['role'] == "Main Admin") {
         ?>
             <div class="card mb-3">
                 <div class="card-header">
                     <i class="fas fa-table"></i>
-                    Cash-Out Transaction History
+                    Cash Out Transactions
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -215,9 +215,10 @@ if (isset($_POST['submit'])) {
                             <thead>
                                 <tr>
                                     <th>Transaction #</th>
+                                    <th>Name</th>
                                     <th>GCash Mobile Number</th>
-                                    <th>From Ticket</th>
-                                    <th>To Peso</th>
+                                    <th>From Ticket Amount</th>
+                                    <th>To Peso Amount</th>
                                     <th>Process. Fee</th>
                                     <th>Reference Number</th>
                                     <th>Method Type</th>
@@ -226,24 +227,25 @@ if (isset($_POST['submit'])) {
                             </thead>
                             <tbody>
                                 <?php
-                                $user_id = $userid; // Replace with the desired user ID
-                                $stmt = $db->prepare("SELECT c.*
-                        FROM cico c
-                        INNER JOIN user_profile up ON c.user_id = up.user_id
-                        WHERE c.user_id = ? AND c.trans_type = 'cash-out' AND c.trans_stat = 'Successful'
-                        ORDER BY c.cico_id");
-
-                                $stmt->bind_param("i", $user_id);
+                                $query = "SELECT cico.*, user_profile.*
+                                            FROM cico
+                                            INNER JOIN user_profile ON cico.user_id = user_profile.user_id
+                                            WHERE cico.peso_amount > 0
+                                            AND cico.trans_type = 'cash-out'
+                                            AND cico.trans_stat = 'Successful'
+                                            ORDER BY cico.created_at ASC";
+                                $stmt = $db->prepare($query);
                                 $stmt->execute();
                                 $result = $stmt->get_result();
-                                $count = 1;
                                 $totalTicketAmount = 0;
                                 $totalPesoAmount = 0;
                                 $totalProcessingFee = 0;
+                                $count = 1;
 
                                 while ($row = $result->fetch_assoc()) {
                                     echo "<tr>";
                                     echo "<td>" . $count . "</td>";
+                                    echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
                                     echo "<td>" . $row['gcash_mobile_number'] . "</td>";
                                     echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
                                     echo "<td>₱ " . number_format($row['peso_amount'], 2) . "</td>";
@@ -252,16 +254,16 @@ if (isset($_POST['submit'])) {
                                     echo "<td>" . $row['method_type'] . "</td>";
                                     echo "<td>" . $row['created_at'] . "</td>";
                                     echo "</tr>";
-                                    $count++;
                                     $totalTicketAmount += $row['ticket_amount'];
                                     $totalPesoAmount += $row['peso_amount'];
                                     $totalProcessingFee += $row['processing_fee'];
+                                    $count++;
                                 }
                                 ?>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="2"><b>Total Amount</b></td>
+                                    <td colspan="3"><b>Total Amount</b></td>
                                     <td><?php echo number_format($totalTicketAmount, 2); ?></td>
                                     <td><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
                                     <td><?php echo "₱ " . number_format($totalProcessingFee, 2); ?></td>
@@ -270,34 +272,121 @@ if (isset($_POST['submit'])) {
                                     <td></td>
                                 </tr>
                             </tfoot>
-
-
-
                         </table>
+
+
 
                     </div>
                 </div>
+            </div>
 
 
-                <div class="card-footer small text-muted">
-                    <?php
+            <div class="card-footer small text-muted">
+                <?php
                     date_default_timezone_set("Africa/Nairobi");
                     echo "Generated: " . date("h:i:sa");
-                    ?>
+                ?>
+            </div>
+        </div>
+
+
+    <?php
+                } else {
+    ?>
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fas fa-table"></i>
+                Cash-Out Transaction History
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Transaction #</th>
+                                <th>GCash Mobile Number</th>
+                                <th>From Ticket</th>
+                                <th>To Peso</th>
+                                <th>Process. Fee</th>
+                                <th>Reference Number</th>
+                                <th>Method Type</th>
+                                <th>Date and Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $user_id = $userid; // Replace with the desired user ID
+                            $stmt = $db->prepare("SELECT c.*
+                        FROM cico c
+                        INNER JOIN user_profile up ON c.user_id = up.user_id
+                        WHERE c.user_id = ? AND c.trans_type = 'cash-out' AND c.trans_stat = 'Successful'
+                        ORDER BY c.cico_id");
+
+                            $stmt->bind_param("i", $user_id);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
+                            $count = 1;
+                            $totalTicketAmount = 0;
+                            $totalPesoAmount = 0;
+                            $totalProcessingFee = 0;
+
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<tr>";
+                                echo "<td>" . $count . "</td>";
+                                echo "<td>" . $row['gcash_mobile_number'] . "</td>";
+                                echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
+                                echo "<td>₱ " . number_format($row['peso_amount'], 2) . "</td>";
+                                echo "<td>₱ " . number_format($row['processing_fee'], 2) . "</td>";
+                                echo "<td>" . $row['reference_number'] . "</td>";
+                                echo "<td>" . $row['method_type'] . "</td>";
+                                echo "<td>" . $row['created_at'] . "</td>";
+                                echo "</tr>";
+                                $count++;
+                                $totalTicketAmount += $row['ticket_amount'];
+                                $totalPesoAmount += $row['peso_amount'];
+                                $totalProcessingFee += $row['processing_fee'];
+                            }
+                            ?>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2"><b>Total Amount</b></td>
+                                <td><?php echo number_format($totalTicketAmount, 2); ?></td>
+                                <td><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
+                                <td><?php echo "₱ " . number_format($totalProcessingFee, 2); ?></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+
+
+
+                    </table>
+
                 </div>
             </div>
-        <?php
-                }
-        ?>
 
 
-        <!-- /.container-fluid -->
-
-        <!-- Sticky Footer -->
-        <?php include("vendor/inc/footer.php"); ?>
-
+            <div class="card-footer small text-muted">
+                <?php
+                    date_default_timezone_set("Africa/Nairobi");
+                    echo "Generated: " . date("h:i:sa");
+                ?>
+            </div>
         </div>
-        <!-- /.content-wrapper -->
+    <?php
+                }
+    ?>
+
+
+    <!-- /.container-fluid -->
+
+    <!-- Sticky Footer -->
+    <?php include("vendor/inc/footer.php"); ?>
+
+    </div>
+    <!-- /.content-wrapper -->
 
     </div>
     <!-- /#wrapper -->

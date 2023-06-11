@@ -101,22 +101,23 @@ if (isset($_POST['submit'])) {
 
             <div class="container-fluid">
 
-                <!-- Breadcrumbs-->
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="#">Transactions</a>
-                    </li>
-                    <li class="breadcrumb-item active">Cash-In History</li>
-                </ol>
 
                 <?php
-                if ($_SESSION['role'] == "City Admin") {
+                if ($_SESSION['role'] == "City Admin" || $_SESSION['role'] == "Main Admin") {
                 ?>
+                    <!-- Breadcrumbs-->
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">Transactions</a>
+                        </li>
+                        <li class="breadcrumb-item active">Payments</li>
+                    </ol>
+
                     <!--Bookings-->
                     <div class="card mb-3">
                         <div class="card-header">
                             <i class="fas fa-table"></i>
-                            Cash-In Transaction History
+                            Payments History
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -124,66 +125,63 @@ if (isset($_POST['submit'])) {
                                     <thead>
                                         <tr>
                                             <th>Transaction #</th>
-                                            <th>Name</th>
-                                            <th>GCash Mobile Number</th>
-                                            <th>From Peso Amount</th>
-                                            <th>To Ticket Amount</th>
-                                            <th>Conv. Fee</th>
-                                            <th>Reference Number</th>
-                                            <th>Method Type</th>
-                                            <th>Date and Time</th>
+                                            <th>Payment From</th>
+                                            <th>Destination</th>
+                                            <th>Ticket Amount</th>
+                                            <th>Payment To</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $query = "SELECT cico.*, user_profile.*
-                                                FROM cico
-                                                INNER JOIN user_profile ON cico.user_id = user_profile.user_id
-                                                WHERE cico.peso_amount > 0
-                                                AND cico.trans_type = 'cash-in'
-                                                AND cico.trans_stat = 'Successful'
-                                                ORDER BY cico.created_at ASC";
+                                        $query = "SELECT p.*, b.booking_id, u.first_name, u.last_name, r.dropoff_loc
+                                        FROM payment p
+                                        INNER JOIN booking b ON p.booking_id = b.booking_id
+                                        INNER JOIN seat s ON b.seat_id = s.seat_id
+                                        INNER JOIN route r ON s.route_id = r.route_id
+                                        INNER JOIN user_profile u ON b.user_id = u.user_id
+                                        WHERE p.payment_status = 'Paid'
+                                        ORDER BY p.created_at ASC";
 
                                         $stmt = $db->prepare($query);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
+                                        $count = 1;
+
                                         $totalPesoAmount = 0;
                                         $totalTicketAmount = 0;
                                         $totalConvenienceFee = 0;
-                                        $count = 1;
 
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
                                             echo "<td>" . $count . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td>" . $row['gcash_mobile_number'] . "</td>";
-                                            echo "<td>₱ " . number_format($row['peso_amount'], 2) . "</td>";
-                                            echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
-                                            echo "<td>₱ " . number_format($row['convenience_fee'], 2) . "</td>";
-                                            echo "<td>" . $row['reference_number'] . "</td>";
-                                            echo "<td>" . $row['method_type'] . "</td>";
-                                            echo "<td>" . $row['created_at'] . "</td>";
+                                            echo "<td>" . $row['dropoff_loc'] . "</td>";
+                                            echo "<td>₱ " . number_format($row['ticket_amount'], 2) . "</td>";
+                                            echo "<td>" . $row['payment_to'] . "</td>";
+                                            echo "<td>" . $row['payment_status'] . "</td>";
+                                            echo "<td>" . $row['date'] . "</td>";
                                             echo "</tr>";
-                                            $totalPesoAmount += $row['peso_amount'];
+
+                                            $totalPesoAmount += $row['ticket_amount'];
                                             $totalTicketAmount += $row['ticket_amount'];
-                                            $totalConvenienceFee += $row['convenience_fee'];
                                             $count++;
                                         }
                                         ?>
-                                    </tbody>
+
+                                        <!-- ... your HTML code ... -->
+
                                     <tfoot>
                                         <tr>
                                             <td colspan="3"><b>Total Amount</b></td>
-                                            <td colspan="1"><?php echo "₱" . " " . number_format($totalPesoAmount, 2); ?></td>
+                                            <td colspan="1"><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
                                             <td colspan="1"><?php echo number_format($totalTicketAmount, 2); ?></td>
-
-                                            <td><?php echo "₱" . " " . number_format($totalConvenienceFee, 2); ?></td>
-                                            <td></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
-
                                     </tfoot>
+
                                 </table>
 
                             </div>
@@ -197,13 +195,21 @@ if (isset($_POST['submit'])) {
                     </div>
 
                 <?php
-                } else if ($_SESSION['role'] == "Main Admin") {
+                } else if ($_SESSION['role'] == 'Passenger') {
                 ?>
+                    <!-- Breadcrumbs-->
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">Transactions</a>
+                        </li>
+                        <li class="breadcrumb-item active">Payments</li>
+                    </ol>
+
                     <!--Bookings-->
                     <div class="card mb-3">
                         <div class="card-header">
                             <i class="fas fa-table"></i>
-                            Cash-In Transaction History
+                            Payments History
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -211,66 +217,65 @@ if (isset($_POST['submit'])) {
                                     <thead>
                                         <tr>
                                             <th>Transaction #</th>
-                                            <th>Name</th>
-                                            <th>GCash Mobile Number</th>
-                                            <th>From Peso Amount</th>
-                                            <th>To Ticket Amount</th>
-                                            <th>Conv. Fee</th>
-                                            <th>Reference Number</th>
-                                            <th>Method Type</th>
-                                            <th>Date and Time</th>
+                                            <th>Payment From</th>
+                                            <th>Destination</th>
+                                            <th>Ticket Amount</th>
+                                            <th>Payment To</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $query = "SELECT cico.*, user_profile.*
-                                                    FROM cico
-                                                    INNER JOIN user_profile ON cico.user_id = user_profile.user_id
-                                                    WHERE cico.peso_amount > 0
-                                                    AND cico.trans_type = 'cash-in'
-                                                    AND cico.trans_stat = 'Successful'
-                                                    ORDER BY cico.created_at ASC";
+                                        $user_id = $_SESSION['user_id'];
+                                        $query = "SELECT p.*, b.booking_id, u.first_name, u.last_name, r.dropoff_loc
+                                               FROM payment p
+                                               INNER JOIN booking b ON p.booking_id = b.booking_id
+                                               INNER JOIN seat s ON b.seat_id = s.seat_id
+                                               INNER JOIN route r ON s.route_id = r.route_id
+                                               INNER JOIN user_profile u ON b.user_id = u.user_id
+                                               WHERE p.payment_status = 'Paid' AND b.user_id = $user_id
+                                               ORDER BY p.created_at ASC";
+
 
                                         $stmt = $db->prepare($query);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
+                                        $count = 1;
+
                                         $totalPesoAmount = 0;
                                         $totalTicketAmount = 0;
                                         $totalConvenienceFee = 0;
-                                        $count = 1;
 
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
                                             echo "<td>" . $count . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                            echo "<td>" . $row['gcash_mobile_number'] . "</td>";
-                                            echo "<td>₱ " . number_format($row['peso_amount'], 2) . "</td>";
-                                            echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
-                                            echo "<td>₱ " . number_format($row['convenience_fee'], 2) . "</td>";
-                                            echo "<td>" . $row['reference_number'] . "</td>";
-                                            echo "<td>" . $row['method_type'] . "</td>";
-                                            echo "<td>" . $row['created_at'] . "</td>";
+                                            echo "<td>" . $row['dropoff_loc'] . "</td>";
+                                            echo "<td>₱ " . number_format($row['ticket_amount'], 2) . "</td>";
+                                            echo "<td>" . $row['payment_to'] . "</td>";
+                                            echo "<td>" . $row['payment_status'] . "</td>";
+                                            echo "<td>" . $row['date'] . "</td>";
                                             echo "</tr>";
-                                            $totalPesoAmount += $row['peso_amount'];
+
+                                            $totalPesoAmount += $row['ticket_amount'];
                                             $totalTicketAmount += $row['ticket_amount'];
-                                            $totalConvenienceFee += $row['convenience_fee'];
                                             $count++;
                                         }
                                         ?>
-                                    </tbody>
+
+                                        <!-- ... your HTML code ... -->
+
                                     <tfoot>
                                         <tr>
                                             <td colspan="3"><b>Total Amount</b></td>
-                                            <td colspan="1"><?php echo "₱" . " " . number_format($totalPesoAmount, 2); ?></td>
+                                            <td colspan="1"><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
                                             <td colspan="1"><?php echo number_format($totalTicketAmount, 2); ?></td>
-
-                                            <td><?php echo "₱" . " " . number_format($totalConvenienceFee, 2); ?></td>
-                                            <td></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
-
                                     </tfoot>
+
                                 </table>
 
                             </div>
@@ -284,13 +289,21 @@ if (isset($_POST['submit'])) {
                     </div>
 
                 <?php
-                } else {
+                } else if ($_SESSION['role'] == 'Driver') {
                 ?>
+                    <!-- Breadcrumbs-->
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">Transactions</a>
+                        </li>
+                        <li class="breadcrumb-item active">Payments</li>
+                    </ol>
+
                     <!--Bookings-->
                     <div class="card mb-3">
                         <div class="card-header">
                             <i class="fas fa-table"></i>
-                            Cash-In Transaction History
+                            Payments History
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -298,95 +311,87 @@ if (isset($_POST['submit'])) {
                                     <thead>
                                         <tr>
                                             <th>Transaction #</th>
-                                            <th>GCash Mobile Number</th>
-                                            <th>From Peso</th>
-                                            <th>To Ticket</th>
-                                            <th>Conv. Fee</th>
-                                            <th>Reference Number</th>
-                                            <th>Method Type</th>
-                                            <th>Date and Time</th>
+                                            <th>Payment From</th>
+                                            <th>Destination</th>
+                                            <th>Ticket Amount</th>
+                                            <th>Payment To</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $user_id = $userid; // Replace with the desired user ID
+                                        $user_id = $_SESSION['user_id'];
+                                        $query = "SELECT p.*, b.booking_id, u.first_name, u.last_name, r.dropoff_loc
+                                        FROM payment p
+                                        INNER JOIN booking b ON p.booking_id = b.booking_id
+                                        INNER JOIN user_profile u ON b.user_id = u.user_id
+                                        INNER JOIN seat s ON b.seat_id = s.seat_id
+                                        INNER JOIN route r ON s.route_id = r.route_id
+                                        INNER JOIN car c ON r.car_id = c.car_id
+                                        WHERE p.payment_status = 'Paid' AND c.user_id = $user_id
+                                        ORDER BY p.created_at ASC";
 
-                                        $stmt = $db->prepare("SELECT c.cico_id, c.gcash_mobile_number, c.peso_amount, c.ticket_amount, c.convenience_fee, c.reference_number, c.method_type, c.created_at, c.trans_stat
-                                                FROM cico c
-                                                INNER JOIN user_profile up ON c.user_id = up.user_id
-                                                WHERE c.user_id = ? AND c.trans_type = 'cash-in' AND c.trans_stat = 'Successful'
-                                                ORDER BY c.cico_id");
-
-                                        $stmt->bind_param("i", $user_id);
+                                        $stmt = $db->prepare($query);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
-                                        $count = 1; // Initialize the count variable
+                                        $count = 1;
 
-                                        $totalPesoAmount = 0; // Initialize the total peso amount variable
-                                        $totalTicketAmount = 0; // Initialize the total ticket amount variable
-                                        $totalConvenienceFee = 0; // Initialize the total convenience fee variable
+                                        $totalPesoAmount = 0;
+                                        $totalTicketAmount = 0;
+                                        $totalConvenienceFee = 0;
 
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
-                                            echo "<td>" . $count . "</td>"; // Display the incrementing number
-                                            echo "<td>" . $row['gcash_mobile_number'] . "</td>";
-                                            echo "<td>₱ " . number_format($row['peso_amount'], 2) . "</td>";
-                                            echo "<td>" . $row['ticket_amount'] . "</td>";
-                                            echo "<td>₱ " . number_format($row['convenience_fee'], 2) . "</td>";
-                                            echo "<td>" . $row['reference_number'] . "</td>";
-                                            echo "<td>" . $row['method_type'] . "</td>";
-                                            echo "<td>" . $row['created_at'] . "</td>";
+                                            echo "<td>" . $count . "</td>";
+                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                                            echo "<td>" . $row['dropoff_loc'] . "</td>";
+                                            echo "<td>₱ " . number_format($row['ticket_amount'], 2) . "</td>";
+                                            echo "<td>" . $row['payment_to'] . "</td>";
+                                            echo "<td>" . $row['payment_status'] . "</td>";
+                                            echo "<td>" . $row['date'] . "</td>";
                                             echo "</tr>";
-                                            $count++; // Increment the count variable
-                                            $totalPesoAmount += $row['peso_amount'];
+
+                                            $totalPesoAmount += $row['ticket_amount'];
                                             $totalTicketAmount += $row['ticket_amount'];
-                                            $totalConvenienceFee += $row['convenience_fee'];
+                                            $count++;
                                         }
                                         ?>
-                                    </tbody>
+
+                                        <!-- ... your HTML code ... -->
+
                                     <tfoot>
                                         <tr>
-                                            <td colspan="2"><b>Total</b></td>
-                                            <td><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
-                                            <td><?php echo $totalTicketAmount; ?></td>
-                                            <td><?php echo "₱ " . number_format($totalConvenienceFee, 2); ?></td>
-                                            <td></td>
+                                            <td colspan="3"><b>Total Amount</b></td>
+                                            <td colspan="1"><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
+                                            <td colspan="1"><?php echo number_format($totalTicketAmount, 2); ?></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
                                     </tfoot>
+
                                 </table>
-
-
 
                             </div>
                         </div>
+                        <div class="card-footer small text-muted">
+                            <?php
+                            date_default_timezone_set("Africa/Nairobi");
+                            echo "Generated: " . date("h:i:sa");
+                            ?>
+                        </div>
                     </div>
 
-
-
-
-                    <div class="card-footer small text-muted">
-                        <?php
-                        date_default_timezone_set("Africa/Nairobi");
-                        echo "Generated: " . date("h:i:sa");
-                        ?>
-                    </div>
+                <?php
+                }
+                ?>
             </div>
 
 
+            <!-- /.container-fluid -->
 
-        <?php
-                }
-        ?>
-
-
-
-
-        <!-- /.container-fluid -->
-
-        <!-- Sticky Footer -->
-        <?php include("vendor/inc/footer.php"); ?>
+            <!-- Sticky Footer -->
+            <?php include("vendor/inc/footer.php"); ?>
 
         </div>
         <!-- /.content-wrapper -->

@@ -105,8 +105,7 @@ $userid = $_SESSION['user_id'];
                             <br><br>
                             <?php
                             if (isset($_POST['submit'])) {
-                                // Retrieve the user's account balance
-                                $availableBalance = 0.00; // Default value
+                                $availableBalance = 0.00; 
                                 if (isset($userid)) {
                                     $stmt = $db->prepare("SELECT ticket_balance, role FROM user_profile WHERE user_id = ?");
                                     $stmt->bind_param("i", $userid);
@@ -120,8 +119,7 @@ $userid = $_SESSION['user_id'];
                                     $stmt->close();
                                 }
 
-                                // Calculate the processing fee based on the cash-out amount
-                                $amount = $_POST['amount'] ?? 0; // Retrieve the entered amount
+                                $amount = $_POST['amount'] ?? 0; 
                                 $processingFee = ceil($amount / 1000) * 20;
 
                                 echo '<div style="text-align: center; margin-bottom: 20px;">';
@@ -129,13 +127,12 @@ $userid = $_SESSION['user_id'];
                                 echo '<div><strong>Processing Fee:</strong> ' . $processingFee . '</div>';
                                 echo '</div>';
 
-                                // Convert the account balance to available tickets
-                                $ticketValue = 1; // 1 ticket = 1 peso
+                                $ticketValue = 1;
                                 $availableTickets = floor($availableBalance / $ticketValue);
 
                                 $mobileNo = $_POST['mobile_no'];
-                                $reference = ""; // Define the reference number
-                                $status = 'Pending'; // Set initial status as 'Pending'
+                                $reference = ""; 
+                                $status = 'Pending'; 
 
                                 if ($role === 'Driver') {
                                     if ($amount + $processingFee > $availableTickets) {
@@ -143,7 +140,6 @@ $userid = $_SESSION['user_id'];
                                                <h5 style="color: red; font-size:16px;">Insufficient ticket balance for cash-out!</h5>
                                            </div>';
                                     } else {
-                                        // Deduct the cash-out amount from the ticket_balance
                                         $newBalance = $availableBalance - ($amount + $processingFee);
 
                                         $stmt = $db->prepare("UPDATE user_profile SET ticket_balance = ? WHERE user_id = ?");

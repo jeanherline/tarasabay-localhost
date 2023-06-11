@@ -113,7 +113,7 @@ if ($result->num_rows == 1) {
                                                 INNER JOIN user_profile up ON c.user_id = up.user_id
                                                 INNER JOIN seat s ON r.route_id = s.route_id
                                                 INNER JOIN booking b ON s.seat_id = b.seat_id
-                                                WHERE c.user_id = ? AND r.route_status = 'Active' AND b.booking_status = 'Pending'";
+                                                WHERE c.user_id = ?  AND b.booking_status = 'Pending'";
 
                                         $stmt = $db->prepare($ret);
                                         $stmt->bind_param("i", $user_id);
@@ -151,14 +151,14 @@ if ($result->num_rows == 1) {
                                                 <a href='approvePassengerBooking.php?user_id=" . $passenger_user_id . "&route_id=" . $row['route_id'] . "&list=PendingBooking&seat_id=" . $seat_id . "'>
                                                     <button>&nbsp;&nbsp;<i class='fa fa-check'></i>&nbsp;Approve&nbsp;&nbsp;</button>
                                                 </a>
+                                                <a href='declinePassengerBooking.php?user_id=" . $passenger_user_id . "&route_id=" . $row['route_id'] . "&list=PendingBooking&seat_id=" . $seat_id . "'>
+                                                <button>&nbsp;&nbsp;<i class='fa fa-ban'></i>&nbsp;Decline&nbsp;&nbsp;</button>
+                                            </a>
                                             </td>";
                                             echo "</tr>";
                                             $cnt++;
                                         }
                                         ?>
-
-
-
                                     </tbody>
 
                                 </table>
@@ -233,6 +233,17 @@ if ($result->num_rows == 1) {
                                         while ($row = $result->fetch_assoc()) {
                                             $seat_id = $row['seat_id'];
 
+                                            // Fetch the passenger's user_id from the seat table
+                                            $passenger_user_id = null;
+                                            $seat_user_id_query = "SELECT user_id FROM booking WHERE seat_id = ?";
+                                            $seat_stmt = $db->prepare($seat_user_id_query);
+                                            $seat_stmt->bind_param("i", $seat_id);
+                                            $seat_stmt->execute();
+                                            $seat_result = $seat_stmt->get_result();
+                                            if ($seat_row = $seat_result->fetch_assoc()) {
+                                                $passenger_user_id = $seat_row['user_id'];
+                                            }
+
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
@@ -251,9 +262,6 @@ if ($result->num_rows == 1) {
                                             $cnt++;
                                         }
                                         ?>
-
-
-
                                     </tbody>
                                 </table>
 
@@ -312,7 +320,7 @@ if ($result->num_rows == 1) {
                                                 INNER JOIN user_profile up ON c.user_id = up.user_id
                                                 INNER JOIN seat s ON r.route_id = s.route_id
                                                 INNER JOIN booking b ON s.seat_id = b.seat_id
-                                                WHERE c.user_id = ? AND b.booking_status = 'Done'";
+                                                WHERE c.user_id = ? AND r.route_status = 'Done'";
 
                                         $stmt = $db->prepare($ret);
                                         $stmt->bind_param("i", $user_id);
@@ -322,6 +330,17 @@ if ($result->num_rows == 1) {
 
                                         while ($row = $result->fetch_assoc()) {
                                             $seat_id = $row['seat_id'];
+
+                                            // Fetch the passenger's user_id from the seat table
+                                            $passenger_user_id = null;
+                                            $seat_user_id_query = "SELECT user_id FROM booking WHERE seat_id = ?";
+                                            $seat_stmt = $db->prepare($seat_user_id_query);
+                                            $seat_stmt->bind_param("i", $seat_id);
+                                            $seat_stmt->execute();
+                                            $seat_result = $seat_stmt->get_result();
+                                            if ($seat_row = $seat_result->fetch_assoc()) {
+                                                $passenger_user_id = $seat_row['user_id'];
+                                            }
 
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
@@ -333,7 +352,7 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
                                             echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
                                             echo "<td>
-                                                <a href='viewRoute.php?user_id=" . $user_id . "&route_id=" . $row['route_id'] . "&list=PendingBooking&car_id=" . $row['car_id'] . "'>
+                                                <a href='viewRoute.php?user_id=" . $user_id . "&route_id=" . $row['route_id'] . "&list=PreviousBooking&car_id=" . $row['car_id'] . "'>
                                                     <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
                                             </td>";
@@ -341,9 +360,6 @@ if ($result->num_rows == 1) {
                                             $cnt++;
                                         }
                                         ?>
-
-
-
                                     </tbody>
                                 </table>
 
@@ -414,6 +430,17 @@ if ($result->num_rows == 1) {
                                         while ($row = $result->fetch_assoc()) {
                                             $seat_id = $row['seat_id'];
 
+                                            // Fetch the passenger's user_id from the seat table
+                                            $passenger_user_id = null;
+                                            $seat_user_id_query = "SELECT user_id FROM booking WHERE seat_id = ?";
+                                            $seat_stmt = $db->prepare($seat_user_id_query);
+                                            $seat_stmt->bind_param("i", $seat_id);
+                                            $seat_stmt->execute();
+                                            $seat_result = $seat_stmt->get_result();
+                                            if ($seat_row = $seat_result->fetch_assoc()) {
+                                                $passenger_user_id = $seat_row['user_id'];
+                                            }
+
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
@@ -432,12 +459,8 @@ if ($result->num_rows == 1) {
                                             $cnt++;
                                         }
                                         ?>
-
-
-
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                         <div class="card-footer small text-muted">

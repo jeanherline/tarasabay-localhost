@@ -98,7 +98,7 @@ if ($result->num_rows == 1) {
                                             <th>Drop-off Location</th>
                                             <th>Seat Type</th>
                                             <th>Fare</th>
-                                            <th>Booking Status</th>
+                                            <th>Route Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -106,11 +106,12 @@ if ($result->num_rows == 1) {
                                         <?php
                                         $user_id = $_SESSION['user_id'];
                                         $ret = "SELECT s.*, b.*, up.*, r.*
-                                            FROM seat s
-                                            INNER JOIN booking b ON s.seat_id = b.seat_id
-                                            INNER JOIN user_profile up ON b.user_id = up.user_id
-                                            INNER JOIN route r ON s.route_id = r.route_id
-                                            WHERE b.user_id = ? AND b.booking_status = 'Pending' OR b.booking_status = 'Approved'";
+                                                FROM seat s
+                                                INNER JOIN booking b ON s.seat_id = b.seat_id
+                                                INNER JOIN user_profile up ON b.user_id = up.user_id
+                                                INNER JOIN route r ON s.route_id = r.route_id
+                                                WHERE b.user_id = ? AND (b.booking_status = 'Pending' OR b.booking_status = 'Approved'
+                                                OR b.booking_status = 'Picked-up')";
                                         $stmt = $db->prepare($ret);
                                         $stmt->bind_param("i", $user_id);
                                         $stmt->execute();
@@ -124,22 +125,47 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
                                             echo "<td>" . $row['seat_type'] . "</td>";
                                             echo "<td>" . $row['fare'] . "</td>";
-                                            echo "<td>" . $row['booking_status'] . "</td>";
-                                            echo "<td>
-                                            <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
-                                                <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
-                                            </a>
-                                            <a href='cancelPassengerRoute.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to cancel?')\">
-                                                <button>&nbsp;&nbsp;<i class='fa fa-ban'></i>&nbsp;Cancel&nbsp;&nbsp;</button>
-                                            </a>
-                                        </td>";
-                                    
+                                            echo "<td>" . $row['route_status'] . "</td>";
+                                            echo "<td>";
+
+                                            if ($row['route_status'] == 'Start' && $row['booking_status'] == 'Picked-up') {
+                                                echo "
+                                                                        <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                                        </a>
+                                                                        <a href='droppedoff.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&list=passengerBooking.php?list=Booked" . "&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to mark as picked-up?')\">
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Dropped-Off&nbsp;&nbsp;</button>
+                                                                        </a>
+                                                                        ";
+                                            } else if ($row['route_status'] == 'Start' && $row['booking_status'] == 'Dropped-off') {
+                                                echo "
+                                                                        <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                                        </a>
+                                                                        ";
+                                            } else if ($row['route_status'] == 'Start' && $row['booking_status'] == 'Approved') {
+                                                echo "
+                                                                        <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                                        </a>
+                                                                        <a href='pickedup.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&list=passengerBooking.php?list=Booked" . "&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to mark as picked-up?')\">
+                                                                        <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Picked-Up&nbsp;&nbsp;</button>
+                                                                    </a>";
+                                            } else {
+                                                echo "
+                                                                        <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                                        </a>
+                                                                        <a href='cancelPassengerRoute.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to cancel?')\">
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-ban'></i>&nbsp;Cancel&nbsp;&nbsp;</button>
+                                                                        </a>";
+                                            }
+                                            echo "</td>";
                                             echo "</tr>";
                                             $cnt++;
                                         }
                                         ?>
                                     </tbody>
-
                                 </table>
                             </div>
                         </div>
@@ -167,7 +193,104 @@ if ($result->num_rows == 1) {
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Pick-up Location</th>
+                                            <th>Drop-off Location</th>
+                                            <th>Seat Type</th>
+                                            <th>Fare</th>
+                                            <th>Route Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $user_id = $_SESSION['user_id'];
+                                        $ret = "SELECT s.*, b.*, up.*, r.*
+                                                FROM seat s
+                                                INNER JOIN booking b ON s.seat_id = b.seat_id
+                                                INNER JOIN user_profile up ON b.user_id = up.user_id
+                                                INNER JOIN route r ON s.route_id = r.route_id
+                                                WHERE b.user_id = ? AND r.route_status = 'Done'";
+                                        $stmt = $db->prepare($ret);
+                                        $stmt->bind_param("i", $user_id);
+                                        $stmt->execute();
+                                        $result = $stmt->get_result();
+                                        $cnt = 1;
+                                        while ($row = $result->fetch_assoc()) {
+                                            $booking_id = $row['booking_id'];
+
+                                            // Check if the booking_id exists in the review table
+                                            $review_query = "SELECT * FROM review WHERE booking_id = ?";
+                                            $review_stmt = $db->prepare($review_query);
+                                            $review_stmt->bind_param("i", $booking_id);
+                                            $review_stmt->execute();
+                                            $review_result = $review_stmt->get_result();
+                                            $review_exists = $review_result->num_rows > 0;
+
+                                            echo "<tr>";
+                                            echo "<td>" . $cnt . "</td>";
+                                            echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . $row['seat_type'] . "</td>";
+                                            echo "<td>" . $row['fare'] . "</td>";
+                                            echo "<td>" . $row['route_status'] . "</td>";
+                                            echo "<td>";
+
+                                            // Output different button based on review existence
+                                            if ($review_exists) {
+                                                echo "<a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                            </a>
+                                            <button disabled>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Write A Driver Review&nbsp;&nbsp;</button>";
+                                            } else {
+                                                echo "<td>
+                                                <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                </a>
+                                                <a href='writeReview.php?booking_id=" . $row['booking_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                    <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Write A Driver Review&nbsp;&nbsp;</button>
+                                                </a>";
+                                            }
+
+                                            echo "</td>";
+                                            echo "</tr>";
+                                            $cnt++;
+                                        }
+                                        ?>
+
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer small text-muted">
+                            <?php
+                            date_default_timezone_set("Africa/Nairobi");
+                            echo "Generated : " . date("h:i:sa");
+                            ?>
+                        </div>
+                    </div>
+                <?php
+                } else if (isset($_GET['list']) && $_GET['list'] === 'Cancelled') {
+                ?>
+                    <!-- Breadcrumbs-->
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">Routes</a>
+                        </li>
+                        <li class="breadcrumb-item active">Cancelled Bookings</li>
+                    </ol>
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="fas fa-table"></i>
+                            Cancelled Bookings
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -183,11 +306,11 @@ if ($result->num_rows == 1) {
                                         <?php
                                         $user_id = $_SESSION['user_id'];
                                         $ret = "SELECT s.*, b.*, up.*, r.*
-                                            FROM seat s
-                                            INNER JOIN booking b ON s.seat_id = b.seat_id
-                                            INNER JOIN user_profile up ON b.user_id = up.user_id
-                                            INNER JOIN route r ON s.route_id = r.route_id
-                                            WHERE b.user_id = ? AND b.booking_status = 'Previous'";
+                                                FROM seat s
+                                                INNER JOIN booking b ON s.seat_id = b.seat_id
+                                                INNER JOIN user_profile up ON b.user_id = up.user_id
+                                                INNER JOIN route r ON s.route_id = r.route_id
+                                                WHERE b.user_id = ? AND b.booking_status = 'Cancelled'";
                                         $stmt = $db->prepare($ret);
                                         $stmt->bind_param("i", $user_id);
                                         $stmt->execute();
@@ -202,11 +325,10 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . $row['fare'] . "</td>";
                                             echo "<td>" . $row['booking_status'] . "</td>";
                                             echo "<td>
-                                            <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
-                                                <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
-                                            </a>
-                                        </td>";
-                                    
+                                                <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                </a>
+                                            </td>";
                                             echo "</tr>";
                                             $cnt++;
                                         }
@@ -224,78 +346,6 @@ if ($result->num_rows == 1) {
                         </div>
                     </div>
                 <?php
-                } else if (isset($_GET['list']) && $_GET['list'] === 'Cancelled') {
-                    ?>
-                        <!-- Breadcrumbs-->
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a href="#">Routes</a>
-                            </li>
-                            <li class="breadcrumb-item active">Cancelled Bookings</li>
-                        </ol>
-                        <div class="card mb-3">
-                            <div class="card-header">
-                                <i class="fas fa-table"></i>
-                                Cancelled Bookings
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Pick-up Location</th>
-                                                <th>Drop-off Location</th>
-                                                <th>Seat Type</th>
-                                                <th>Fare</th>
-                                                <th>Booking Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $user_id = $_SESSION['user_id'];
-                                            $ret = "SELECT s.*, b.*, up.*, r.*
-                                                FROM seat s
-                                                INNER JOIN booking b ON s.seat_id = b.seat_id
-                                                INNER JOIN user_profile up ON b.user_id = up.user_id
-                                                INNER JOIN route r ON s.route_id = r.route_id
-                                                WHERE b.user_id = ? AND b.booking_status = 'Cancelled'";
-                                            $stmt = $db->prepare($ret);
-                                            $stmt->bind_param("i", $user_id);
-                                            $stmt->execute();
-                                            $result = $stmt->get_result();
-                                            $cnt = 1;
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                echo "<td>" . $cnt . "</td>";
-                                                echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
-                                                echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
-                                                echo "<td>" . $row['seat_type'] . "</td>";
-                                                echo "<td>" . $row['fare'] . "</td>";
-                                                echo "<td>" . $row['booking_status'] . "</td>";
-                                                echo "<td>
-                                                <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
-                                                </a>
-                                            </td>";
-                                                echo "</tr>";
-                                                $cnt++;
-                                            }
-                                            ?>
-                                        </tbody>
-    
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="card-footer small text-muted">
-                                <?php
-                                date_default_timezone_set("Africa/Nairobi");
-                                echo "Generated : " . date("h:i:sa");
-                                ?>
-                            </div>
-                        </div>
-                    <?php
                 }
                 ?>
                 <!-- /.container-fluid -->

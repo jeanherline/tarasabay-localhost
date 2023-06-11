@@ -251,6 +251,31 @@ $userid = $_SESSION['user_id'];
                                     } else {
                                         echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Route Reservation Failed</h5></div>';
                                     }
+
+                                    // Check if all seats on the route are taken
+                                    $checkSeatsTakenSql = "SELECT COUNT(*) AS num_taken_seats FROM seat WHERE route_id = ?";
+                                    $stmt = $db->prepare($checkSeatsTakenSql);
+                                    $stmt->bind_param("i", $route_id);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    $row = $result->fetch_assoc();
+                                    $num_taken_seats = $row['num_taken_seats'];
+
+                                    // Get the total number of seats on the route
+                                    $getTotalSeatsSql = "SELECT COUNT(*) AS total_seats FROM seat WHERE route_id = ?";
+                                    $stmt = $db->prepare($getTotalSeatsSql);
+                                    $stmt->bind_param("i", $route_id);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    $row = $result->fetch_assoc();
+                                    $total_seats = $row['total_seats'];
+
+                                    if ($num_taken_seats >= $total_seats) {
+                                        $updateRouteStatusSql = "UPDATE route SET route_status = 'Fully Booked' WHERE route_id = ?";
+                                        $stmt = $db->prepare($updateRouteStatusSql);
+                                        $stmt->bind_param("i", $route_id);
+                                        $stmt->execute();
+                                    }
                                 }
                             }
                             ?>

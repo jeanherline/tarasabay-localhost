@@ -130,6 +130,15 @@ session_start();
                       $_SESSION['city_name'] = $city['city_name'];
                     }
 
+                    $stmt = $db->prepare("SELECT phone FROM emergency WHERE user_id = ?");
+                    $stmt->bind_param("i", $user['user_id']);
+                    $stmt->execute();
+                    $emergencyResult = $stmt->get_result();
+                    if ($emergencyResult->num_rows == 1) {
+                      $emergency = $emergencyResult->fetch_assoc();
+                      $_SESSION['emergency_phone'] = $emergency['phone'];
+                    }
+
                     $stmt = $db->prepare("SELECT * FROM user_identification WHERE user_id = ?");
                     $stmt->bind_param("i", $user['user_id']);
                     $stmt->execute();

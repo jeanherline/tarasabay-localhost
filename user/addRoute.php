@@ -94,7 +94,7 @@ $userid = $_SESSION['user_id'];
                                     <div class="card-body">
                                         <?php
                                         // Code for counting the previous routes by user ID
-                                        $result = $db->query("SELECT COUNT(*) FROM car INNER JOIN route ON car.car_id = route.car_id WHERE car.user_id = '$userid' AND route.route_status = 'Previous'");
+                                        $result = $db->query("SELECT COUNT(*) FROM car INNER JOIN route ON car.car_id = route.car_id WHERE car.user_id = '$userid' AND route.route_status = 'Done'");
                                         $previousRoutes = $result->fetch_row()[0];
                                         ?>
                                         <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fas fa-route"></i>&nbsp;&nbsp;<?php echo $previousRoutes; ?></span> Previous Routes</div>

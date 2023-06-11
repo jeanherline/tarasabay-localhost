@@ -94,7 +94,7 @@ $userid = $_SESSION['user_id'];
                                         </div>
                                         <?php
                                         // Code for counting the ticket balance by user ID
-                                        $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Approved' AND user_id = '$userid'");
+                                        $result = $db->query("SELECT COUNT(*) FROM car WHERE car_status = 'Active' AND user_id = '$userid'");
                                         $cars = $result->fetch_row()[0];
                                         ?>
                                         <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fa fa-car"></i>&nbsp;&nbsp;<?php echo $cars; ?></span> Registered Cars</div>

@@ -55,66 +55,45 @@ $userid = $_SESSION['user_id'];
                 <!-- Breadcrumbs-->
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="driverRoute.php?status=Active">Active Route</a>
+                        <a href="passengerBooking.php?list=Previous">Reviews</a>
                     </li>
-                    <li class="breadcrumb-item active">Cancel</li>
+                    <li class="breadcrumb-item active">Write A Driver Review</li>
                 </ol>
                 <hr>
                 <div class="card">
                     <div class="card-header">
-                        <b>Cancel Route</b>
+                        <b>Leave A Review</b>
                     </div>
                     <div class="card-body">
-                        <form method="POST" onsubmit="return confirm('Are you sure you want to cancel the route?\nNote: The 10 tickets for creating the route will not be refunded.\n');">
+                        <form method="POST">
+                            <?php
+                            if (isset($_GET['booking_id'])) {
+                                $booking_id = $_GET['booking_id'];
+                            }
+                            ?>
                             <div class="form-group">
-                                <label for="cancellation_reason">Cancellation Reason</label>
-                                <input type="text" class="form-control" name="cancellation_reason" placeholder="Enter Reason" required><br>
+                                <label for="comment">Comment</label>
+                                <textarea class="form-control" name="comment" itemid="comment" placeholder="Enter Comment" class="box" id="" cols="30" rows="10" maxlength="300" required></textarea>
                             </div>
                             <?php
                             if (isset($_POST['submit'])) {
-                                if (isset($_GET['user_id']) && isset($_GET['car_id']) && isset($_GET['route_id'])) {
-                                    $user_id = $_GET['user_id'];
-                                    $car_id = $_GET['car_id'];
-                                    $route_id = $_GET['route_id'];
+                                // Process form submission
+                                $comment = $_POST['comment'];
 
-                                    // Check if any seat associated with the route has been taken
-                                    $seat_taken = false;
-                                    $seat_query = "SELECT * FROM seat WHERE route_id = $route_id";
-                                    $seat_result = $db->query($seat_query);
-                                    if ($seat_result) {
-                                        while ($seat_row = $seat_result->fetch_assoc()) {
-                                            if ($seat_row['seat_status'] !== 'Available') {
-                                                $seat_taken = true;
-                                                break;
-                                            }
-                                        }
-                                        $seat_result->free();
-                                    }
-
-                                    if ($seat_taken) {
-                                        echo '<div style="text-align: center;"><h5 style="color: red; font-size: 18px;">Cancellation is not allowed as some seats have already been booked or the route is already cancelled.</h5></div>';
-                                    } else {
-                                        $status = "Cancelled";
-                                        $cancellation_reason = $_POST['cancellation_reason'];
-
-                                        // Update the route and seat status to Cancelled
-                                        $route_update_sql = "UPDATE route SET route_status = '$status', cancellation_reason = '$cancellation_reason' WHERE route_id = $route_id";
-                                        $route_result = $db->query($route_update_sql);
-
-                                        $seat_update_sql = "UPDATE seat SET seat_status = '$status' WHERE route_id = $route_id";
-                                        $seat_result = $db->query($seat_update_sql);
-
-                                        if ($route_result && $seat_result) {
-                                            echo '<div style="text-align: center;"><h5 style="color: green; font-size: 18px;">Route and associated seats have been cancelled.</h5>';
-                                        } else {
-                                            echo '<div style="text-align: center;"><h5 style="color: red; font-size: 18px;">Failed to cancel the route and associated seats.</h5></div>';
-                                        }
-                                    }
-                                }
+                                // Insert the comment into the review table
+                                $insertQuery = "INSERT INTO review (booking_id, comment) VALUES (?, ?)";
+                                $stmt = $db->prepare($insertQuery);
+                                $stmt->bind_param("is", $booking_id, $comment);
+                                $stmt->execute();
                             }
                             ?>
                             <button type="submit" name="submit" class="btn btn-success">Submit</button>
+                            <script>
+                                window.location.href = "passengerBooking.php?list=Previous";
+                            </script>
+
                         </form>
+
 
 
                         <!-- End Form -->
@@ -123,11 +102,11 @@ $userid = $_SESSION['user_id'];
                 </div>
 
                 <hr>
-                </div>
+            </div>
 
 
-                <!-- Sticky Footer -->
-                <?php include("vendor/inc/footer.php"); ?>
+            <!-- Sticky Footer -->
+            <?php include("vendor/inc/footer.php"); ?>
 
             <!-- /.content-wrapper -->
 

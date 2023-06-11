@@ -405,6 +405,63 @@ if ($result->num_rows == 1) {
                                 <input type="text" class="form-control disabled-input" value="<?php echo $seat_count ?>" name="seat_count" disabled><br>
                             </div>
                         </form>
+                        <br>
+                        <em>Reviews</em><br><br>
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <i class="fas fa-table"></i>
+                                Driver Booking Reviews
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>Comment</th>
+                                                <th>Date and Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $ret = "SELECT r.*, rev.comment, p.ticket_amount, p.payment_to, p.payment_status, up.first_name, up.last_name
+                                      FROM route r
+                                      INNER JOIN seat s ON r.route_id = s.route_id
+                                      INNER JOIN booking b ON s.seat_id = b.seat_id
+                                      INNER JOIN review rev ON b.booking_id = rev.booking_id
+                                      INNER JOIN payment p ON b.booking_id = p.booking_id
+                                      INNER JOIN user_profile up ON b.user_id = up.user_id
+                                      WHERE r.car_id = ?
+                                      ";
+                                            $stmt = $db->prepare($ret);
+                                            $stmt->bind_param("i", $car_id);
+                                            $stmt->execute();
+                                            $result = $stmt->get_result();
+                                            $cnt = 1;
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "<td>" . $cnt . "</td>";
+                                                echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                                                echo "<td>" . $row['comment'] . "</td>";
+                                                echo "<td>" . $row['created_at'] . "</td>";
+                                                echo "</tr>";
+                                                $cnt++;
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="card-footer small text-muted">
+                                <?php
+                                date_default_timezone_set("Africa/Nairobi");
+                                echo "Generated : " . date("h:i:sa");
+                                ?>
+                            </div>
+                        </div>
+                        <br>
                     </div>
                 </div>
             <?php
@@ -663,7 +720,63 @@ if ($result->num_rows == 1) {
                                 <input type="text" class="form-control disabled-input" value="<?php echo $seat_count ?>" name="seat_count" disabled><br>
                             </div>
                         </form>
+                        <br>
+                        <em>Reviews</em><br><br>
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <i class="fas fa-table"></i>
+                                Driver Booking Reviews
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>Comment</th>
+                                                <th>Date and Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $ret = "SELECT r.*, rev.comment, p.ticket_amount, p.payment_to, p.payment_status, up.first_name, up.last_name
+                                      FROM route r
+                                      INNER JOIN seat s ON r.route_id = s.route_id
+                                      INNER JOIN booking b ON s.seat_id = b.seat_id
+                                      INNER JOIN review rev ON b.booking_id = rev.booking_id
+                                      INNER JOIN payment p ON b.booking_id = p.booking_id
+                                      INNER JOIN user_profile up ON b.user_id = up.user_id
+                                      WHERE r.car_id = ?
+                                      ";
+                                            $stmt = $db->prepare($ret);
+                                            $stmt->bind_param("i", $car_id);
+                                            $stmt->execute();
+                                            $result = $stmt->get_result();
+                                            $cnt = 1;
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "<td>" . $cnt . "</td>";
+                                                echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                                                echo "<td>" . $row['comment'] . "</td>";
+                                                echo "<td>" . $row['created_at'] . "</td>";
+                                                echo "</tr>";
+                                                $cnt++;
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
+                            <div class="card-footer small text-muted">
+                                <?php
+                                date_default_timezone_set("Africa/Nairobi");
+                                echo "Generated : " . date("h:i:sa");
+                                ?>
+                            </div>
+                        </div>
+                        <br>
                     </div>
                 </div>
             <?php

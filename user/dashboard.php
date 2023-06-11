@@ -291,7 +291,9 @@ if ($result->num_rows == 1) {
                   FROM route
                   INNER JOIN car ON route.car_id = car.car_id
                   WHERE car.user_id = '$user_id'
-                  AND route.route_status = 'Active';
+                  AND route.route_status = 'Active' OR route.route_status = 'Fully Booked'
+                  OR route.route_status = 'Start' OR route.route_status = 'Picked-Up'
+                  OR route.route_status = 'Dropped-Off';
                   ");
                   $driver = $result->fetch_row()[0];
                   ?>
@@ -352,7 +354,7 @@ if ($result->num_rows == 1) {
           <div class="card mb-3">
             <div class="card-header">
               <i class="fas fa-table"></i>
-              Pending Bookings
+              Active Routes
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -360,46 +362,282 @@ if ($result->num_rows == 1) {
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>Name</th>
-                      <th>Seat Type</th>
-                      <th>Fare</th>
                       <th>Pickup Location</th>
                       <th>Drop-Off Location</th>
                       <th>Departure</th>
                       <th>Est Arrival Time</th>
+                      <th>Route Status</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php
                     $user_id = $_SESSION['user_id'];
-                    $ret = "SELECT r.*, up.first_name, up.last_name, s.seat_type, s.fare FROM route r
-                                                INNER JOIN car c ON r.car_id = c.car_id
-                                                INNER JOIN user_profile up ON r.car_id = up.user_id
-                                                INNER JOIN seat s ON r.route_id = s.route_id
-                                                INNER JOIN booking b ON s.seat_id = b.seat_id
-                                                WHERE (c.user_id = ? AND r.route_status = 'Active' AND b.booking_status = 'Pending')";
+                    $ret = "SELECT r.*, c.* 
+            FROM route AS r 
+            INNER JOIN car AS c ON r.car_id = c.car_id 
+            WHERE (c.user_id = ? AND r.route_status IN ('Active', 'Fully Booked', 'Start', 'Picked-up','Dropped-off'))
+            ORDER BY r.route_id";
                     $stmt = $db->prepare($ret);
                     $stmt->bind_param("s", $user_id);
                     $stmt->execute();
                     $result = $stmt->get_result();
                     $cnt = 1;
                     while ($row = $result->fetch_assoc()) {
+                      $car_id = $row['car_id'];
+                      $route_id = $row['route_id'];
+
+                      // Retrieve the total number of seats for the route
+                      $countSeatsSql = "SELECT COUNT(*) AS total_seats FROM seat WHERE route_id = ?";
+                      $stmt = $db->prepare($countSeatsSql);
+                      $stmt->bind_param("i", $route_id);
+                      $stmt->execute();
+                      $countResult = $stmt->get_result();
+                      $countRow = $countResult->fetch_assoc();
+                      $totalSeats = $countRow['total_seats'];
+
+                      // Check if all booking statuses of the seats in the route are 'Dropped-off'
+                      $checkBookingStatusSql = "SELECT COUNT(*) AS dropped_off_seats 
+                                            FROM seat 
+                                            INNER JOIN booking ON seat.seat_id = booking.seat_id 
+                                            WHERE seat.route_id = ? AND booking.booking_status = 'Dropped-off'";
+
+                      $stmt = $db->prepare($checkBookingStatusSql);
+                      $stmt->bind_param("i", $route_id);
+                      $stmt->execute();
+                      $bookingStatusResult = $stmt->get_result();
+                      $bookingStatusRow = $bookingStatusResult->fetch_assoc();
+                      $droppedOffSeats = $bookingStatusRow['dropped_off_seats'];
+
+                      // Check if all seats of the route are available
+                      $checkSeatsSql = "SELECT COUNT(*) AS available_seats 
+                                                                FROM seat 
+                                                                WHERE route_id = ? AND seat_status = 'Available'";
+                      $stmt = $db->prepare($checkSeatsSql);
+                      $stmt->bind_param("i", $route_id);
+                      $stmt->execute();
+                      $seatResult = $stmt->get_result();
+                      $seatRow = $seatResult->fetch_assoc();
+                      $availableSeats = $seatRow['available_seats'];
+
                       echo "<tr>";
                       echo "<td>" . $cnt . "</td>";
-                      echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                      echo "<td>" . $row['seat_type'] . "</td>";
-                      echo "<td>" . $row['fare'] . "</td>";
-                      echo "<td>" . $row['pickup_loc'] . "</td>";
-                      echo "<td>" . $row['dropoff_loc'] . "</td>";
-                      echo "<td>" . $row['departure'] . "</td>";
-                      echo "<td>" . $row['est_arrival_time'] . "</td>";
+                      echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
+                      echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
+                      echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
+                      echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
+                      echo "<td>" . $row['route_status'] . "</td>";
+
+                      echo "<td>";
+                      echo "<a href='viewRoute.php?user_id=" . $row['user_id'] . "&list=Active&route_id=" . $route_id . "'>
+                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                </a>";
+
+                      echo "<a onclick='return confirm(\"Are you sure you want to cancel the route?\")' href='cancelRoute.php?user_id=" . $row['user_id'] . "&car_id=" . $car_id . "&route_id=" . $route_id . "'>
+                                                    <button>&nbsp;&nbsp;<i class='fa fa-ban'></i>&nbsp;Cancel&nbsp;&nbsp;</button>
+                                                </a>";
+
+                      if ($availableSeats < $totalSeats && $row['route_status'] === 'Active') {
+                        echo "<button onclick='markRouteAsDone(" . $route_id . ");'>&nbsp;&nbsp;<i class='fa fa-check' style='color:red;'></i>&nbsp;Start&nbsp;&nbsp;</button>";
+                      } else if ($droppedOffSeats == $totalSeats && $row['route_status'] === 'Start') {
+                        echo "<a onclick='return confirm(\"Are you sure you want to mark the route as done?\")' href='doneRoute.php?list=dashboard.php&user_id=" . $row['user_id'] . "&car_id=" . $car_id . "&route_id=" . $route_id . "'>
+                                                <button>&nbsp;&nbsp;<i class='fa fa-check' style = 'color: green'></i>&nbsp;Done&nbsp;&nbsp;</button>
+                                            </a>";
+                      }
+
+
+                      echo "</td>";
+
                       echo "</tr>";
                       $cnt++;
                     }
                     ?>
                   </tbody>
 
+                </table>
+              </div>
+            </div>
+            <div class="card-footer small text-muted">
+              <?php
+              date_default_timezone_set("Africa/Nairobi");
+              echo "Generated : " . date("h:i:sa");
+              ?>
+            </div>
+          </div>
+        <?php
+        } elseif ($_SESSION['role'] == "Passenger") {
+          $user_id = $_SESSION['user_id'];
+
+        ?>
+          <!-- Icon Cards-->
+          <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-fw fa-ticket-alt"></i>
+                  </div>
+                  <?php
+                  $result = $db->query("SELECT ticket_balance FROM user_profile WHERE role = 'Passenger' AND user_id = $user_id");
+                  $passenger = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $passenger; ?></span> Wallet Tickets</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="cash-in.php">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-city"></i>
+                  </div>
+                  <?php
+                  $result = $db->query("SELECT COUNT(*) FROM booking WHERE user_id = $user_id AND booking_status = 'Approved'");
+                  $driver = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $driver; ?></span> Approved Bookings</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="driverRoute.php?status=Active">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-fw fa fa-car"></i>
+                  </div>
+                  <?php
+                  // Code for counting the number of pending cars with status "pending" by user ID
+                  $result = $db->query("SELECT COUNT(*) FROM booking WHERE user_id = $user_id AND booking_status = 'Done'");
+                  $vehicle = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $vehicle; ?></span> Previous Bookings</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="carReg.php?status=Active">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white" style="background-color: #EAAA00;">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-id-card"></i>
+                  </div>
+                  <?php
+                  $result = $db->query("SELECT COUNT(*) FROM booking WHERE user_id = $user_id AND booking_status = 'Cancelled'");
+                  $driver = $result->fetch_row()[0];
+                  ?>
+                  <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><?php echo $driver; ?></span> Cancelled Bookings</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" href="driverCars.php?list=Expired">
+                  <span class="float-left">View Details</span>
+                  <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fas fa-table"></i>
+              Active Routes
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Pick-up Location</th>
+                      <th>Drop-off Location</th>
+                      <th>Seat Type</th>
+                      <th>Fare</th>
+                      <th>Route Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                    $user_id = $_SESSION['user_id'];
+                    $ret = "SELECT s.*, b.*, up.*, r.*
+                                                FROM seat s
+                                                INNER JOIN booking b ON s.seat_id = b.seat_id
+                                                INNER JOIN user_profile up ON b.user_id = up.user_id
+                                                INNER JOIN route r ON s.route_id = r.route_id
+                                                WHERE b.user_id = ? AND (b.booking_status = 'Pending' OR b.booking_status = 'Approved'
+                                                OR b.booking_status = 'Picked-up' OR b.booking_status = 'Dropped-off')";
+                    $stmt = $db->prepare($ret);
+                    $stmt->bind_param("i", $user_id);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $cnt = 1;
+                    while ($row = $result->fetch_assoc()) {
+                      $seat_id = $row['seat_id'];
+                      echo "<tr>";
+                      echo "<td>" . $cnt . "</td>";
+                      echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
+                      echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
+                      echo "<td>" . $row['seat_type'] . "</td>";
+                      echo "<td>" . $row['fare'] . "</td>";
+                      echo "<td>" . $row['route_status'] . "</td>";
+                      echo "<td>";
+
+                      if ($row['route_status'] == 'Start' && $row['booking_status'] == 'Picked-up') {
+                        echo "
+                                                <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                </a>
+                                                <a href='droppedoff.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&list=passengerBooking.php?list=Booked" . "&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to mark as picked-up?')\">
+                                                    <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Dropped-Off&nbsp;&nbsp;</button>
+                                                </a>
+                                                ";
+                      } else if ($row['route_status'] == 'Start' && $row['booking_status'] == 'Dropped-off') {
+                        echo "
+                                                <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                </a>
+                                                ";
+                      } else if ($row['route_status'] == 'Start' && $row['booking_status'] == 'Approved') {
+                        echo "
+                                                <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                </a>
+                                                <a href='pickedup.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&list=passengerBooking.php?list=Booked" . "&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to mark as picked-up?')\">
+                                                <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Picked-Up&nbsp;&nbsp;</button>
+                                            </a>";
+                      } else {
+                        echo "
+                                                <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                </a>
+                                                <a href='cancelPassengerRoute.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to cancel?')\">
+                                                    <button>&nbsp;&nbsp;<i class='fa fa-ban'></i>&nbsp;Cancel&nbsp;&nbsp;</button>
+                                                </a>";
+                      }
+                      echo "</td>";
+                      echo "</tr>";
+                      $cnt++;
+                    }
+                    ?>
+                  </tbody>
                 </table>
               </div>
             </div>
@@ -541,7 +779,6 @@ if ($result->num_rows == 1) {
 
                       echo "<td>" . $city_name . "</td>";
                       echo "<td>" . $row['role'] . "</td>";
-
                     ?>
                     <?php
                       echo "</tr>";
@@ -562,18 +799,33 @@ if ($result->num_rows == 1) {
           </div>
         <?php
         }
-        ?>
-        <!-- /.container-fluid -->
 
+        ?>
+
+        <!-- /.container-fluid -->
+        <br>
         <!-- Sticky Footer -->
-        <?php include("vendor/inc/footer.php"); ?>
+        <?php
+        include("vendor/inc/footer.php");
+
+        if (isset($_SESSION['emergency_phone'])) {
+          $phone = $_SESSION['emergency_phone'];
+        ?>
+          <button type="submit" name="submit" class="btn btn-danger btn-lg d-block mx-auto">
+            <a style="text-decoration: none; color: white;" href="tel:<?php echo $phone ?>">Call Emergency</a>
+          </button>
+        <?php
+
+        }
+        ?>
+
 
       </div>
       <!-- /.content-wrapper -->
 
     </div>
-    <!-- /#wrapper -->
 
+    <!-- /#wrapper -->
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
       <i class="fas fa-angle-up"></i>

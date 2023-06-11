@@ -113,14 +113,20 @@
     </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-fw fa-exchange-alt"></i> <!-- Change the icon class here -->
+        <i class="fas fa-fw fa-exchange-alt"></i>
         <span>History</span>
       </a>
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
         <h6 class="dropdown-header">Wallet</h6>
         <a class="dropdown-item" href="cash-in-history.php">Cash-In</a>
         <a class="dropdown-item" href="cash-out-history.php">Cash-Out</a>
+        <a class="dropdown-item" href="payments.php">Payments</a>
       </div>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="reviews.php">
+        <i class="fas fa-star"></i>
+        <span>Reviews</span></a>
     </li>
   <?php
   }
@@ -167,7 +173,13 @@
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
         <h6 class="dropdown-header">Users</h6>
         <a class="dropdown-item" href="cash-in-history.php">Cash-In</a>
+        <a class="dropdown-item" href="payments.php">Payments</a>
       </div>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="reviews.php">
+        <i class="fas fa-star"></i>
+        <span>Reviews</span></a>
     </li>
   <?php
   }
@@ -206,7 +218,13 @@
         <h6 class="dropdown-header">Users</h6>
         <a class="dropdown-item" href="cash-in-history.php">Cash-In</a>
         <a class="dropdown-item" href="cash-out-history.php">Cash-Out</a>
+        <a class="dropdown-item" href="payments.php">Payments</a>
       </div>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="reviews.php">
+        <i class="fas fa-star"></i>
+        <span>Reviews</span></a>
     </li>
   <?php
   }
@@ -243,11 +261,6 @@
         <a class="dropdown-item" href="renewal.php?list=Plate">License Plate</a>
       </div>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="cash-out-manage.php">
-        <i class="fas fa-fw fa-bus"></i>
-        <span>Cash Out</span></a>
-    </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-fw fa-exchange-alt"></i> <!-- Change the icon class here -->
@@ -257,7 +270,13 @@
         <h6 class="dropdown-header">Wallet</h6>
         <a class="dropdown-item" href="cash-in-history.php">Cash-In</a>
         <a class="dropdown-item" href="cash-out-history.php">Cash-Out</a>
+        <a class="dropdown-item" href="payments.php">Payments</a>
       </div>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="reviews.php">
+        <i class="fas fa-star"></i>
+        <span>Reviews</span></a>
     </li>
   <?php
   }
