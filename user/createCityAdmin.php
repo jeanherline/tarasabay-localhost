@@ -282,7 +282,7 @@ $userid = $_SESSION['user_id'];
                                                     <p>Dear City Admin,</p>
                                                     <p>Thank you for joining TaraSabay App as a City Admin. To claim your City Admin account, we need to verify your email address.</p>
                                                     <p>Please click on the button below to verify your email address and complete your City Admin registration:</p>
-                                                    <p><a href=\"http://localhost:8080/tarasabay-localhost/verifyAdmin.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
+                                                    <p><a href=\"http://localhost/tarasabay-localhost/verifyAdmin.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
                                                     <p>Your account details:</p>
                                                     <p>Email: $email</p>
                                                     <p>Password: " . $_POST['password'] . "</p>

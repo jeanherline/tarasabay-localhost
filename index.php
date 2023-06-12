@@ -314,7 +314,7 @@ session_start();
                                         <p>Dear valued user,</p>
                                         <p>Thank you for choosing TaraSabay to find rides or offer your own. To ensure the security of your account, we need to verify your email address before you can start using the app.</p>
                                         <p>Please click on the button below to verify your email address and finalize your registration:</p>
-                                        <p><a href=\"http://localhost:8080/tarasabay-localhost/verify.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
+                                        <p><a href=\"http://localhost/tarasabay-localhost/verify.php?token=" . urlencode($token) . " \" style=\"display:inline-block; padding: 10px 20px; background-color: #0072C6; color: #fff; font-weight: bold; text-decoration: none;\">Verify Your Email Address</a></p>
                                         <p>If you have any questions or concerns, please don't hesitate to contact us at support@tarasabay.com.</p>
                                         <p>Best regards,</p>
                                         <p>TaraSabay PH Team</p>

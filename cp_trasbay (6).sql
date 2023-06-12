@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 11, 2023 at 10:07 PM
+-- Generation Time: Jun 12, 2023 at 01:00 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -47,8 +47,9 @@ INSERT INTO `booking` (`booking_id`, `user_id`, `seat_id`, `booking_status`, `ca
 (10, 14, 9, 'Cancelled', NULL, '2023-06-11 09:55:12', '2023-06-11 09:57:04'),
 (11, 14, 13, 'Cancelled', 'sad', '2023-06-11 09:57:25', '2023-06-11 10:08:58'),
 (12, 14, 14, 'Declined', '', '2023-06-11 10:11:11', '2023-06-11 13:33:47'),
-(13, 14, 17, 'Approved', NULL, '2023-06-11 13:00:19', '2023-06-11 13:30:50'),
-(14, 14, 21, 'Dropped-off', NULL, '2023-06-11 14:12:05', '2023-06-11 17:31:06');
+(13, 14, 17, 'Approved', NULL, '2023-06-11 13:00:19', '2023-06-12 10:00:03'),
+(14, 14, 21, 'Dropped-off', NULL, '2023-06-11 14:12:05', '2023-06-12 10:03:54'),
+(15, 14, 13, 'Cancelled', 'sad', '2023-06-12 09:50:37', '2023-06-12 09:52:05');
 
 -- --------------------------------------------------------
 
@@ -290,7 +291,9 @@ CREATE TABLE `payment` (
 --
 
 INSERT INTO `payment` (`payment_id`, `booking_id`, `ticket_amount`, `payment_to`, `payment_status`, `date`, `created_at`, `updated_at`) VALUES
-(3, 14, '500.00', 'Jeanherline Santiago', 'Paid', '2023-06-12', '2023-06-11 17:31:06', '2023-06-11 17:31:06');
+(3, 14, '500.00', 'Jeanherline Santiago', 'Paid', '2023-06-12', '2023-06-11 17:31:06', '2023-06-11 17:31:06'),
+(4, 13, '300.00', 'Jeanherline Santiago', 'Paid', '2023-06-12', '2023-06-12 09:55:44', '2023-06-12 09:55:44'),
+(5, 14, '500.00', 'Jeanherline Santiago', 'Paid', '2023-06-12', '2023-06-12 10:03:54', '2023-06-12 10:03:54');
 
 -- --------------------------------------------------------
 
@@ -311,7 +314,7 @@ CREATE TABLE `review` (
 --
 
 INSERT INTO `review` (`review_id`, `booking_id`, `comment`, `created_at`, `updated_at`) VALUES
-(2, 14, 'Ang galing!', '2023-06-11 18:30:53', '2023-06-11 18:30:53');
+(3, 14, 'Hello', '2023-06-12 10:30:39', '2023-06-12 10:30:39');
 
 -- --------------------------------------------------------
 
@@ -339,10 +342,10 @@ CREATE TABLE `route` (
 INSERT INTO `route` (`route_id`, `car_id`, `pickup_loc`, `dropoff_loc`, `departure`, `est_arrival_time`, `route_status`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
 (3, 9, 'Baliwag', 'Manila', '2023-06-09 08:30:00', '10:30:00', 'Active', '', '2023-06-08 14:52:19', '2023-06-10 11:20:34'),
 (4, 15, 'Cabanatuan', 'Bustos', '2023-06-14 17:30:00', '20:00:00', 'Cancelled', 'Sick', '2023-06-10 09:33:56', '2023-06-10 22:08:52'),
-(5, 9, 'San Rafael', 'Cebu City', '2023-06-11 10:30:00', '12:30:00', 'Active', NULL, '2023-06-10 09:35:52', '2023-06-11 14:00:09'),
-(6, 17, 'Cebu City', 'Cavite', '2023-06-13 04:30:00', '10:20:00', 'Active', NULL, '2023-06-11 12:17:08', '2023-06-11 14:00:09'),
+(5, 9, 'San Rafael', 'Cebu City', '2023-06-11 10:30:00', '12:30:00', 'Active', NULL, '2023-06-10 09:35:52', '2023-06-12 09:54:59'),
+(6, 17, 'Cebu City', 'Cavite', '2023-06-13 04:30:00', '10:20:00', 'Active', NULL, '2023-06-11 12:17:08', '2023-06-12 10:00:21'),
 (7, 15, 'Star Arena', 'Zimbabwe', '2023-06-15 10:00:00', '22:00:00', 'Active', NULL, '2023-06-11 14:00:44', '2023-06-11 14:00:44'),
-(8, 17, 'San Ildefonso', 'Makati', '2023-06-11 22:11:00', '22:11:00', 'Done', NULL, '2023-06-11 14:11:28', '2023-06-11 17:37:17');
+(8, 17, 'San Ildefonso', 'Makati', '2023-06-11 22:11:00', '22:11:00', 'Done', NULL, '2023-06-11 14:11:28', '2023-06-12 10:21:19');
 
 -- --------------------------------------------------------
 
@@ -372,7 +375,7 @@ INSERT INTO `seat` (`seat_id`, `route_id`, `seat_type`, `fare`, `seat_status`, `
 (10, 4, 'Front Passenger Seat', '250', 'Cancelled', '2023-06-10 09:33:56', '2023-06-10 22:08:52'),
 (11, 4, 'Second Row Left Window Seat', '200', 'Cancelled', '2023-06-10 09:33:56', '2023-06-10 22:08:52'),
 (12, 4, 'Second Row Right Window Seat', '200', 'Cancelled', '2023-06-10 09:33:56', '2023-06-10 22:08:52'),
-(13, 5, 'Front Passenger Seat', '200', 'Available', '2023-06-10 09:35:52', '2023-06-11 11:21:20'),
+(13, 5, 'Front Passenger Seat', '200', 'Available', '2023-06-10 09:35:52', '2023-06-12 09:52:05'),
 (14, 5, 'Second Row Left Window Seat', '200', 'Taken', '2023-06-10 09:35:52', '2023-06-11 10:11:11'),
 (15, 5, 'Second Row Middle Seat', '150', 'Available', '2023-06-10 09:35:52', '2023-06-11 11:21:20'),
 (16, 5, 'Second Row Right Window Seat', '200', 'Available', '2023-06-10 09:35:52', '2023-06-11 11:21:20'),
@@ -440,8 +443,8 @@ CREATE TABLE `user_profile` (
 --
 
 INSERT INTO `user_profile` (`user_id`, `profile_photo`, `first_name`, `middle_name`, `last_name`, `city_id`, `nationality`, `gender`, `birthdate`, `email`, `password`, `ticket_balance`, `role`, `is_vaxxed`, `vax_card`, `is_agree`, `created_at`, `updated_at`) VALUES
-(14, 'download.png', 'Jyner', '', 'Lyn', 5, 'Filipino', 'Female', '2003-03-29', 'jynerline@gmail.com', '$2y$10$iWP4Hq9nSnb9uYXtDdlOrOJnsRtqsPOt8JELyKoFoXplXXJWLXGGC', '90', 'Passenger', 0, 'download (1).jpg', 1, '2023-06-03 20:55:49', '2023-06-11 17:31:06'),
-(15, 'test.png', 'Jeanherline', 'Lopez', 'Santiago', 12, 'Filipino', 'Female', '2023-06-15', 'jeanherlinesantiago0329@gmail.com', '$2y$10$4mwq.s/du3mDcpUOVzFHY.olkpUtTjT7RGoE7YOhpZtxh1D9g/9Ta', '860', 'Driver', 1, '31vaccine-card1-videoSixteenByNine3000-v2.jpg', 1, '2023-06-04 14:39:50', '2023-06-11 17:31:06'),
+(14, 'download.png', 'Jyner', '', 'Lyn', 5, 'Filipino', 'Female', '2003-03-29', 'jynerline@gmail.com', '$2y$10$iWP4Hq9nSnb9uYXtDdlOrOJnsRtqsPOt8JELyKoFoXplXXJWLXGGC', '60', 'Passenger', 0, 'download (1).jpg', 1, '2023-06-03 20:55:49', '2023-06-12 10:03:54'),
+(15, 'test.png', 'Jeanherline', 'Lopez', 'Santiago', 12, 'Filipino', 'Female', '2023-06-15', 'jeanherlinesantiago0329@gmail.com', '$2y$10$4mwq.s/du3mDcpUOVzFHY.olkpUtTjT7RGoE7YOhpZtxh1D9g/9Ta', '610', 'Driver', 1, '31vaccine-card1-videoSixteenByNine3000-v2.jpg', 1, '2023-06-04 14:39:50', '2023-06-12 10:03:54'),
 (16, 'download.jpg', 'Jean', '', 'Reinhart', 12, 'American', 'Male', '1995-06-21', 'cinemi1486@ozatvn.com', '$2y$10$sPauKoqU//HyC7mGSnDafOADwxzKy/mx1JRtb/l/1QcnAkcMEKoPq', '0', 'Main Admin', 1, 'download (1).jpg', 1, '2023-06-08 14:56:53', '2023-06-10 04:16:40'),
 (17, '340472658_1294457027813960_1344329139963814927_n.jpg', 'Jyner', '', 'Lin', 12, 'Argentinean', 'Female', '1966-06-21', 'imureyzdh1@ezztt.com', '$2y$10$UFabKhJtNaJP5E4KRTNiRudKmGeahkgjTBE/BFX5xjaMVYOe5LAGW', '', 'City Admin', 0, 'download (4).jpg', 1, '2023-06-08 16:35:10', '2023-06-10 08:06:45');
 
@@ -596,7 +599,7 @@ ALTER TABLE `user_temp`
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `car`
@@ -644,13 +647,13 @@ ALTER TABLE `emergency`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `review`
 --
 ALTER TABLE `review`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `route`

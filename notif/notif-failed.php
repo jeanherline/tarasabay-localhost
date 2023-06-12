@@ -106,7 +106,7 @@ $stmt->execute();
 <body>
     <section class="modal container">
         <div class="modal__content">
-            <a href="http://localhost:8080/tarasabay-localhost/index.php">
+            <a href="http://localhost/tarasabay-localhost/index.php">
                 <div class="modal__close close-modal" title="Close">
                     <i class='bx bx-x'></i>
                 </div>
@@ -115,7 +115,7 @@ $stmt->execute();
             <h1 class="modal__title">Expired!</h1>
             <p class="modal__description">Invalid verification link or the link has expired.</p>
 
-            <a href="http://localhost:8080/tarasabay-localhost/index.php">
+            <a href="http://localhost/tarasabay-localhost/index.php">
                 <button class="modal__button modal__button-width">
                     Sign Up
                 </button>
