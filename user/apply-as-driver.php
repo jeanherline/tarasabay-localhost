@@ -942,7 +942,7 @@ $userid = $_SESSION['user_id'];
                                     </div>
                                     <br>
                                     <?php
-                                    if (isset($_POST['submit'])) {
+                                    if (isset($_POST['add'])) {
                                         $user_id = $_SESSION['user_id'];
 
                                         // Process and move uploaded files
@@ -1122,7 +1122,7 @@ $userid = $_SESSION['user_id'];
                                         }
                                     }
                                     ?>
-                                    <button type="submit" name="submit" class="btn btn-success">Register</button>
+                                    <button type="submit" name="add" class="btn btn-success">Register</button>
                                     <br>
 
                         </form>

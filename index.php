@@ -214,8 +214,6 @@ session_start();
           </div><br>';
                 }
               }
-
-
               if (isset($_POST['register'])) {
                 $fname = $db->real_escape_string($_POST['fname']);
                 $lname = $db->real_escape_string($_POST['lname']);

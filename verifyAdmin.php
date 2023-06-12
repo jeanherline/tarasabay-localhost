@@ -14,7 +14,6 @@ if (isset($_GET['token'])) {
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
 
-        // Move the user data to the `user_profile` table
         $first_name = $row['first_name'];
         $last_name = $row['last_name'];
         $city_id = $row['city_id'];

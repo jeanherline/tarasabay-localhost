@@ -367,17 +367,6 @@ if ($result->num_rows == 1) {
                                 <label for="plate_expiration">Plate Expiration</label>
                                 <input type="date" class="form-control disabled-input" value="<?php echo $plate_expiration ?>" name="plate_expiration" disabled><br>
                             </div>
-
-                            <?php
-                            if ($car_status == 'Pending') {
-                            ?>
-                                <a href="approveCarReg.php"><button style="float:right; margin-right: 1%;" class="btn btn-success">Approve</button></a>
-                                <a href="denyCarReg.php"><button style="float:right; margin-right: 1%;" class="btn btn-success">Deny</button></a>
-                            <?php
-                            }
-
-                            ?>
-
                         </form>
                         <!-- End Form-->
                     </div>

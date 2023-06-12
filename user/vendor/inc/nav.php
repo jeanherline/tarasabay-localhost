@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
   <img src="../assets/img/logo.png" alt="" width="2%">&nbsp;
-  <a class="navbar-brand mr-1" href="admin-dashboard.php">TaraSabay</a>
+  <a class="navbar-brand mr-1" href="#">TaraSabay</a>
 
   <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
     <i class="fas fa-bars"></i>

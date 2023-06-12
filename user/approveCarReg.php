@@ -16,13 +16,14 @@ if (isset($_GET['user_id']) && isset($_GET['car_id']) && isset($_GET['status']))
     if ($stmt->affected_rows > 0) {
         // Generate QR code image
         $qrCodeData = $car_id; // You can modify the data to include any relevant information
-        $qrCodePath = $car_id . '.png'; // Specify the path where the QR code image will be saved
+        $qrCodePath = "../assets/img/qr_codes/" . $car_id . '.png'; // Specify the path where the QR code image will be saved
         QRcode::png($qrCodeData, $qrCodePath, QR_ECLEVEL_L, 5); // Generate the QR code image and save it to the specified path
 
+        $dbcar = $car_id . ".png";
         // Update the car entry with the QR code path
         $updateQrCodeQuery = "UPDATE car SET qr_code = ? WHERE user_id = ? AND car_id = ?";
         $updateQrCodeStmt = $db->prepare($updateQrCodeQuery);
-        $updateQrCodeStmt->bind_param("sii", $qrCodePath, $user_id, $car_id);
+        $updateQrCodeStmt->bind_param("sii", $dbcar, $user_id, $car_id);
         $updateQrCodeStmt->execute();
 
         header("Location: carReg.php?status=$status");

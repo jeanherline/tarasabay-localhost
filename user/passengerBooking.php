@@ -110,8 +110,7 @@ if ($result->num_rows == 1) {
                                                 INNER JOIN booking b ON s.seat_id = b.seat_id
                                                 INNER JOIN user_profile up ON b.user_id = up.user_id
                                                 INNER JOIN route r ON s.route_id = r.route_id
-                                                WHERE b.user_id = ? AND (b.booking_status = 'Pending' OR b.booking_status = 'Approved'
-                                                OR r.route_status = 'Start')";
+                                                WHERE b.user_id = ? AND b.booking_status != 'Cancelled'";
                                         $stmt = $db->prepare($ret);
                                         $stmt->bind_param("i", $user_id);
                                         $stmt->execute();

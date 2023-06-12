@@ -104,7 +104,8 @@ if ($result->num_rows == 1) {
                                     <tbody>
                                         <?php
                                         $city_id = $_SESSION['city_id'];
-                                        $ret = "SELECT * FROM user_profile WHERE role = 'Passenger' OR role = 'Driver' AND city_id = '$city_id'";
+
+                                        $ret = "SELECT * FROM user_profile WHERE role = 'Passenger' OR role = 'Driver') AND city_id = '$city_id'";
                                         $stmt = $db->prepare($ret);
                                         $stmt->execute();
                                         $result = $stmt->get_result();

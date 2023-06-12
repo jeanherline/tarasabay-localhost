@@ -442,7 +442,7 @@ $stmt->close();
 
                                 <div class="form-group">
                                     <label for="relationship">Relationship<span class="text-danger"> *</span></label>
-                                    <select class="form-control" name="relationship" id="relationship" required>
+                                    <select class="form-control" name="relationship" id="relationship">
                                         <option value="<?php echo isset($_POST['relationship']) ? $_POST['relationship'] : $relationship; ?>" selected disabled><?php echo isset($_POST['relationship']) ? $_POST['relationship'] : $relationship; ?></option>
                                         <option value="Spouse">Spouse</option>
                                         <option value="Father">Father</option>
@@ -472,7 +472,7 @@ $stmt->close();
 
                                 <div class="form-group">
                                     <label for="relationship">Relationship<span class="text-danger"> *</span></label>
-                                    <select class="form-control" name="relationship" id="relationship" required>
+                                    <select class="form-control" name="relationship" id="relationship">
                                         <option value="" disabled selected>Select Relationship</option>
                                         <option value="Spouse" <?php echo (isset($_POST['relationship']) && $_POST['relationship'] === 'Spouse') ? 'selected' : ''; ?>>Spouse</option>
                                         <option value="Father" <?php echo (isset($_POST['relationship']) && $_POST['relationship'] === 'Father') ? 'selected' : ''; ?>>Father</option>
@@ -553,12 +553,10 @@ $stmt->close();
                                 $result = $stmt->get_result();
 
                                 if ($result->num_rows > 0) {
-                                    // Update existing emergency contact
                                     $stmt = $db->prepare("UPDATE emergency SET name=?, relationship=?, phone=?, address=? WHERE user_id=?");
                                     $stmt->bind_param("ssssi", $name, $relationship, $phone, $address, $userid);
                                     $stmt->execute();
                                 } else {
-                                    // Insert new emergency contact
                                     $stmt = $db->prepare("INSERT INTO emergency (name, relationship, phone, address, user_id) VALUES (?, ?, ?, ?, ?)");
                                     $stmt->bind_param("ssssi", $name, $relationship, $phone, $address, $userid);
                                     $stmt->execute();
@@ -566,11 +564,7 @@ $stmt->close();
 
                                 mysqli_close($db);
                             }
-
                             ?>
-
-
-
                             <button type="submit" style="float:right; margin-right: 1%;" name="submit" id="submit" class="btn btn-success">Save Changes</button>
                         </form>
                         <!-- End Form-->

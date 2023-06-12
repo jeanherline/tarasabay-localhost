@@ -167,7 +167,7 @@ $userid = $_SESSION['user_id'];
                             </div>
                             <div class="form-group">
                                 <label for="email">Email Address</label>
-                                <input type="text" class="form-control" placeholder="Enter Email Address" id="email" name="email">
+                                <input type="email" class="form-control" placeholder="Enter Email Address" id="email" name="email">
                                 <br>
                             </div>
 

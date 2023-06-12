@@ -301,7 +301,7 @@
         <span>Pending Cashouts</span></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="cash-out-manage.php">
+      <a class="nav-link" href="reviews.php">
         <i class="fas fa-star"></i>
         <span>Reviews</span></a>
     </li>

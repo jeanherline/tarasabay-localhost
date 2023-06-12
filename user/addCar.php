@@ -106,7 +106,7 @@ $userid = $_SESSION['user_id'];
                     </div>
                     <div class="card-body">
                         <?php
-                        $sql = "SELECT * FROM driver_identification WHERE user_id = '$userid' AND driver_stat = 'Expired' || driver_stat = 'Pending'";
+                        $sql = "SELECT * FROM driver_identification WHERE user_id = '$userid' AND driver_stat = 'Expired'";
                         $result = mysqli_query($db, $sql);
                         $numRows = mysqli_num_rows($result);
 

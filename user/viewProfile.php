@@ -269,6 +269,7 @@ if ($result->num_rows == 1) {
             <div class="card-header">
               <b>View Profile</b>
             </div>
+          </div>
 
             <div class="card-body">
               <!--Add User Form-->
@@ -538,15 +539,51 @@ if ($result->num_rows == 1) {
                       <label for="years_experience">Years of Experience</label>
                       <input type="text" class="form-control disabled-input" value="<?php echo $years_experience ?>" name="years_experience" disabled><br>
                     </div>
+                    <?php
+                    $stmt = $db->prepare("SELECT * FROM emergency WHERE user_id = ?");
+                    $stmt->bind_param("s", $userid);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
+                    if ($result->num_rows == 1) {
+                      $row = $result->fetch_assoc();
+                      $name = $row['name'];
+                      $relationship = $row['relationship'];
+                      $phone = $row['phone'];
+                      $address = $row['address'];
+
+                    ?>
+                      <em>Emergency Contact</em>
+                      <br> <br>
+                      <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control disabled-input" value="<?php echo $name ?>" name="name" disabled><br>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="relationship">Relationship</label>
+                        <input type="text" class="form-control disabled-input" value="<?php echo $relationship ?>" name="relationship" disabled><br>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" class="form-control disabled-input" value="<?php echo $phone ?>" name="phone" disabled><br>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" class="form-control disabled-input" value="<?php echo $address ?>" name="address" disabled><br>
+                      </div>
+                    <?php
+                    }
+                    ?>
                 <?php
                   }
                 }
                 ?>
-
               </form>
             </div>
           </div>
-
           <hr>
 
 
