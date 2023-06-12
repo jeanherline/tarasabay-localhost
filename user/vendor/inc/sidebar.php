@@ -59,8 +59,20 @@
   ?>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-fw fa-city"></i>
+        <span>Routes</span>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <h6 class="dropdown-header">Book A Ride</h6>
+        <a class="dropdown-item" href="passengerRoute.php?list=All">View All</a>
+        <a class="dropdown-item" href="passengerRoute.php?list=From">From My City</a>
+        <a class="dropdown-item" href="passengerRoute.php?list=To">To My City</a>
+      </div>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-route"></i>
-        <span>Route</span>
+        <span>My Routes</span>
       </a>
       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
         <h6 class="dropdown-header">Route</h6>

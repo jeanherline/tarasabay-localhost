@@ -111,7 +111,7 @@ if ($result->num_rows == 1) {
                                                 INNER JOIN user_profile up ON b.user_id = up.user_id
                                                 INNER JOIN route r ON s.route_id = r.route_id
                                                 WHERE b.user_id = ? AND (b.booking_status = 'Pending' OR b.booking_status = 'Approved'
-                                                OR b.booking_status = 'Picked-up')";
+                                                OR r.route_status = 'Start')";
                                         $stmt = $db->prepare($ret);
                                         $stmt->bind_param("i", $user_id);
                                         $stmt->execute();
@@ -150,6 +150,11 @@ if ($result->num_rows == 1) {
                                                                         </a>
                                                                         <a href='pickedup.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&list=passengerBooking.php?list=Booked" . "&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to mark as picked-up?')\">
                                                                         <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Picked-Up&nbsp;&nbsp;</button>
+                                                                    </a>";
+                                            } else if ($row['route_status'] == 'Done' && $row['booking_status'] == 'Dropped-off') {
+                                                echo "
+                                                                        <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
                                                                     </a>";
                                             } else {
                                                 echo "
@@ -222,7 +227,6 @@ if ($result->num_rows == 1) {
                                         while ($row = $result->fetch_assoc()) {
                                             $booking_id = $row['booking_id'];
 
-                                            // Check if the booking_id exists in the review table
                                             $review_query = "SELECT * FROM review WHERE booking_id = ?";
                                             $review_stmt = $db->prepare($review_query);
                                             $review_stmt->bind_param("i", $booking_id);
@@ -246,11 +250,11 @@ if ($result->num_rows == 1) {
                                             </a>
                                             <button disabled>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Write A Driver Review&nbsp;&nbsp;</button>";
                                             } else {
-                                                echo "<td>
+                                                echo "
                                                 <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
                                                     <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
-                                                <a href='writeReview.php?booking_id=" . $row['booking_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                <a href='writeReview.php?booking_id=" . $row['booking_id']  . "'>
                                                     <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Write A Driver Review&nbsp;&nbsp;</button>
                                                 </a>";
                                             }

@@ -88,6 +88,7 @@ if ($result->num_rows == 1) {
                                 if (
                                     $listOption === 'Active' || $listOption === 'Previous' || $listOption === 'Cancelled' ||
                                     $listOption === 'PendingBooking' || $listOption === 'ApprovedBooking' || $listOption === 'PreviousBooking' || $listOption === 'CancelledBooking'
+                                    || $listOption === 'All' || $listOption === 'From' || $listOption === 'To' || $listOption === 'Booked'
                                 ) {
                                     $list = $listOption;
                                 }
@@ -142,12 +143,12 @@ if ($result->num_rows == 1) {
                             <?php
                             if ($list == 'All') {
                             ?>
-                                <a href="passengerRoute.php?list=All">All Routes</a>
+                                <a href="passengerRoute.php?list=All">All Routes </a>
 
                             <?php
                             } else if ($list == 'From') {
                             ?>
-                                <a href="passengerRoute.php?list=From">From My City</a>
+                                <a href="passengerRoute.php?list=From">From My City </a>
                             <?php
                             } else if ($list == 'To') {
                             ?>
@@ -163,319 +164,22 @@ if ($result->num_rows == 1) {
                         }
                         ?>
                     </li>
+
+
+                    <hr>
+
                     <?php
-                    if ($_SESSION['role'] == 'Driver') {
+
                     ?>
-                        <li class="breadcrumb-item active">View <?php echo $list ?></li>
-                </ol>
-                <hr>
-
-                <?php
-
-                        if (isset($_GET['user_id']) && isset($_GET['route_id'])) {
-                            $user_id = $_GET['user_id'];
-                            $route_id = $_GET['route_id'];
-
-                            $query = "SELECT user_profile.*, driver_identification.*, car.*, route.*, seat.*
-                              FROM user_profile 
-                              INNER JOIN driver_identification ON user_profile.user_id = driver_identification.user_id
-                              INNER JOIN car ON user_profile.user_id = car.user_id
-                              INNER JOIN route ON car.car_id = route.car_id
-                              INNER JOIN seat ON route.route_id = seat.route_id
-                              WHERE user_profile.user_id = '$user_id' AND route.route_id = '$route_id'";
-
-                            $stmt = $db->prepare($query);
-                            $stmt->execute();
-                            $result = $stmt->get_result();
-                            $row = $result->fetch_assoc();
-
-                            // Fetching data from user_profile table
-                            $user_id = $row['user_id'];
-                            $profile_photo = $row['profile_photo'];
-                            $first_name = $row['first_name'];
-                            $middle_name = $row['middle_name'];
-                            $last_name = $row['last_name'];
-                            $city_id = $row['city_id'];
-                            $nationality = $row['nationality'];
-                            $gender = $row['gender'];
-                            $birthdate = $row['birthdate'];
-                            $email = $row['email'];
-                            $password = $row['password'];
-                            $ticket_balance = $row['ticket_balance'];
-                            $role = $row['role'];
-                            $is_vaxxed = $row['is_vaxxed'];
-                            $vax_card = $row['vax_card'];
-                            $is_agree = $row['is_agree'];
-                            $created_at_user_profile = $row['created_at'];
-                            $updated_at_user_profile = $row['updated_at'];
-
-                            // Fetching data from driver_identification table
-                            $driver_id = $row['driver_id'];
-                            $disability = $row['disability'];
-                            $pwd_docx = $row['pwd_docx'];
-                            $license_front = $row['license_front'];
-                            $license_back = $row['license_back'];
-                            $license_expiration = $row['license_expiration'];
-                            $is_above_60 = $row['is_above_60'];
-                            $nbi_police_cbi = $row['nbi_police_cbi'];
-                            $cbi_date_issued = $row['cbi_date_issued'];
-                            $years_experience = $row['years_experience'];
-                            $consents = $row['consents'];
-                            $declarations = $row['declarations'];
-                            $driver_stat = $row['driver_stat'];
-                            $created_at_driver_identification = $row['created_at'];
-                            $updated_at_driver_identification = $row['updated_at'];
-
-                            // Fetching data from car table
-                            $car_id = $row['car_id'];
-                            $car_photo = $row['car_photo'];
-                            $brand = $row['brand'];
-                            $model = $row['model'];
-                            $color = $row['color'];
-                            $type = $row['type'];
-                            $seat_count = $row['seat_count'];
-                            $car_status = $row['car_status'];
-                            $qr_code = $row['qr_code'];
-                            $created_at_car = $row['created_at'];
-                            $updated_at_car = $row['updated_at'];
-
-                            // Fetching data from route table
-                            $route_id = $row['route_id'];
-                            $pickup_loc = $row['pickup_loc'];
-                            $dropoff_loc = $row['dropoff_loc'];
-                            $departure = $row['departure'];
-                            $est_arrival_time = $row['est_arrival_time'];
-                            $route_status = $row['route_status'];
-                            $cancellation_reason = $row['cancellation_reason'];
-                            $created_at_route = $row['created_at'];
-                            $updated_at_route = $row['updated_at'];
-
-                            // Fetching data from seat table
-                            $seat_id = $row['seat_id'];
-                            $seat_type = $row['seat_type'];
-                            $fare = $row['fare'];
-                            $seat_status = $row['seat_status'];
-                            $created_at_seat = $row['created_at'];
-                            $updated_at_seat = $row['updated_at'];
-                        }
-                ?>
-
-
-                <style>
-                    .form-container {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        height: 10vh;
-                    }
-                </style>
-
-                <div class="card">
-                    <div class="card-header">
-                        <b>View Route</b>
-                    </div>
-
-                    <div class="card-body">
-
-                        <div class="card mb-3">
-                            <div class="card-header">
-                                <i class="fas fa-table"></i>
-                                Seats
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Name</th>
-                                                <th>Seat Type</th>
-                                                <th>Fare</th>
-                                                <th>Seat Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $ret = "SELECT DISTINCT COALESCE(up.first_name, 'N/A') AS first_name, up.last_name, s.seat_type, s.fare, s.seat_status, up.user_id
-                                                    FROM seat s
-                                                    LEFT JOIN booking b ON s.seat_id = b.seat_id
-                                                    LEFT JOIN user_profile up ON b.user_id = up.user_id
-                                                    INNER JOIN route r ON s.route_id = r.route_id
-                                                    WHERE r.route_id = ?";
-                                            $stmt = $db->prepare($ret);
-                                            $stmt->bind_param("i", $route_id);
-                                            $stmt->execute();
-                                            $result = $stmt->get_result();
-                                            $cnt = 1;
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                echo "<td>" . $cnt . "</td>";
-                                                if ($row['seat_status'] === 'Available') {
-                                                    echo "<td>N/A</td>";
-                                                } elseif ($row['first_name'] && $row['last_name']) {
-                                                    echo '<td><a href="viewPassenger.php?user_id=' . $row['user_id'] . '&list=' . $list . '">' . $row['first_name'] . ' ' . $row['last_name'] . '</a></td>';
-                                                } else {
-                                                    echo "<td>N/A</td>";
-                                                }
-                                                echo "<td>" . $row['seat_type'] . "</td>";
-                                                echo "<td>" . $row['fare'] . "</td>";
-                                                echo "<td>" . $row['seat_status'] . "</td>";
-                                                echo "</tr>";
-                                                $cnt++;
-                                            }
-                                            ?>
-
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="card-footer small text-muted">
-                                <?php
-                                date_default_timezone_set("Africa/Nairobi");
-                                echo "Generated : " . date("h:i:sa");
-                                ?>
-                            </div>
-                        </div>
-                        <br>
-
-                        <form method="POST">
-                            <style>
-                                .disabled-input {
-                                    color: black;
-                                }
-                            </style>
-                            <em>Route Information</em><br><br>
-
-                            <div class="form-group">
-                                <label for="pickup_loc">Pickup Location</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo $pickup_loc ?>" name="pickup_loc" disabled><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="dropoff_loc">Drop-off Location</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo $dropoff_loc ?>" name="dropoff_loc" disabled><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="departure">Departure</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo $departure ?>" name="departure" disabled><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="est_arrival_time">Est Arrival Time</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo $est_arrival_time ?>" name="est_arrival_time" disabled><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="route_status">Route Status</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo $route_status ?>" name="route_status" disabled><br>
-                            </div>
-                            <br>
-                            <em>Car Information</em><br><br>
-
-                            <div class="form-group text-center">
-                                <label for="pwd_docx">Car Photo:</label>
-                                <br>
-                                <div class="license" style="width: 700px; margin: 0 auto;">
-                                    <img src="../assets/img/car/<?php echo $car_photo; ?>" alt="car_photo" class="card-preview">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="brand">Brand</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo $brand ?>" name="brand" disabled><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="model">Model</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo $model ?>" name="model" disabled><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="color">Color</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo $color ?>" name="color" disabled><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="type">Type</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo $type ?>" name="type" disabled><br>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="seat_count">Seat Count</label>
-                                <input type="text" class="form-control disabled-input" value="<?php echo $seat_count ?>" name="seat_count" disabled><br>
-                            </div>
-                        </form>
-                        <br>
-                        <em>Reviews</em><br><br>
-                        <div class="card mb-3">
-                            <div class="card-header">
-                                <i class="fas fa-table"></i>
-                                Driver Booking Reviews
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Name</th>
-                                                <th>Comment</th>
-                                                <th>Date and Time</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $ret = "SELECT r.*, rev.comment, p.ticket_amount, p.payment_to, p.payment_status, up.first_name, up.last_name
-                                      FROM route r
-                                      INNER JOIN seat s ON r.route_id = s.route_id
-                                      INNER JOIN booking b ON s.seat_id = b.seat_id
-                                      INNER JOIN review rev ON b.booking_id = rev.booking_id
-                                      INNER JOIN payment p ON b.booking_id = p.booking_id
-                                      INNER JOIN user_profile up ON b.user_id = up.user_id
-                                      WHERE r.car_id = ?
-                                      ";
-                                            $stmt = $db->prepare($ret);
-                                            $stmt->bind_param("i", $car_id);
-                                            $stmt->execute();
-                                            $result = $stmt->get_result();
-                                            $cnt = 1;
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                echo "<td>" . $cnt . "</td>";
-                                                echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
-                                                echo "<td>" . $row['comment'] . "</td>";
-                                                echo "<td>" . $row['created_at'] . "</td>";
-                                                echo "</tr>";
-                                                $cnt++;
-                                            }
-                                            ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div class="card-footer small text-muted">
-                                <?php
-                                date_default_timezone_set("Africa/Nairobi");
-                                echo "Generated : " . date("h:i:sa");
-                                ?>
-                            </div>
-                        </div>
-                        <br>
-                    </div>
-                </div>
-            <?php
-                    } elseif ($_SESSION['role'] == 'Passenger') {
-            ?>
-                <li class="breadcrumb-item active">View <?php echo $list ?></li>
+                    <li class="breadcrumb-item active">&nbsp;/ View <?php echo $list ?></li>
                 </ol>
                 <hr>
                 <?php
-                        if (isset($_GET['car_id']) && isset($_GET['route_id'])) {
-                            $car_id = $_GET['car_id'];
-                            $route_id = $_GET['route_id'];
+                if (isset($_GET['car_id']) && isset($_GET['route_id'])) {
+                    $car_id = $_GET['car_id'];
+                    $route_id = $_GET['route_id'];
 
-                            $query = "SELECT user_profile.*, driver_identification.*, car.*, route.*, seat.*
+                    $query = "SELECT user_profile.*, driver_identification.*, car.*, route.*, seat.*
                               FROM user_profile 
                               INNER JOIN driver_identification ON user_profile.user_id = driver_identification.user_id
                               INNER JOIN car ON user_profile.user_id = car.user_id
@@ -483,83 +187,81 @@ if ($result->num_rows == 1) {
                               INNER JOIN seat ON route.route_id = seat.route_id
                               WHERE car.car_id = '$car_id' AND route.route_id = '$route_id'";
 
-                            $stmt = $db->prepare($query);
-                            $stmt->execute();
-                            $result = $stmt->get_result();
-                            $row = $result->fetch_assoc();
+                    $stmt = $db->prepare($query);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $row = $result->fetch_assoc();
 
-                            // Fetching data from user_profile table
-                            $user_id = $row['user_id'];
-                            $profile_photo = $row['profile_photo'];
-                            $first_name = $row['first_name'];
-                            $middle_name = $row['middle_name'];
-                            $last_name = $row['last_name'];
-                            $city_id = $row['city_id'];
-                            $nationality = $row['nationality'];
-                            $gender = $row['gender'];
-                            $birthdate = $row['birthdate'];
-                            $email = $row['email'];
-                            $password = $row['password'];
-                            $ticket_balance = $row['ticket_balance'];
-                            $role = $row['role'];
-                            $is_vaxxed = $row['is_vaxxed'];
-                            $vax_card = $row['vax_card'];
-                            $is_agree = $row['is_agree'];
-                            $created_at_user_profile = $row['created_at'];
-                            $updated_at_user_profile = $row['updated_at'];
+                    // Fetching data from user_profile table
+                    $user_id = $row['user_id'];
+                    $profile_photo = $row['profile_photo'];
+                    $first_name = $row['first_name'];
+                    $middle_name = $row['middle_name'];
+                    $last_name = $row['last_name'];
+                    $city_id = $row['city_id'];
+                    $nationality = $row['nationality'];
+                    $gender = $row['gender'];
+                    $birthdate = $row['birthdate'];
+                    $email = $row['email'];
+                    $password = $row['password'];
+                    $ticket_balance = $row['ticket_balance'];
+                    $role = $row['role'];
+                    $is_vaxxed = $row['is_vaxxed'];
+                    $vax_card = $row['vax_card'];
+                    $is_agree = $row['is_agree'];
+                    $created_at_user_profile = $row['created_at'];
+                    $updated_at_user_profile = $row['updated_at'];
 
-                            // Fetching data from driver_identification table
-                            $driver_id = $row['driver_id'];
-                            $disability = $row['disability'];
-                            $pwd_docx = $row['pwd_docx'];
-                            $license_front = $row['license_front'];
-                            $license_back = $row['license_back'];
-                            $license_expiration = $row['license_expiration'];
-                            $is_above_60 = $row['is_above_60'];
-                            $nbi_police_cbi = $row['nbi_police_cbi'];
-                            $cbi_date_issued = $row['cbi_date_issued'];
-                            $years_experience = $row['years_experience'];
-                            $consents = $row['consents'];
-                            $declarations = $row['declarations'];
-                            $driver_stat = $row['driver_stat'];
-                            $created_at_driver_identification = $row['created_at'];
-                            $updated_at_driver_identification = $row['updated_at'];
+                    // Fetching data from driver_identification table
+                    $driver_id = $row['driver_id'];
+                    $disability = $row['disability'];
+                    $pwd_docx = $row['pwd_docx'];
+                    $license_front = $row['license_front'];
+                    $license_back = $row['license_back'];
+                    $license_expiration = $row['license_expiration'];
+                    $is_above_60 = $row['is_above_60'];
+                    $nbi_police_cbi = $row['nbi_police_cbi'];
+                    $cbi_date_issued = $row['cbi_date_issued'];
+                    $years_experience = $row['years_experience'];
+                    $consents = $row['consents'];
+                    $declarations = $row['declarations'];
+                    $driver_stat = $row['driver_stat'];
+                    $created_at_driver_identification = $row['created_at'];
+                    $updated_at_driver_identification = $row['updated_at'];
 
-                            // Fetching data from car table
-                            $car_id = $row['car_id'];
-                            $car_photo = $row['car_photo'];
-                            $brand = $row['brand'];
-                            $model = $row['model'];
-                            $color = $row['color'];
-                            $type = $row['type'];
-                            $seat_count = $row['seat_count'];
-                            $car_status = $row['car_status'];
-                            $qr_code = $row['qr_code'];
-                            $created_at_car = $row['created_at'];
-                            $updated_at_car = $row['updated_at'];
+                    // Fetching data from car table
+                    $car_id = $row['car_id'];
+                    $car_photo = $row['car_photo'];
+                    $brand = $row['brand'];
+                    $model = $row['model'];
+                    $color = $row['color'];
+                    $type = $row['type'];
+                    $seat_count = $row['seat_count'];
+                    $car_status = $row['car_status'];
+                    $qr_code = $row['qr_code'];
+                    $created_at_car = $row['created_at'];
+                    $updated_at_car = $row['updated_at'];
 
-                            // Fetching data from route table
-                            $route_id = $row['route_id'];
-                            $pickup_loc = $row['pickup_loc'];
-                            $dropoff_loc = $row['dropoff_loc'];
-                            $departure = $row['departure'];
-                            $est_arrival_time = $row['est_arrival_time'];
-                            $route_status = $row['route_status'];
-                            $cancellation_reason = $row['cancellation_reason'];
-                            $created_at_route = $row['created_at'];
-                            $updated_at_route = $row['updated_at'];
+                    // Fetching data from route table
+                    $route_id = $row['route_id'];
+                    $pickup_loc = $row['pickup_loc'];
+                    $dropoff_loc = $row['dropoff_loc'];
+                    $departure = $row['departure'];
+                    $est_arrival_time = $row['est_arrival_time'];
+                    $route_status = $row['route_status'];
+                    $cancellation_reason = $row['cancellation_reason'];
+                    $created_at_route = $row['created_at'];
+                    $updated_at_route = $row['updated_at'];
 
-                            // Fetching data from seat table
-                            $seat_id = $row['seat_id'];
-                            $seat_type = $row['seat_type'];
-                            $fare = $row['fare'];
-                            $seat_status = $row['seat_status'];
-                            $created_at_seat = $row['created_at'];
-                            $updated_at_seat = $row['updated_at'];
-                        }
+                    // Fetching data from seat table
+                    $seat_id = $row['seat_id'];
+                    $seat_type = $row['seat_type'];
+                    $fare = $row['fare'];
+                    $seat_status = $row['seat_status'];
+                    $created_at_seat = $row['created_at'];
+                    $updated_at_seat = $row['updated_at'];
+                }
                 ?>
-
-
                 <style>
                     .form-container {
                         display: flex;
@@ -695,6 +397,14 @@ if ($result->num_rows == 1) {
                                 </div>
                             </div>
 
+                            <div class="form-group text-center">
+                                <label for="pwd_docx">QR Code:</label>
+                                <br>
+                                <div class="license" style="width: 700px; margin: 0 auto;">
+                                    <img src="../assets/img/qr_codes/<?php echo $qr_code; ?>" alt="qr_code" class="card-preview">
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <label for="brand">Brand</label>
                                 <input type="text" class="form-control disabled-input" value="<?php echo $brand ?>" name="brand" disabled><br>
@@ -740,15 +450,14 @@ if ($result->num_rows == 1) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $ret = "SELECT r.*, rev.comment, p.ticket_amount, p.payment_to, p.payment_status, up.first_name, up.last_name
-                                      FROM route r
-                                      INNER JOIN seat s ON r.route_id = s.route_id
-                                      INNER JOIN booking b ON s.seat_id = b.seat_id
-                                      INNER JOIN review rev ON b.booking_id = rev.booking_id
-                                      INNER JOIN payment p ON b.booking_id = p.booking_id
-                                      INNER JOIN user_profile up ON b.user_id = up.user_id
-                                      WHERE r.car_id = ?
-                                      ";
+                                            $ret = "SELECT DISTINCT r.*, rev.comment, p.ticket_amount, p.payment_to, p.payment_status, up.first_name, up.last_name
+        FROM route r
+        INNER JOIN seat s ON r.route_id = s.route_id
+        INNER JOIN booking b ON s.seat_id = b.seat_id
+        INNER JOIN review rev ON b.booking_id = rev.booking_id
+        INNER JOIN payment p ON b.booking_id = p.booking_id
+        INNER JOIN user_profile up ON b.user_id = up.user_id
+        WHERE r.car_id = ?";
                                             $stmt = $db->prepare($ret);
                                             $stmt->bind_param("i", $car_id);
                                             $stmt->execute();
@@ -764,6 +473,7 @@ if ($result->num_rows == 1) {
                                                 $cnt++;
                                             }
                                             ?>
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -779,16 +489,15 @@ if ($result->num_rows == 1) {
                         <br>
                     </div>
                 </div>
-            <?php
-                    }
+                <?php
 
-            ?>
+                ?>
 
-            <hr>
+                <hr>
 
 
-            <!-- Sticky Footer -->
-            <?php include("vendor/inc/footer.php"); ?>
+                <!-- Sticky Footer -->
+                <?php include("vendor/inc/footer.php"); ?>
 
             </div>
             <!-- /.content-wrapper -->

@@ -7,7 +7,10 @@ if (!isset($_SESSION['user_id'])) {
 
 include('../db.php');
 
-$userid = $_SESSION['user_id'];
+
+if (isset($_GET['user_id'])) {
+    $userid = $_GET['user_id'];
+}
 
 $stmt = $db->prepare("SELECT * FROM user_profile WHERE user_id = ?");
 $stmt->bind_param("i", $userid);

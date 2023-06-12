@@ -137,14 +137,20 @@ if ($result->num_rows == 1) {
                                                 <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
                                                     <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
-                                                <?php if ($existingBooking) { ?>
-                                                    <button disabled>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Booked&nbsp;&nbsp;</button>
-                                                <?php } else { ?>
-                                                    <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                <?php if ($_SESSION['role'] == 'Passenger') { ?>
+                                                    <?php if ($existingBooking) { ?>
+                                                        <button disabled>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Booked&nbsp;&nbsp;</button>
+                                                    <?php } else { ?>
+                                                        <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
+                                                        </a>
+                                                    <?php } ?>
+                                                    <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=To&car_id=<?php echo $car_id ?>">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
                                                     </a>
                                                 <?php } ?>
                                             </td>
+
                                         <?php
                                             echo "</tr>";
                                             $cnt++;
@@ -220,9 +226,15 @@ if ($result->num_rows == 1) {
                                                 <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=From&car_id=<?php echo $car_id ?>">
                                                     <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
-                                                <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=From&car_id=<?php echo $car_id ?>">
-                                                    <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
-                                                </a>
+                                                <?php
+                                                if ($_SESSION['role'] == 'Passenger') {
+                                                ?>
+                                                    <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=To&car_id=<?php echo $car_id ?>">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
+                                                    </a>
+                                                <?php
+                                                }
+                                                ?>
                                             </td>
                                         <?php
                                             echo "</tr>";
@@ -293,9 +305,16 @@ if ($result->num_rows == 1) {
                                                 <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=To&car_id=<?php echo $car_id ?>">
                                                     <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
-                                                <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=To&car_id=<?php echo $car_id ?>">
-                                                    <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
-                                                </a>
+                                                <?php
+                                                if ($_SESSION['role'] == 'Passenger') {
+                                                ?>
+                                                    <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=To&car_id=<?php echo $car_id ?>">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
+                                                    </a>
+                                                <?php
+                                                }
+                                                ?>
+
                                             </td>
                                         <?php
                                             echo "</tr>";

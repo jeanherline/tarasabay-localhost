@@ -10,11 +10,13 @@ include('../db.php');
 $userid = $_SESSION['user_id'];
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-<title>Cancel Route</title>
+<title>Cash-in</title>
 
 <link rel="icon" href="../assets/img/logo.png" type="images" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <?php include('vendor/inc/head.php'); ?>
 
@@ -55,56 +57,51 @@ $userid = $_SESSION['user_id'];
                 <!-- Breadcrumbs-->
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="passengerBooking.php?list=Previous">Reviews</a>
+                        <a href="dashboard.php">Dashboard</a>
                     </li>
-                    <li class="breadcrumb-item active">Write A Driver Review</li>
+                    <li class="breadcrumb-item active">Verify A Car or Driver</li>
                 </ol>
                 <hr>
                 <div class="card">
                     <div class="card-header">
-                        <b>Leave A Review</b>
+                        <b>Check: </b><em>QR Code</em>
                     </div>
                     <div class="card-body">
-                        <form method="POST">
-                            <?php
-                            if (isset($_GET['booking_id'])) {
-                                $booking_id = $_GET['booking_id'];
-                            }
-                            ?>
-                            <div class="form-group">
-                                <label for="comment">Comment</label>
-                                <textarea class="form-control" name="comment" itemid="comment" placeholder="Enter Comment" class="box" id="" cols="30" rows="10" maxlength="300" required></textarea>
-                            </div>
+                        <!-- Add User Form -->
+                        <form method="POST" enctype="multipart/form-data">
+                            <label for="reference" class="form-label"> Upload QR Code <span class="text-danger">*</span></label>
+                            <input class="form-control" type="file" name="qr_code_photo" accept="image/png, image/jpeg">
+                            <br>
+
                             <?php
                             if (isset($_POST['submit'])) {
-                                // Process form submission
-                                $comment = $_POST['comment'];
+                                if (isset($_FILES['qr_code_photo'])) {
+                                    $qrCodePhoto = $_FILES['qr_code_photo'];
 
-                                // Insert the comment into the review table
-                                $insertQuery = "INSERT INTO review (booking_id, comment) VALUES (?, ?)";
-                                $stmt = $db->prepare($insertQuery);
-                                $stmt->bind_param("is", $booking_id, $comment);
-                                $stmt->execute();
+                                    $fileName = pathinfo($qrCodePhoto['name'], PATHINFO_FILENAME);
 
-                                // Redirect to the correct location
-                                echo "<script>window.location.href = 'passengerBooking.php?list=Previous';</script>";
-                                exit();
+                                    $car_id = $fileName;
+
+                                    echo "<script>window.location.href = 'viewQr.php?car_id=$car_id';</script>";
+                                    exit();
+                                }
                             }
                             ?>
-                            <button type="submit" name="submit" class="btn btn-success">Submit</button>
-                        </form>
-                    </div>
 
+                            <button type="submit" name="submit" class="btn btn-success">Verify</button>
+                        </form>
+
+
+                        <!-- End Form-->
+                    </div>
 
                 </div>
 
                 <hr>
+                <!-- Sticky Footer -->
+                <?php include("vendor/inc/footer.php"); ?>
+
             </div>
-
-
-            <!-- Sticky Footer -->
-            <?php include("vendor/inc/footer.php"); ?>
-
             <!-- /.content-wrapper -->
 
         </div>
@@ -133,6 +130,8 @@ $userid = $_SESSION['user_id'];
                 </div>
             </div>
         </div>
+
+
 
         <!-- Bootstrap core JavaScript-->
         <script src="vendor/jquery/jquery.min.js"></script>

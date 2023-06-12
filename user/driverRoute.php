@@ -161,7 +161,7 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . $row['route_status'] . "</td>";
 
                                             echo "<td>";
-                                            echo "<a href='viewRoute.php?user_id=" . $row['user_id'] . "&list=Active&route_id=" . $route_id . "'>
+                                            echo "<a href='viewDriverRoute.php?user_id=" . $row['user_id'] . "&list=Active&route_id=" . $route_id . "'>
                                                     <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>";
 
@@ -291,7 +291,7 @@ if ($result->num_rows == 1) {
                                                 echo "<td>" . $row['route_status'] . "</td>";
                                             ?>
                                                 <td>
-                                                    <a href="viewRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Cancelled&route_id=<?php echo $route_id ?>">
+                                                    <a href="viewDriverRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Cancelled&route_id=<?php echo $route_id ?>">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                     </a>
                                                 </td>
@@ -369,7 +369,7 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . $row['route_status'] . "</td>";
                                         ?>
                                             <td>
-                                                <a href="viewRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Cancelled&route_id=<?php echo $route_id ?>">
+                                                <a href="viewDriverRoute.php?user_id=<?php echo $row['user_id']; ?>&list=Cancelled&route_id=<?php echo $route_id ?>">
                                                     <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
                                             </td>

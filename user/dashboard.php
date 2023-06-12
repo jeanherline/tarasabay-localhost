@@ -374,10 +374,10 @@ if ($result->num_rows == 1) {
                     <?php
                     $user_id = $_SESSION['user_id'];
                     $ret = "SELECT r.*, c.* 
-            FROM route AS r 
-            INNER JOIN car AS c ON r.car_id = c.car_id 
-            WHERE (c.user_id = ? AND r.route_status IN ('Active', 'Fully Booked', 'Start', 'Picked-up','Dropped-off'))
-            ORDER BY r.route_id";
+                                        FROM route AS r 
+                                        INNER JOIN car AS c ON r.car_id = c.car_id 
+                                        WHERE (c.user_id = ? AND r.route_status IN ('Active', 'Fully Booked', 'Start', 'Picked-up','Dropped-off'))
+                                        ORDER BY r.route_id";
                     $stmt = $db->prepare($ret);
                     $stmt->bind_param("s", $user_id);
                     $stmt->execute();
@@ -440,7 +440,7 @@ if ($result->num_rows == 1) {
                       if ($availableSeats < $totalSeats && $row['route_status'] === 'Active') {
                         echo "<button onclick='markRouteAsDone(" . $route_id . ");'>&nbsp;&nbsp;<i class='fa fa-check' style='color:red;'></i>&nbsp;Start&nbsp;&nbsp;</button>";
                       } else if ($droppedOffSeats == $totalSeats && $row['route_status'] === 'Start') {
-                        echo "<a onclick='return confirm(\"Are you sure you want to mark the route as done?\")' href='doneRoute.php?list=dashboard.php&user_id=" . $row['user_id'] . "&car_id=" . $car_id . "&route_id=" . $route_id . "'>
+                        echo "<a onclick='return confirm(\"Are you sure you want to mark the route as done?\")' href='doneRoute.php?list=driverRoute.php?status=Active&user_id=" . $row['user_id'] . "&car_id=" . $car_id . "&route_id=" . $route_id . "'>
                                                 <button>&nbsp;&nbsp;<i class='fa fa-check' style = 'color: green'></i>&nbsp;Done&nbsp;&nbsp;</button>
                                             </a>";
                       }
@@ -455,6 +455,41 @@ if ($result->num_rows == 1) {
                   </tbody>
 
                 </table>
+
+                <script>
+                  function markRouteAsDone(route_id) {
+                    if (confirm("Are you sure you want to mark this route as 'Start'?")) {
+                      // Send an AJAX request to update the route status
+                      var xhr = new XMLHttpRequest();
+                      xhr.open("GET", "updateRouteStatus.php?route_id=" + route_id + "&status=Start", true);
+                      xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                          // Reload the page to reflect the updated status
+                          location.reload();
+                        }
+                      };
+                      xhr.send();
+                    }
+                  }
+                </script>
+
+
+                <script>
+                  function markRouteAsDone(route_id) {
+                    if (confirm("Are you sure you want to mark this route as 'Start'?")) {
+                      // Send an AJAX request to update the route status
+                      var xhr = new XMLHttpRequest();
+                      xhr.open("GET", "updateRouteStatus.php?route_id=" + route_id + "&status=Start", true);
+                      xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                          // Reload the page to reflect the updated status
+                          location.reload();
+                        }
+                      };
+                      xhr.send();
+                    }
+                  }
+                </script>
               </div>
             </div>
             <div class="card-footer small text-muted">
@@ -558,7 +593,7 @@ if ($result->num_rows == 1) {
           <div class="card mb-3">
             <div class="card-header">
               <i class="fas fa-table"></i>
-              Active Routes
+              Booked Routes
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -583,7 +618,7 @@ if ($result->num_rows == 1) {
                                                 INNER JOIN user_profile up ON b.user_id = up.user_id
                                                 INNER JOIN route r ON s.route_id = r.route_id
                                                 WHERE b.user_id = ? AND (b.booking_status = 'Pending' OR b.booking_status = 'Approved'
-                                                OR b.booking_status = 'Picked-up' OR b.booking_status = 'Dropped-off')";
+                                                OR b.booking_status = 'Dropped-off')";
                     $stmt = $db->prepare($ret);
                     $stmt->bind_param("i", $user_id);
                     $stmt->execute();
@@ -602,35 +637,35 @@ if ($result->num_rows == 1) {
 
                       if ($row['route_status'] == 'Start' && $row['booking_status'] == 'Picked-up') {
                         echo "
-                                                <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
-                                                </a>
-                                                <a href='droppedoff.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&list=passengerBooking.php?list=Booked" . "&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to mark as picked-up?')\">
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Dropped-Off&nbsp;&nbsp;</button>
-                                                </a>
-                                                ";
+                                                                        <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                                        </a>
+                                                                        <a href='droppedoff.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&list=passengerBooking.php?list=Booked" . "&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to mark as picked-up?')\">
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Dropped-Off&nbsp;&nbsp;</button>
+                                                                        </a>
+                                                                        ";
                       } else if ($row['route_status'] == 'Start' && $row['booking_status'] == 'Dropped-off') {
                         echo "
-                                                <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
-                                                </a>
-                                                ";
+                                                                        <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                                        </a>
+                                                                        ";
                       } else if ($row['route_status'] == 'Start' && $row['booking_status'] == 'Approved') {
                         echo "
-                                                <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
-                                                </a>
-                                                <a href='pickedup.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&list=passengerBooking.php?list=Booked" . "&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to mark as picked-up?')\">
-                                                <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Picked-Up&nbsp;&nbsp;</button>
-                                            </a>";
+                                                                        <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                                        </a>
+                                                                        <a href='pickedup.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&list=passengerBooking.php?list=Booked" . "&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to mark as picked-up?')\">
+                                                                        <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green;'></i>&nbsp;Picked-Up&nbsp;&nbsp;</button>
+                                                                    </a>";
                       } else {
                         echo "
-                                                <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
-                                                </a>
-                                                <a href='cancelPassengerRoute.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to cancel?')\">
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-ban'></i>&nbsp;Cancel&nbsp;&nbsp;</button>
-                                                </a>";
+                                                                        <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                                        </a>
+                                                                        <a href='cancelPassengerRoute.php?seat_id=" . $seat_id . "&user_id=" . $user_id . "&route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "' onclick=\"return confirm('Are you sure you want to cancel?')\">
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-ban'></i>&nbsp;Cancel&nbsp;&nbsp;</button>
+                                                                        </a>";
                       }
                       echo "</td>";
                       echo "</tr>";
@@ -640,12 +675,12 @@ if ($result->num_rows == 1) {
                   </tbody>
                 </table>
               </div>
-            </div>
-            <div class="card-footer small text-muted">
-              <?php
-              date_default_timezone_set("Africa/Nairobi");
-              echo "Generated : " . date("h:i:sa");
-              ?>
+              <div class="card-footer small text-muted">
+                <?php
+                date_default_timezone_set("Africa/Nairobi");
+                echo "Generated : " . date("h:i:sa");
+                ?>
+              </div>
             </div>
           </div>
         <?php
@@ -804,6 +839,17 @@ if ($result->num_rows == 1) {
 
         <!-- /.container-fluid -->
         <br>
+        <?php
+        if ($_SESSION['role'] == 'Passenger') {
+        ?>
+          <button type="submit" name="submit" class="btn btn-success btn-lg d-block mx-auto">
+            <a style="text-decoration: none; color: white;" href="verifyCar.php">Verify A Car / Driver</a>
+          </button>
+          <br>
+
+        <?php
+        }
+        ?>
         <!-- Sticky Footer -->
         <?php
         include("vendor/inc/footer.php");
@@ -817,9 +863,9 @@ if ($result->num_rows == 1) {
         <?php
 
         }
+
         ?>
-
-
+        <br>
       </div>
       <!-- /.content-wrapper -->
 

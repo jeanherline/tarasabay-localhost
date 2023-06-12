@@ -158,13 +158,12 @@ if (isset($_POST['submit'])) {
                                             echo "<td>" . $count . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
                                             echo "<td>" . $row['dropoff_loc'] . "</td>";
-                                            echo "<td>₱ " . number_format($row['ticket_amount'], 2) . "</td>";
+                                            echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
                                             echo "<td>" . $row['payment_to'] . "</td>";
                                             echo "<td>" . $row['payment_status'] . "</td>";
                                             echo "<td>" . $row['date'] . "</td>";
                                             echo "</tr>";
 
-                                            $totalPesoAmount += $row['ticket_amount'];
                                             $totalTicketAmount += $row['ticket_amount'];
                                             $count++;
                                         }
@@ -175,7 +174,6 @@ if (isset($_POST['submit'])) {
                                     <tfoot>
                                         <tr>
                                             <td colspan="3"><b>Total Amount</b></td>
-                                            <td colspan="1"><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
                                             <td colspan="1"><?php echo number_format($totalTicketAmount, 2); ?></td>
                                             <td></td>
                                             <td></td>
@@ -252,13 +250,12 @@ if (isset($_POST['submit'])) {
                                             echo "<td>" . $count . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
                                             echo "<td>" . $row['dropoff_loc'] . "</td>";
-                                            echo "<td>₱ " . number_format($row['ticket_amount'], 2) . "</td>";
+                                            echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
                                             echo "<td>" . $row['payment_to'] . "</td>";
                                             echo "<td>" . $row['payment_status'] . "</td>";
                                             echo "<td>" . $row['date'] . "</td>";
                                             echo "</tr>";
 
-                                            $totalPesoAmount += $row['ticket_amount'];
                                             $totalTicketAmount += $row['ticket_amount'];
                                             $count++;
                                         }
@@ -269,7 +266,6 @@ if (isset($_POST['submit'])) {
                                     <tfoot>
                                         <tr>
                                             <td colspan="3"><b>Total Amount</b></td>
-                                            <td colspan="1"><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
                                             <td colspan="1"><?php echo number_format($totalTicketAmount, 2); ?></td>
                                             <td></td>
                                             <td></td>
@@ -346,24 +342,20 @@ if (isset($_POST['submit'])) {
                                             echo "<td>" . $count . "</td>";
                                             echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
                                             echo "<td>" . $row['dropoff_loc'] . "</td>";
-                                            echo "<td>₱ " . number_format($row['ticket_amount'], 2) . "</td>";
+                                            echo "<td>" . number_format($row['ticket_amount'], 2) . "</td>";
                                             echo "<td>" . $row['payment_to'] . "</td>";
                                             echo "<td>" . $row['payment_status'] . "</td>";
                                             echo "<td>" . $row['date'] . "</td>";
                                             echo "</tr>";
 
                                             $totalPesoAmount += $row['ticket_amount'];
-                                            $totalTicketAmount += $row['ticket_amount'];
                                             $count++;
                                         }
                                         ?>
 
-                                        <!-- ... your HTML code ... -->
-
                                     <tfoot>
                                         <tr>
                                             <td colspan="3"><b>Total Amount</b></td>
-                                            <td colspan="1"><?php echo "₱ " . number_format($totalPesoAmount, 2); ?></td>
                                             <td colspan="1"><?php echo number_format($totalTicketAmount, 2); ?></td>
                                             <td></td>
                                             <td></td>

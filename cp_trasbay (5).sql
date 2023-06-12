@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 11, 2023 at 09:24 PM
+-- Generation Time: Jun 11, 2023 at 10:07 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -76,12 +76,12 @@ CREATE TABLE `car` (
 --
 
 INSERT INTO `car` (`car_id`, `user_id`, `car_photo`, `brand`, `model`, `color`, `type`, `seat_count`, `car_status`, `qr_code`, `created_at`, `updated_at`) VALUES
-(9, 15, 'download (6).jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Active', '../assets/img/qr_codes/car_9.png', '2023-06-07 13:22:08', '2023-06-10 08:48:46'),
+(9, 15, 'download (6).jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Active', '9.png', '2023-06-07 13:22:08', '2023-06-11 19:31:31'),
 (10, 15, 'download (6).jpg', 'BMW', 'KD2', 'Black', 'Coupe', 1, 'Denied', NULL, '2023-06-10 01:07:59', '2023-06-10 22:15:04'),
-(14, 15, 'download (6).jpg', 'Jeep', 'HD3', 'Gray', 'Crew Cab', 5, 'Expired', '../assets/img/qr_codes/car_14.png', '2023-06-10 01:11:41', '2023-06-11 13:10:11'),
+(14, 15, 'download (6).jpg', 'Jeep', 'HD3', 'Gray', 'Crew Cab', 5, 'Expired', '14.png', '2023-06-10 01:11:41', '2023-06-11 19:31:31'),
 (15, 15, 'download (6).jpg', 'Jeep', 'M12', 'Gray', 'Coupe', 3, 'Active', NULL, '2023-06-10 06:41:50', '2023-06-10 08:48:46'),
-(16, 15, '1200px-2017_Toyota_Camry_(ASV50R)_SX_sedan_(2018-11-02)_01.jpg', 'Honda', 'D3X', 'White', 'Sedan', 4, 'Pending', NULL, '2023-06-10 22:14:00', '2023-06-10 22:14:00'),
-(17, 15, 'download (7).jpg', 'Audi', 'B2S', 'Red', 'Coupe', 1, 'Active', '../assets/img/qr_codes/car_17.png', '2023-06-11 12:15:17', '2023-06-11 12:15:48');
+(16, 15, '1200px-2017_Toyota_Camry_(ASV50R)_SX_sedan_(2018-11-02)_01.jpg', 'Honda', 'D3X', 'White', 'Sedan', 4, 'Active', '16', '2023-06-10 22:14:00', '2023-06-11 20:01:51'),
+(17, 15, 'download (7).jpg', 'Audi', 'B2S', 'Red', 'Coupe', 1, 'Active', '17.png', '2023-06-11 12:15:17', '2023-06-11 19:31:31');
 
 -- --------------------------------------------------------
 
