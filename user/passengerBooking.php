@@ -156,6 +156,11 @@ if ($result->num_rows == 1) {
                                                                         <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
                                                                             <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
                                                                     </a>";
+                                            } else if ($row['route_status'] == 'Active' && $row['booking_status'] == 'Approved') {
+                                                echo "
+                                                                        <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
+                                                                            <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                                    </a>";
                                             } else {
                                                 echo "
                                                                         <a href='viewRoute.php?route_id=" . $row['route_id'] . "&list=Booked&car_id=" . $row['car_id'] . "'>
@@ -218,7 +223,7 @@ if ($result->num_rows == 1) {
                                                 INNER JOIN booking b ON s.seat_id = b.seat_id
                                                 INNER JOIN user_profile up ON b.user_id = up.user_id
                                                 INNER JOIN route r ON s.route_id = r.route_id
-                                                WHERE b.user_id = ? AND r.route_status = 'Done'";
+                                                WHERE b.user_id = ? AND r.route_status = 'Done' AND b.booking_status = 'Dropped-off'";
                                         $stmt = $db->prepare($ret);
                                         $stmt->bind_param("i", $user_id);
                                         $stmt->execute();

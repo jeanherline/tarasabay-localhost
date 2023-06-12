@@ -434,7 +434,7 @@ $userid = $_SESSION['user_id'];
                                     </div>
                                     <br>
                                     <?php
-                                        if (isset($_POST['submit'])) {
+                                        if (isset($_POST['renew'])) {
                                             $user_id = $_SESSION['user_id'];
 
                                             $license_expiration = $_POST['expiration_date'];
@@ -606,13 +606,12 @@ $userid = $_SESSION['user_id'];
         </html>
         ";
                                                 $mail->send();
-
                                                 echo "<div style=\"text-align: center; font-family: 'Poppins', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;\">
-            <img src=\"../assets/img/checked.png\" alt=\"Car Registration\" style=\"margin-bottom: 20px; width: 100px\">
-            <h5 style=\"color: #4CAF50; font-size: 24px; margin-bottom: 20px;\">Driver Renewal Requirements Received!</h5>
-            <p style=\"color: #333333; font-size: 16px; margin-bottom: 20px;\">An email has been sent to your email address with the requirements needed to be submitted to the nearest TaraSabay office in your city.</p>
-            <p style=\"color: #333333; font-size: 16px;\">These requirements are necessary to become an official driver of the TaraSabay app.</p>
-        </div>";
+                                                <img src=\"../assets/img/checked.png\" alt=\"Car Registration\" style=\"margin-bottom: 20px; width: 100px\">
+                                                <h5 style=\"color: #4CAF50; font-size: 24px; margin-bottom: 20px;\">Driver Renewal Requirements Received!</h5>
+                                                <p style=\"color: #333333; font-size: 16px; margin-bottom: 20px;\">An email has been sent to your email address with the requirements needed to be submitted to the nearest TaraSabay office in your city.</p>
+                                                <p style=\"color: #333333; font-size: 16px;\">These requirements are necessary to become an official driver of the TaraSabay app.</p>
+                                            </div>";
                                             } catch (Exception $e) {
                                                 echo '<div style="text-align: center;">
             <h5 style="color: red">Error sending verification email: </h5>' . $mail->ErrorInfo . '
@@ -621,11 +620,12 @@ $userid = $_SESSION['user_id'];
                                         }
                                     ?>
 
-                                    <button type="submit" name="submit" class="btn btn-success">Register</button>
+                                    <button type="submit" name="renew" class="btn btn-success">Register</button>
                                     <br>
                                 <?php
 
                                     }
+
                                 ?>
                             </div>
                             <?php
@@ -1105,16 +1105,16 @@ $userid = $_SESSION['user_id'];
                                             $mail->send();
 
                                             echo '<div style="text-align: center; font-family: \'Poppins\', sans-serif; background-color: #FFFFFF; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;">
-                                            <img src=\"../assets/img/checked.png\" alt=\"Driver Registration\" style=\"margin-bottom: 20px; width: 100px\">
+                                            <img src="../assets/img/checked.png" alt="Driver Registration" style="margin-bottom: 20px; width: 100px">
                                             <h5 style="color: #4CAF50; font-size: 24px; margin-bottom: 20px;">Driver registration requirements received!</h5>
-                                        <p style="color: #333333; font-size: 16px; margin-bottom: 20px;">Thank you for submitting your requirements to become a driver on TaraSabay. We have successfully received your information.</p>
-                                        <p style="color: #333333; font-size: 16px;">To be officially qualified as a driver, we kindly request you to register a car on the TaraSabay App. This will allow you to offer rides and maximize your earning potential on our platform.</p>
-                                        <p style="color: #333333; font-size: 16px;">Please log in again to the TaraSabay Web App and navigate to the car registration section to complete the process. If you encounter any difficulties or have any questions, our support team at support@tarasabay.com is ready to assist you.</p>
-                                        <p style="color: #333333; font-size: 16px;">Alternatively, you may use or click the button below to redirect to the car registration page:</p>
-                                        <p style="color: #333333; font-size: 16px;">We look forward to having you as a qualified driver on TaraSabay!</p>
-                                        <br>
-                                        <a href="addCar.php" class="btn btn-primary">Register a Car</a>
-                                    </div>';
+                                            <p style="color: #333333; font-size: 16px; margin-bottom: 20px;">Thank you for submitting your requirements to become a driver on TaraSabay. We have successfully received your information.</p>
+                                            <p style="color: #333333; font-size: 16px;">To be officially qualified as a driver, we kindly request you to register a car on the TaraSabay App. This will allow you to offer rides and maximize your earning potential on our platform.</p>
+                                            <p style="color: #333333; font-size: 16px;">Please log in again to the TaraSabay Web App and navigate to the car registration section to complete the process. If you encounter any difficulties or have any questions, our support team at support@tarasabay.com is ready to assist you.</p>
+                                            <p style="color: #333333; font-size: 16px;">Alternatively, you may use or click the button below to redirect to the car registration page:</p>
+                                            <p style="color: #333333; font-size: 16px;">We look forward to having you as a qualified driver on TaraSabay!</p>
+                                            <br>
+                                            <a href="addCar.php" class="btn btn-primary">Register a Car</a>
+                                        </div>';
                                         } catch (Exception $e) {
                                             echo '<div style="text-align: center;">
                                                 <h5 style="color: red">Error sending verification email: </h5>' . $mail->ErrorInfo . '

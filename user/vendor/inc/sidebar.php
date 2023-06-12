@@ -200,6 +200,11 @@
   <?php
   if ($_SESSION['role'] == "Main Admin") {
   ?>
+    <li class="nav-item">
+      <a class="nav-link" href="passengerRoute.php?list=All">
+        <i class="fas fa-route"></i>
+        <span>View All Routes</span></a>
+    </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-city"></i> <!-- Change the icon class here -->
@@ -246,6 +251,11 @@
   if ($_SESSION['role'] == "City Admin") {
   ?>
     <li class="nav-item">
+      <a class="nav-link" href="passengerRoute.php?list=All">
+        <i class="fas fa-route"></i>
+        <span>View All Routes</span></a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link" href="cityUsers.php?list=Full">
         <i class="fas fa-city"></i>
         <span>City Users</span></a>
@@ -286,7 +296,12 @@
       </div>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="reviews.php">
+      <a class="nav-link" href="cash-out-manage.php">
+        <i class="fas fa-money"></i>
+        <span>Pending Cashouts</span></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="cash-out-manage.php">
         <i class="fas fa-star"></i>
         <span>Reviews</span></a>
     </li>

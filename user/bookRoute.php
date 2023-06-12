@@ -114,26 +114,25 @@ $userid = $_SESSION['user_id'];
                     </div>
                     <div class="card-body">
                         <!-- Add User Form -->
-                        <form method="POST">
+                        <?php
+                        if (isset($_GET['route_id']) && isset($_GET['car_id'])) {
+                            $route_id = $_GET['route_id'];
+                            $car_id = $_GET['car_id'];
 
-                            <?php
-                            if (isset($_GET['route_id']) && isset($_GET['car_id'])) {
-                                $route_id = $_GET['route_id'];
-                                $car_id = $_GET['car_id'];
-
-                                $ret = "SELECT * FROM route WHERE route_status = 'Active' AND route_id = $route_id AND car_id = $car_id";
-                                $stmt = $db->prepare($ret);
-                                $stmt->execute();
-                                $result = $stmt->get_result();
-                                $cnt = 1;
-                                while ($row = $result->fetch_assoc()) {
-                                    $pickup_loc = $row['pickup_loc'];
-                                    $dropoff_loc = $row['dropoff_loc'];
-                                    $departure = date('F j, Y h:i A', strtotime($row['departure']));
-                                    $est_arrival_time =  date('h:i A', strtotime($row['est_arrival_time']));
-                                }
+                            $ret = "SELECT * FROM route WHERE route_status = 'Active' AND route_id = $route_id AND car_id = $car_id";
+                            $stmt = $db->prepare($ret);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
+                            $cnt = 1;
+                            while ($row = $result->fetch_assoc()) {
+                                $pickup_loc = $row['pickup_loc'];
+                                $dropoff_loc = $row['dropoff_loc'];
+                                $departure = date('F j, Y h:i A', strtotime($row['departure']));
+                                $est_arrival_time =  date('h:i A', strtotime($row['est_arrival_time']));
                             }
-                            ?>
+                        }
+                        ?>
+                        <form method="POST">
                             <label for="loc" class="form-label">Pick-up Location -> Drop-off Location</label>
                             <input type="text" class="form-control" name="loc" value="<?php echo $pickup_loc . " to " . $dropoff_loc ?>" id="loc" disabled>
                             <br>
@@ -230,8 +229,18 @@ $userid = $_SESSION['user_id'];
                                 $stmt->execute();
                                 $existingBooking = $stmt->get_result()->fetch_assoc();
 
+                                // Check if the user's ticket balance is sufficient
+                                $getUserBalanceSql = "SELECT ticket_balance FROM user_profile WHERE user_id = ?";
+                                $stmt = $db->prepare($getUserBalanceSql);
+                                $stmt->bind_param("i", $user_id);
+                                $stmt->execute();
+                                $userProfile = $stmt->get_result()->fetch_assoc();
+                                $ticketBalance = $userProfile['ticket_balance'];
+
                                 if ($existingBooking) {
                                     echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">You have already booked a seat for this route.</h5></div>';
+                                } elseif ($ticketBalance < $fare) {
+                                    echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Insufficient ticket balance.</h5></div>';
                                 } else {
                                     // Update the seat status to 'Taken'
                                     $updateSeatSql = "UPDATE seat SET seat_status = ? WHERE seat_id = ?";
@@ -239,48 +248,51 @@ $userid = $_SESSION['user_id'];
                                     $stmt->bind_param("si", $status, $seat_id);
                                     $stmt->execute();
 
+                                    // Deduct the fare amount from the user's ticket balance
+                                    $newBalance = $ticketBalance - $fare;
+                                    $updateBalanceSql = "UPDATE user_profile SET ticket_balance = ? WHERE user_id = ?";
+                                    $stmt = $db->prepare($updateBalanceSql);
+                                    $stmt->bind_param("di", $newBalance, $user_id);
+                                    $stmt->execute();
+
                                     // Add the booking to the booking table
                                     $booking_status = 'Pending';
-
                                     $insertBookingSql = "INSERT INTO booking (user_id, seat_id, booking_status) VALUES (?, ?, ?)";
                                     $stmt = $db->prepare($insertBookingSql);
                                     $stmt->bind_param("iis", $user_id, $seat_id, $booking_status);
+
                                     if ($stmt->execute()) {
                                         echo '<div style="text-align: center;"><h5 style="color: green; font-size:18px;">Route Reservation Successful!</h5></div>';
                                         echo '<div style="text-align: center;"><p style="font-size:14px;">Please note that the fare amount will only be paid to the driver<br>after confirming that you have been dropped off at the destination.<br><br><em>Thank you for choosing our route reservation service!</em></p></div>';
+
+                                        // Check if all seats for the route are taken
+                                        $checkAllSeatsTakenSql = "SELECT COUNT(*) AS total_seats FROM seat WHERE route_id = (SELECT route_id FROM seat WHERE seat_id = ?) AND seat_status != 'Taken'";
+                                        $stmt = $db->prepare($checkAllSeatsTakenSql);
+                                        $stmt->bind_param("i", $seat_id);
+                                        $stmt->execute();
+                                        $result = $stmt->get_result();
+                                        $row = $result->fetch_assoc();
+                                        $totalSeats = $row['total_seats'];
+
+                                        if ($totalSeats == 0) {
+                                            $updateRouteSql = "UPDATE route SET route_status = 'Fully Booked' WHERE route_id = (SELECT route_id FROM seat WHERE seat_id = ?)";
+                                            $stmt = $db->prepare($updateRouteSql);
+                                            $stmt->bind_param("i", $seat_id);
+                                            $stmt->execute();
+                                        }
                                     } else {
                                         echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Route Reservation Failed</h5></div>';
-                                    }
-
-                                    // Check if all seats on the route are taken
-                                    $checkSeatsTakenSql = "SELECT COUNT(*) AS num_taken_seats FROM seat WHERE route_id = ?";
-                                    $stmt = $db->prepare($checkSeatsTakenSql);
-                                    $stmt->bind_param("i", $route_id);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    $row = $result->fetch_assoc();
-                                    $num_taken_seats = $row['num_taken_seats'];
-
-                                    // Get the total number of seats on the route
-                                    $getTotalSeatsSql = "SELECT COUNT(*) AS total_seats FROM seat WHERE route_id = ?";
-                                    $stmt = $db->prepare($getTotalSeatsSql);
-                                    $stmt->bind_param("i", $route_id);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    $row = $result->fetch_assoc();
-                                    $total_seats = $row['total_seats'];
-
-                                    if ($num_taken_seats >= $total_seats) {
-                                        $updateRouteStatusSql = "UPDATE route SET route_status = 'Fully Booked' WHERE route_id = ?";
-                                        $stmt = $db->prepare($updateRouteStatusSql);
-                                        $stmt->bind_param("i", $route_id);
-                                        $stmt->execute();
                                     }
                                 }
                             }
                             ?>
-                            <button type="submit" name="submit" class="btn btn-success">Reserve</button>
+                            <?php
+                            if (!isset($_POST['submit']) || isset($_POST['submit']) && ($existingBooking || $ticketBalance < $fare)) {
+                                echo '<button type="submit" name="submit" class="btn btn-success">Reserve</button>';
+                            }
+                            ?>
                         </form>
+
                         <!-- End Form-->
                     </div>
 

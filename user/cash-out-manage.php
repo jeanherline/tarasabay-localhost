@@ -132,11 +132,11 @@ if (isset($_POST['submit'])) {
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $ret = "SELECT cico.cico_id, cico.gcash_mobile_number, cico.peso_amount, cico.convenience_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.trans_stat
-                                            FROM cico
-                                            INNER JOIN user_profile up ON cico.user_id = up.user_id
-                                            WHERE cico.peso_amount > 0 AND cico.trans_type = 'cash-out' AND (cico.trans_stat = 'Pending' OR cico.trans_stat = 'Approved' OR cico.trans_stat = 'Declined')
-                                            ORDER BY cico.created_at DESC";
+                                    $ret = "SELECT cico.cico_id, cico.gcash_mobile_number, cico.peso_amount, cico.ticket_amount, cico.processing_fee, cico.convenience_fee, cico.reference_number, cico.created_at, up.first_name, up.last_name, cico.trans_stat
+                            FROM cico
+                            INNER JOIN user_profile up ON cico.user_id = up.user_id
+                            WHERE cico.peso_amount > 0 AND cico.trans_type = 'cash-out' AND (cico.trans_stat = 'Pending' OR cico.trans_stat = 'Approved' OR cico.trans_stat = 'Declined')
+                            ORDER BY cico.created_at DESC";
 
                                     $stmt = $db->prepare($ret);
                                     $stmt->execute();
@@ -160,14 +160,14 @@ if (isset($_POST['submit'])) {
                                         }
                                         echo "</td>";
                                         echo "<td>
-                                        <a href='approveCashout.php?cico_id=" . $row['cico_id'] . "&amount=" . $row['peso_amount'] . "' class='badge badge-success' onclick=\"return confirm('Are you sure you want to approve?')\">
+                                        <a href='approveCashout.php?cico_id=" . $row['cico_id'] . "&ticket_amount=" . $row['ticket_amount'] . "&processing_fee=" . $row['processing_fee'] . "' class='badge badge-success' onclick=\"return confirm('Are you sure you want to approve?')\">
                                             <i class='fa fa-check'></i> Approve
                                         </a>
-                                        <a href='../declineCashout.php?cico_id=" . $row['cico_id'] . "&amount=" . $row['peso_amount'] . "' class='badge badge-danger' onclick=\"return confirm('Are you sure you want to decline?')\">
+                                        <a href='../declineCashout.php?cico_id=" . $row['cico_id'] . "&ticket_amount=" . $row['ticket_amount'] . "&processing_fee=" . $row['processing_fee'] . "' class='badge badge-danger' onclick=\"return confirm('Are you sure you want to decline?')\">
                                             <i class='fa fa-ban'></i> Decline
                                         </a>
                                     </td>";
-                                    
+
                                         echo "</tr>";
                                     }
                                     ?>

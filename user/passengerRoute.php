@@ -105,7 +105,8 @@ if ($result->num_rows == 1) {
                                     <tbody>
                                         <?php
                                         $user_id = $_SESSION['user_id'];
-                                        $ret = "SELECT * FROM route WHERE route_status = 'Active' AND route_status != 'Cancelled'";
+                                        $ret = "SELECT * FROM route WHERE route_status != 'Cancelled'";
+
                                         $stmt = $db->prepare($ret);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
@@ -134,21 +135,28 @@ if ($result->num_rows == 1) {
                                             }
                                         ?>
                                             <td>
-                                                <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
-                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
-                                                </a>
-                                                <?php if ($_SESSION['role'] == 'Passenger') { ?>
-                                                    <?php if ($existingBooking) { ?>
+
+                                                <?php if ($_SESSION['role'] === 'Passenger') { ?>
+                                                    <?php if ($existingBooking or $row['route_status'] == 'Start' or $row['route_status'] == 'Done') { ?>
+                                                        <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                        </a>
                                                         <button disabled>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Booked&nbsp;&nbsp;</button>
                                                     <?php } else { ?>
+                                                        <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                        </a>
                                                         <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
                                                             <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
                                                         </a>
-                                                    <?php } ?>
-                                                    <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=To&car_id=<?php echo $car_id ?>">
-                                                        <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
-                                                    </a>
-                                                <?php } ?>
+                                                    <?php }
+                                                } else {
+                                                    ?>
+                                                    <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                <?php
+                                                }
+                                                ?>
                                             </td>
 
                                         <?php
@@ -220,22 +228,46 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
                                             echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
                                             echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
-                                            echo "<td>" . $row['route_status'] . "</td>";
+
+                                            // Check if the user has already booked the route
+                                            $checkBookingSql = "SELECT * FROM booking WHERE user_id = ? AND seat_id IN (SELECT seat_id FROM seat WHERE route_id = ?) AND booking_status = 'Pending' OR booking_status = 'Booked'";
+                                            $stmt = $db->prepare($checkBookingSql);
+                                            $stmt->bind_param("ii", $user_id, $route_id);
+                                            $stmt->execute();
+                                            $existingBooking = $stmt->get_result()->fetch_assoc();
+
+                                            if ($existingBooking) {
+                                                echo "<td>Booked</td>";
+                                            } else {
+                                                echo "<td>" . $row['route_status'] . "</td>";
+                                            }
                                         ?>
                                             <td>
-                                                <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=From&car_id=<?php echo $car_id ?>">
-                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
-                                                </a>
-                                                <?php
-                                                if ($_SESSION['role'] == 'Passenger') {
-                                                ?>
-                                                    <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=To&car_id=<?php echo $car_id ?>">
-                                                        <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
+
+                                                <?php if ($_SESSION['role'] === 'Passenger') { ?>
+                                                    <?php if ($existingBooking or $row['route_status'] == 'Start' or $row['route_status'] == 'Done') { ?>
+                                                        <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                        </a>
+                                                        <button disabled>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Booked&nbsp;&nbsp;</button>
+                                                    <?php } else { ?>
+                                                        <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                        </a>
+                                                        <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
+                                                        </a>
+                                                    <?php }
+                                                } else {
+                                                    ?>
+                                                    <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                     </a>
                                                 <?php
                                                 }
                                                 ?>
                                             </td>
+
                                         <?php
                                             echo "</tr>";
                                             $cnt++;
@@ -299,23 +331,45 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
                                             echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
                                             echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
-                                            echo "<td>" . $row['route_status'] . "</td>";
+
+                                            // Check if the user has already booked the route
+                                            $checkBookingSql = "SELECT * FROM booking WHERE user_id = ? AND seat_id IN (SELECT seat_id FROM seat WHERE route_id = ?) AND booking_status = 'Pending' OR booking_status = 'Booked'";
+                                            $stmt = $db->prepare($checkBookingSql);
+                                            $stmt->bind_param("ii", $user_id, $route_id);
+                                            $stmt->execute();
+                                            $existingBooking = $stmt->get_result()->fetch_assoc();
+
+                                            if ($existingBooking) {
+                                                echo "<td>Booked</td>";
+                                            } else {
+                                                echo "<td>" . $row['route_status'] . "</td>";
+                                            }
                                         ?>
                                             <td>
-                                                <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=To&car_id=<?php echo $car_id ?>">
-                                                    <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
-                                                </a>
-                                                <?php
-                                                if ($_SESSION['role'] == 'Passenger') {
-                                                ?>
-                                                    <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=To&car_id=<?php echo $car_id ?>">
-                                                        <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
+                                                <?php if ($_SESSION['role'] === 'Passenger') { ?>
+                                                    <?php if ($existingBooking or $row['route_status'] == 'Start' or $row['route_status'] == 'Done') { ?>
+                                                        <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                        </a>
+                                                        <button disabled>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Booked&nbsp;&nbsp;</button>
+                                                    <?php } else { ?>
+                                                        <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
+                                                        </a>
+                                                        <a href="bookRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                            <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Book&nbsp;&nbsp;</button>
+                                                        </a>
+                                                    <?php }
+                                                } else {
+                                                    ?>
+                                                    <a href="viewRoute.php?route_id=<?php echo $row['route_id']; ?>&list=All&car_id=<?php echo $car_id ?>">
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                     </a>
                                                 <?php
                                                 }
                                                 ?>
-
                                             </td>
+
                                         <?php
                                             echo "</tr>";
                                             $cnt++;

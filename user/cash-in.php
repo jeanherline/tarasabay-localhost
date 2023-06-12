@@ -128,49 +128,57 @@ $userid = $_SESSION['user_id'];
                                 $amount = $_POST['amount'];
                                 $status = 'Successful'; // Set initial status as 'Pending'
 
-                                // Calculate convenience fee based on amount
-                                $confee = "";
-                                if ($amount == 500) {
-                                    $confee = 50.00;
-                                } elseif ($amount == 250) {
-                                    $confee = 50.00;
-                                } elseif ($amount == 100) {
-                                    $confee = 20.00;
-                                } elseif ($amount == 50) {
-                                    $confee = 10.00;
-                                }
-
-                                // Calculate ticket amount based on amount
-                                $ticketAmount = "";
-                                if ($amount == 500) {
-                                    $ticketAmount = 450;
-                                } elseif ($amount == 250) {
-                                    $ticketAmount = 200;
-                                } elseif ($amount == 100) {
-                                    $ticketAmount = 80;
-                                } elseif ($amount == 50) {
-                                    $ticketAmount = 40;
-                                }
-
-                                $processing_fee = 0;
-                                $methodType = "GCash";
-                                $stmt = $db->prepare("INSERT INTO cico (user_id, trans_type, gcash_mobile_number, processing_fee, convenience_fee, reference_number, trans_stat, peso_amount, ticket_amount, method_type)
-                                VALUES (?, 'Cash-In', ?, ?, ?, ?, ?, ?, ?, ?)");
-                                $stmt->bind_param("isddssdds", $userid, $mobileNo, $processing_fee, $confee, $reference, $status, $amount, $ticketAmount, $methodType);
-                                $result = $stmt->execute();
-
-                                if ($result) {
-                                    $sql_update_tickets = "UPDATE user_profile SET ticket_balance = ticket_balance + $ticketAmount WHERE user_id = ?";
-                                    $stmt7 = $db->prepare($sql_update_tickets);
-                                    $stmt7->bind_param("i", $userid);
-                                    $stmt7->execute();
-                                    if ($stmt7->error) {
-                                        die("Error updating ticket balance for referrer: " . $stmt7->error);
+                                if ($amount <= 0) {
+                                    echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Invalid amount. Please enter a valid amount greater than zero.</h5></div>';
+                                } else {
+                                    // Calculate convenience fee based on amount
+                                    $confee = "";
+                                    if ($amount == 500) {
+                                        $confee = 50.00;
+                                    } elseif ($amount == 250) {
+                                        $confee = 50.00;
+                                    } elseif ($amount == 100) {
+                                        $confee = 20.00;
+                                    } elseif ($amount == 50) {
+                                        $confee = 10.00;
                                     }
 
-                                    echo '<div style="text-align: center;"><h5 style="color: green; font-size:16px;">Cash-In Successful!</h5></div>';
-                                } else {
-                                    echo "Error: " . $stmt->error;
+                                    // Calculate ticket amount based on amount
+                                    $ticketAmount = "";
+                                    if ($amount == 500) {
+                                        $ticketAmount = 450;
+                                    } elseif ($amount == 250) {
+                                        $ticketAmount = 200;
+                                    } elseif ($amount == 100) {
+                                        $ticketAmount = 80;
+                                    } elseif ($amount == 50) {
+                                        $ticketAmount = 40;
+                                    }
+
+                                    if ($amount <= 0) {
+                                        echo '<div style="text-align: center;"><h5 style="color: red; font-size:16px;">Invalid amount. Please enter a valid amount.</h5></div>';
+                                    } else {
+                                        $processing_fee = 0;
+                                        $methodType = "GCash";
+                                        $stmt = $db->prepare("INSERT INTO cico (user_id, trans_type, gcash_mobile_number, processing_fee, convenience_fee, reference_number, trans_stat, peso_amount, ticket_amount, method_type)
+                                VALUES (?, 'Cash-In', ?, ?, ?, ?, ?, ?, ?, ?)");
+                                        $stmt->bind_param("isddssdds", $userid, $mobileNo, $processing_fee, $confee, $reference, $status, $amount, $ticketAmount, $methodType);
+                                        $result = $stmt->execute();
+
+                                        if ($result) {
+                                            $sql_update_tickets = "UPDATE user_profile SET ticket_balance = ticket_balance + $ticketAmount WHERE user_id = ?";
+                                            $stmt7 = $db->prepare($sql_update_tickets);
+                                            $stmt7->bind_param("i", $userid);
+                                            $stmt7->execute();
+                                            if ($stmt7->error) {
+                                                die("Error updating ticket balance for referrer: " . $stmt7->error);
+                                            }
+
+                                            echo '<div style="text-align: center;"><h5 style="color: green; font-size:16px;">Cash-In Successful!</h5></div>';
+                                        } else {
+                                            echo "Error: " . $stmt->error;
+                                        }
+                                    }
                                 }
                             }
                             ?>

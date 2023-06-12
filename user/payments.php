@@ -177,6 +177,7 @@ if (isset($_POST['submit'])) {
                                             <td colspan="1"><?php echo number_format($totalTicketAmount, 2); ?></td>
                                             <td></td>
                                             <td></td>
+                                            <td></td>
                                         </tr>
                                     </tfoot>
 
@@ -269,6 +270,7 @@ if (isset($_POST['submit'])) {
                                             <td colspan="1"><?php echo number_format($totalTicketAmount, 2); ?></td>
                                             <td></td>
                                             <td></td>
+                                            <td></td>
                                         </tr>
                                     </tfoot>
 
@@ -357,6 +359,7 @@ if (isset($_POST['submit'])) {
                                         <tr>
                                             <td colspan="3"><b>Total Amount</b></td>
                                             <td colspan="1"><?php echo number_format($totalTicketAmount, 2); ?></td>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                         </tr>

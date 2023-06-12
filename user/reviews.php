@@ -183,15 +183,15 @@ if (isset($_POST['submit'])) {
                                     <tbody>
                                         <?php
                                         $user_id = $_SESSION['user_id'];
-                                        $ret = "SELECT r.*, rev.comment, p.ticket_amount, p.payment_to, p.payment_status, up.first_name, up.last_name, c.*
-                                      FROM route r
-                                      INNER JOIN seat s ON r.route_id = s.route_id
-                                      INNER JOIN booking b ON s.seat_id = b.seat_id
-                                      INNER JOIN review rev ON b.booking_id = rev.booking_id
-                                      INNER JOIN payment p ON b.booking_id = p.booking_id
-                                      INNER JOIN user_profile up ON b.user_id = up.user_id
-                                      INNER JOIN car c ON r.car_id = c.car_id
-                                      WHERE c.user_id = ?";
+                                        $ret = "SELECT DISTINCT r.*, rev.comment, p.ticket_amount, p.payment_to, p.payment_status, up.first_name, up.last_name, c.*
+                                                FROM route r
+                                                INNER JOIN seat s ON r.route_id = s.route_id
+                                                INNER JOIN booking b ON s.seat_id = b.seat_id
+                                                INNER JOIN review rev ON b.booking_id = rev.booking_id
+                                                INNER JOIN payment p ON b.booking_id = p.booking_id
+                                                INNER JOIN user_profile up ON b.user_id = up.user_id
+                                                INNER JOIN car c ON r.car_id = c.car_id
+                                                WHERE c.user_id = ?";
                                         $stmt = $db->prepare($ret);
                                         $stmt->bind_param("i", $user_id);
                                         $stmt->execute();
@@ -264,7 +264,6 @@ if (isset($_POST['submit'])) {
                                             echo "</tr>";
                                             $cnt++;
                                         }
-
                                         ?>
                                     </tbody>
                                 </table>

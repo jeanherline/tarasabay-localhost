@@ -105,7 +105,7 @@ $userid = $_SESSION['user_id'];
                             <br><br>
                             <?php
                             if (isset($_POST['submit'])) {
-                                $availableBalance = 0.00; 
+                                $availableBalance = 0.00;
                                 if (isset($userid)) {
                                     $stmt = $db->prepare("SELECT ticket_balance, role FROM user_profile WHERE user_id = ?");
                                     $stmt->bind_param("i", $userid);
@@ -119,55 +119,55 @@ $userid = $_SESSION['user_id'];
                                     $stmt->close();
                                 }
 
-                                $amount = $_POST['amount'] ?? 0; 
+                                $amount = $_POST['amount'] ?? 0;
                                 $processingFee = ceil($amount / 1000) * 20;
 
-                                echo '<div style="text-align: center; margin-bottom: 20px;">';
-                                echo '<div><strong>Amount:</strong> ' . $amount . '</div>';
-                                echo '<div><strong>Processing Fee:</strong> ' . $processingFee . '</div>';
-                                echo '</div>';
+                                if ($amount <= 0) {
+                                    echo '<div style="text-align: center;">
+               <h5 style="color: red; font-size:16px;">Amount should be greater than zero.</h5>
+           </div>';
+                                } else {
+                                    echo '<div style="text-align: center; margin-bottom: 20px;">';
+                                    echo '<div><strong>Amount:</strong> ' . $amount . '</div>';
+                                    echo '<div><strong>Processing Fee:</strong> ' . $processingFee . '</div>';
+                                    echo '</div>';
 
-                                $ticketValue = 1;
-                                $availableTickets = floor($availableBalance / $ticketValue);
+                                    $ticketValue = 1;
+                                    $availableTickets = floor($availableBalance / $ticketValue);
 
-                                $mobileNo = $_POST['mobile_no'];
-                                $reference = ""; 
-                                $status = 'Pending'; 
+                                    $mobileNo = $_POST['mobile_no'];
+                                    $reference = "";
+                                    $status = 'Pending';
 
-                                if ($role === 'Driver') {
-                                    if ($amount + $processingFee > $availableTickets) {
-                                        echo '<div style="text-align: center;">
-                                               <h5 style="color: red; font-size:16px;">Insufficient ticket balance for cash-out!</h5>
-                                           </div>';
-                                    } else {
-                                        $newBalance = $availableBalance - ($amount + $processingFee);
-
-                                        $stmt = $db->prepare("UPDATE user_profile SET ticket_balance = ? WHERE user_id = ?");
-                                        $stmt->bind_param("di", $newBalance, $userid);
-                                        $stmt->execute();
-                                        $stmt->close();
-
-                                        $stmt = $db->prepare("INSERT INTO cico (user_id, trans_type, gcash_mobile_number, peso_amount, ticket_amount, processing_fee, convenience_fee, reference_number, method_type, trans_stat, created_at, updated_at)
-                                                   VALUES (?, 'Cash-Out', ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-
-                                        $convenienceFee = 0.00;
-                                        $methodType = 'GCash';
-                                        $stmt->bind_param("issidisss", $userid, $mobileNo, $amount, $amount, $processingFee, $convenienceFee, $reference, $methodType, $status);
-
-                                        $result = $stmt->execute();
-
-                                        if ($result) {
+                                    if ($role === 'Driver') {
+                                        if ($amount + $processingFee > $availableTickets) {
                                             echo '<div style="text-align: center;">
-                                                   <h5 style="color: green; font-size:16px;">Cash-out transaction pending!</h5>
-                                               </div>';
+                       <h5 style="color: red; font-size:16px;">Insufficient ticket balance for cash-out!</h5>
+                   </div>';
                                         } else {
-                                            echo "Error: " . $stmt->error;
+                                            $stmt = $db->prepare("INSERT INTO cico (user_id, trans_type, gcash_mobile_number, peso_amount, ticket_amount, processing_fee, convenience_fee, reference_number, method_type, trans_stat, created_at, updated_at)
+                           VALUES (?, 'Cash-Out', ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+
+                                            $convenienceFee = 0.00;
+                                            $methodType = 'GCash';
+                                            $stmt->bind_param("issidisss", $userid, $mobileNo, $amount, $amount, $processingFee, $convenienceFee, $reference, $methodType, $status);
+
+                                            $result = $stmt->execute();
+
+                                            if ($result) {
+                                                echo '<div style="text-align: center;">
+                           <h5 style="color: green; font-size:16px;">Cash-out transaction pending!</h5>
+                       </div>';
+                                            } else {
+                                                echo "Error: " . $stmt->error;
+                                            }
+                                            $stmt->close();
                                         }
-                                        $stmt->close();
                                     }
                                 }
                             }
                             ?>
+
 
 
                             <button type="submit" name="submit" class="btn btn-success">Cash Out</button>

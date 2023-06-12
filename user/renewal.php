@@ -207,7 +207,7 @@ if ($result->num_rows == 1) {
                                             echo "<td>" . $row['plate_expiration'] . "</td>";
                                         ?>
                                             <td>
-                                                <a href="viewRenewalProfile.php?user_id=<?php echo $user; ?>&list=Plate">
+                                                <a href="viewRenewalProfile.php?user_id=<?php echo $user; ?>&list=Plate&car_id=<?php echo $car_id ?>">
                                                     <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                 </a>
 

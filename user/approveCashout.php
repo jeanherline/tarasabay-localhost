@@ -73,18 +73,41 @@ $userid = $_SESSION['user_id'];
                             </div>
                             <?php
                             if (isset($_POST['submit'])) {
-                                if (isset($_GET['cico_id']) && isset($_GET['amount'])) {
-                                    $walletId = $_GET['cico_id'];
+                                if (isset($_GET['cico_id']) && isset($_GET['ticket_amount']) && isset($_GET['processing_fee'])) {
+                                    $cico_id = $_GET['cico_id'];
+                                    $ticket_amount = $_GET['ticket_amount'];
+                                    $processing_fee = $_GET['processing_fee'];
 
-                                    // Update the status and reference_number of cico table
+                                    // Retrieve the user_id associated with the cico_id
+                                    $stmt = $db->prepare("SELECT user_id FROM cico WHERE cico_id = ?");
+                                    $stmt->bind_param("i", $cico_id);
+                                    $stmt->execute();
+                                    $stmt->bind_result($user_id);
+                                    $stmt->fetch();
+                                    $stmt->close();
+
+                                    // Retrieve the available ticket balance for the user
+                                    $stmt = $db->prepare("SELECT ticket_balance FROM user_profile WHERE user_id = ?");
+                                    $stmt->bind_param("i", $user_id);
+                                    $stmt->execute();
+                                    $stmt->bind_result($availableBalance);
+                                    $stmt->fetch();
+                                    $stmt->close();
+
                                     $status = "Successful";
                                     $referenceNumber = $_POST['reference_number'];
                                     $stmt = $db->prepare("UPDATE cico SET trans_stat = ?, reference_number = ? WHERE cico_id = ?");
-                                    $stmt->bind_param("ssi", $status, $referenceNumber, $walletId);
+                                    $stmt->bind_param("ssi", $status, $referenceNumber, $cico_id);
                                     $result = $stmt->execute();
                                     $stmt->close();
 
                                     if ($result) {
+                                        $newBalance = $availableBalance - ($ticket_amount + $processing_fee);
+
+                                        $stmt = $db->prepare("UPDATE user_profile SET ticket_balance = ? WHERE user_id = ?");
+                                        $stmt->bind_param("di", $newBalance, $user_id);
+                                        $stmt->execute();
+                                        $stmt->close();
                             ?>
                                         <script>
                                             window.location.href = '../user/cash-out-manage.php';
@@ -96,6 +119,9 @@ $userid = $_SESSION['user_id'];
                                 }
                             }
                             ?>
+
+
+
                             <button type="submit" name="submit" class="btn btn-success">Add & Approve</button>
                         </form>
 

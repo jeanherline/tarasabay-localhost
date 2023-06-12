@@ -76,15 +76,16 @@ if ($result->num_rows == 1) {
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <?php
-                        if (isset($_SESSION['role']) == "Driver") {
+                        if (
+                            isset($_SESSION['role']) == "Driver" || ($_SESSION['role']) == "Main Admin"
+                            || ($_SESSION['role']) == "City Admin"
+                        ) {
                         ?>
                             <?php
                             $list = '';
 
                             if (isset($_GET['list'])) {
                                 $listOption = $_GET['list'];
-
-                                // Check the value of the list option and set the corresponding value for $list
                                 if (
                                     $listOption === 'Active' || $listOption === 'Previous' || $listOption === 'Cancelled' ||
                                     $listOption === 'PendingBooking' || $listOption === 'ApprovedBooking' || $listOption === 'PreviousBooking' || $listOption === 'CancelledBooking'

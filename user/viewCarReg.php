@@ -7,6 +7,7 @@ if (!isset($_SESSION['user_id'])) {
 
 include('../db.php');
 
+
 $stmt = $db->prepare("SELECT * FROM city WHERE city_id = ?");
 $stmt->bind_param("s", $city_id);
 $stmt->execute();
@@ -112,8 +113,9 @@ if ($result->num_rows == 1) {
                 <hr>
                 <br><br>
                 <?php
-                if (isset($_GET['user_id'])) {
+                if (isset($_GET['user_id']) && isset($_GET['car_id'])) {
                     $user_id = $_GET['user_id'];
+                    $car_id = $_GET['car_id'];
                 }
                 $ret = "SELECT car.*, car_identification.*, user_profile.*, driver_identification.*, city.city_name
                         FROM car
@@ -121,7 +123,7 @@ if ($result->num_rows == 1) {
                         INNER JOIN driver_identification ON car.user_id = driver_identification.user_id
                         INNER JOIN car_identification ON car.user_id = driver_identification.user_id
                         INNER JOIN city ON user_profile.city_id = city.city_id
-                        WHERE car.car_status = '$list' AND user_profile.user_id = '$user_id'";
+                        WHERE car.car_id = '$car_id' AND user_profile.user_id = '$user_id'";
                 $stmt = $db->prepare($ret);
                 $stmt->execute();
                 $result = $stmt->get_result();
@@ -145,6 +147,7 @@ if ($result->num_rows == 1) {
                     $years_experience = $row['years_experience'];
 
                     $car_photo = $row['car_photo'];
+                    $qr_code = $row['qr_code'];
                     $brand = $row['brand'];
                     $model = $row['model'];
                     $color = $row['color'];
@@ -280,6 +283,15 @@ if ($result->num_rows == 1) {
                                     <img src="../assets/img/car/<?php echo $car_photo; ?>" alt="car_photo" class="card-preview">
                                 </div>
                             </div>
+
+                            <div class="form-group text-center">
+                                <label for="pwd_docx">QR Code:</label>
+                                <br>
+                                <div class="license" style="width: 700px; margin: 0 auto;">
+                                    <img src="../assets/img/qr_codes/<?php echo $qr_code; ?>" alt="qr_code" class="card-preview">
+                                </div>
+                            </div>
+
 
                             <div class="form-group">
                                 <label for="brand">Brand</label>

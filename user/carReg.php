@@ -136,10 +136,10 @@ if ($result->num_rows == 1) {
                                             if ($_SESSION['role'] == "City Admin") {
                                         ?>
                                                 <td>
-                                                    <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Pending">
+                                                    <a href="viewCarReg.php?user_id=<?php echo $id; ?>&status=Pending&car_id=<?php echo $car_id;?>">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;&nbsp;</button>
                                                     </a>
-                                                    <a href="editCarReg.php?user_id=<?php echo $id; ?>&status=Pending">
+                                                    <a href="editCarReg.php?user_id=<?php echo $id; ?>&status=Pending&car_id=<?php echo $car_id;?>">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-pencil"></i>&nbsp;&nbsp;</button>
                                                     </a>
                                                     <a href="approveCarReg.php?user_id=<?php echo $id; ?>&status=Pending&car_id=<?php echo $car_id; ?>"onclick="return confirm('Are you sure you want to approve?')">
@@ -264,7 +264,7 @@ if ($result->num_rows == 1) {
                                             if ($_SESSION['role'] == "City Admin") {
                                         ?>
                                                 <td>
-                                                    <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Active">
+                                                    <a href="viewCarReg.php?user_id=<?php echo $id; ?>&status=Active&car_id=<?php echo $car_id;?>">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                     </a>
                                                     <a href="denyCarReg.php?user_id=<?php echo $id; ?>&status=Active&car_id=<?php echo $car_id; ?>"onclick="return confirm('Are you sure you want to deny?')">
@@ -275,7 +275,7 @@ if ($result->num_rows == 1) {
                                             } else {
                                                 ?>
                                                 <td>
-                                                    <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Active">
+                                                    <a href="viewCarReg.php?user_id=<?php echo $id; ?>&status=Active">
                                                         <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                     </a>
                                                 </td>
@@ -365,7 +365,7 @@ if ($result->num_rows == 1) {
                                                 if ($_SESSION['role'] == "City Admin") {
                                             ?>
                                                     <td>
-                                                        <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Denied">
+                                                        <a href="viewCarReg.php?user_id=<?php echo $id; ?>&status=Denied&car_id=<?php echo $car_id;?>">
                                                             <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                         </a>
                                                         <a href="approveCarReg.php?user_id=<?php echo $id; ?>&status=Denied&car_id=<?php echo $car_id; ?>" onclick="return confirm('Are you sure you want to approve?')">
@@ -377,7 +377,7 @@ if ($result->num_rows == 1) {
                                                 } else {
                                                 ?>
                                                     <td>
-                                                        <a href="viewCarReg.php?user_id=<?php echo $id; ?>>&status=Denied">
+                                                        <a href="viewCarReg.php?user_id=<?php echo $id; ?>&status=Denied">
                                                             <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                         </a>
                                                     </td>

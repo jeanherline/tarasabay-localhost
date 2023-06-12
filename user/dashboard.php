@@ -358,103 +358,101 @@ if ($result->num_rows == 1) {
             </div>
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Pickup Location</th>
-                      <th>Drop-Off Location</th>
-                      <th>Departure</th>
-                      <th>Est Arrival Time</th>
-                      <th>Route Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php
-                    $user_id = $_SESSION['user_id'];
-                    $ret = "SELECT r.*, c.* 
-                                        FROM route AS r 
-                                        INNER JOIN car AS c ON r.car_id = c.car_id 
-                                        WHERE (c.user_id = ? AND r.route_status IN ('Active', 'Fully Booked', 'Start', 'Picked-up','Dropped-off'))
-                                        ORDER BY r.route_id";
-                    $stmt = $db->prepare($ret);
-                    $stmt->bind_param("s", $user_id);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    $cnt = 1;
-                    while ($row = $result->fetch_assoc()) {
-                      $car_id = $row['car_id'];
-                      $route_id = $row['route_id'];
+              <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Pickup Location</th>
+                                            <th>Drop-Off Location</th>
+                                            <th>Departure</th>
+                                            <th>Est Arrival Time</th>
+                                            <th>Route Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $user_id = $_SESSION['user_id'];
+                                        $ret = "SELECT r.*, c.* 
+FROM route AS r 
+INNER JOIN car AS c ON r.car_id = c.car_id 
+WHERE (c.user_id = ? AND r.route_status IN ('Active', 'Fully Booked', 'Start', 'Picked-up','Dropped-off'))
+ORDER BY r.route_id";
+                                        $stmt = $db->prepare($ret);
+                                        $stmt->bind_param("s", $user_id);
+                                        $stmt->execute();
+                                        $result = $stmt->get_result();
+                                        $cnt = 1;
+                                        while ($row = $result->fetch_assoc()) {
+                                            $car_id = $row['car_id'];
+                                            $route_id = $row['route_id'];
 
-                      // Retrieve the total number of seats for the route
-                      $countSeatsSql = "SELECT COUNT(*) AS total_seats FROM seat WHERE route_id = ?";
-                      $stmt = $db->prepare($countSeatsSql);
-                      $stmt->bind_param("i", $route_id);
-                      $stmt->execute();
-                      $countResult = $stmt->get_result();
-                      $countRow = $countResult->fetch_assoc();
-                      $totalSeats = $countRow['total_seats'];
+                                            // Retrieve the total number of seats for the route
+                                            $countSeatsSql = "SELECT COUNT(*) AS total_seats FROM seat WHERE route_id = ?";
+                                            $stmt = $db->prepare($countSeatsSql);
+                                            $stmt->bind_param("i", $route_id);
+                                            $stmt->execute();
+                                            $countResult = $stmt->get_result();
+                                            $countRow = $countResult->fetch_assoc();
+                                            $totalSeats = $countRow['total_seats'];
 
-                      // Check if all booking statuses of the seats in the route are 'Dropped-off'
-                      $checkBookingStatusSql = "SELECT COUNT(*) AS dropped_off_seats 
-                                            FROM seat 
-                                            INNER JOIN booking ON seat.seat_id = booking.seat_id 
-                                            WHERE seat.route_id = ? AND booking.booking_status = 'Dropped-off'";
+                                            // Check if all booking statuses of the seats in the route are 'Dropped-off'
+                                            $checkBookingStatusSql = "SELECT COUNT(*) AS dropped_off_seats 
+    FROM seat 
+    INNER JOIN booking ON seat.seat_id = booking.seat_id 
+    WHERE seat.route_id = ? AND booking.booking_status = 'Dropped-off'";
 
-                      $stmt = $db->prepare($checkBookingStatusSql);
-                      $stmt->bind_param("i", $route_id);
-                      $stmt->execute();
-                      $bookingStatusResult = $stmt->get_result();
-                      $bookingStatusRow = $bookingStatusResult->fetch_assoc();
-                      $droppedOffSeats = $bookingStatusRow['dropped_off_seats'];
+                                            $stmt = $db->prepare($checkBookingStatusSql);
+                                            $stmt->bind_param("i", $route_id);
+                                            $stmt->execute();
+                                            $bookingStatusResult = $stmt->get_result();
+                                            $bookingStatusRow = $bookingStatusResult->fetch_assoc();
+                                            $droppedOffSeats = $bookingStatusRow['dropped_off_seats'];
 
-                      // Check if all seats of the route are available
-                      $checkSeatsSql = "SELECT COUNT(*) AS available_seats 
-                                                                FROM seat 
-                                                                WHERE route_id = ? AND seat_status = 'Available'";
-                      $stmt = $db->prepare($checkSeatsSql);
-                      $stmt->bind_param("i", $route_id);
-                      $stmt->execute();
-                      $seatResult = $stmt->get_result();
-                      $seatRow = $seatResult->fetch_assoc();
-                      $availableSeats = $seatRow['available_seats'];
+                                            // Check if all seats of the route are available
+                                            $checkSeatsSql = "SELECT COUNT(*) AS available_seats 
+                      FROM seat 
+                      WHERE route_id = ? AND seat_status = 'Available'";
+                                            $stmt = $db->prepare($checkSeatsSql);
+                                            $stmt->bind_param("i", $route_id);
+                                            $stmt->execute();
+                                            $seatResult = $stmt->get_result();
+                                            $seatRow = $seatResult->fetch_assoc();
+                                            $availableSeats = $seatRow['available_seats'];
 
-                      echo "<tr>";
-                      echo "<td>" . $cnt . "</td>";
-                      echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
-                      echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
-                      echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
-                      echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
-                      echo "<td>" . $row['route_status'] . "</td>";
+                                            echo "<tr>";
+                                            echo "<td>" . $cnt . "</td>";
+                                            echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . substr($row['dropoff_loc'], 0, 15) . "...</td>";
+                                            echo "<td>" . date('F j, Y h:i A', strtotime($row['departure'])) . "</td>";
+                                            echo "<td>" . date('h:i A', strtotime($row['est_arrival_time'])) . "</td>";
+                                            echo "<td>" . $row['route_status'] . "</td>";
 
-                      echo "<td>";
-                      echo "<a href='viewRoute.php?user_id=" . $row['user_id'] . "&list=Active&route_id=" . $route_id . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
-                                                </a>";
+                                            echo "<td>";
+                                            echo "<a href='viewDriverRoute.php?user_id=" . $row['user_id'] . "&list=Active&route_id=" . $route_id . "'>
+            <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
+        </a>";
 
-                      echo "<a onclick='return confirm(\"Are you sure you want to cancel the route?\")' href='cancelRoute.php?user_id=" . $row['user_id'] . "&car_id=" . $car_id . "&route_id=" . $route_id . "'>
-                                                    <button>&nbsp;&nbsp;<i class='fa fa-ban'></i>&nbsp;Cancel&nbsp;&nbsp;</button>
-                                                </a>";
+                                            echo "<a onclick='return confirm(\"Are you sure you want to cancel the route?\")' href='cancelRoute.php?user_id=" . $row['user_id'] . "&car_id=" . $car_id . "&route_id=" . $route_id . "'>
+            <button>&nbsp;&nbsp;<i class='fa fa-ban'></i>&nbsp;Cancel&nbsp;&nbsp;</button>
+        </a>";
 
-                      if ($availableSeats < $totalSeats && $row['route_status'] === 'Active') {
-                        echo "<button onclick='markRouteAsDone(" . $route_id . ");'>&nbsp;&nbsp;<i class='fa fa-check' style='color:red;'></i>&nbsp;Start&nbsp;&nbsp;</button>";
-                      } else if ($droppedOffSeats == $totalSeats && $row['route_status'] === 'Start') {
-                        echo "<a onclick='return confirm(\"Are you sure you want to mark the route as done?\")' href='doneRoute.php?list=driverRoute.php?status=Active&user_id=" . $row['user_id'] . "&car_id=" . $car_id . "&route_id=" . $route_id . "'>
-                                                <button>&nbsp;&nbsp;<i class='fa fa-check' style = 'color: green'></i>&nbsp;Done&nbsp;&nbsp;</button>
-                                            </a>";
-                      }
+                                            if ($droppedOffSeats > 0) {
+                                                echo "<a onclick='return confirm(\"Are you sure you want to mark the route as done?\")' href='doneRoute.php?list=driverRoute.php?status=Active&user_id=" . $row['user_id'] . "&car_id=" . $car_id . "&route_id=" . $route_id . "'>
+                <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green'></i>&nbsp;Done&nbsp;&nbsp;</button>
+            </a>";
+                                            } elseif ($availableSeats < $totalSeats && $row['route_status'] === 'Active') {
+                                                echo "<button onclick='markRouteAsDone(" . $route_id . ");'>&nbsp;&nbsp;<i class='fa fa-check' style='color:red;'></i>&nbsp;Start&nbsp;&nbsp;</button>";
+                                            }
+                                            echo "</td>";
+                                            echo "</tr>";
+                                            $cnt++;
+                                        }
+                                        ?>
 
+                                    </tbody>
 
-                      echo "</td>";
-
-                      echo "</tr>";
-                      $cnt++;
-                    }
-                    ?>
-                  </tbody>
-
-                </table>
+                                </table>
 
                 <script>
                   function markRouteAsDone(route_id) {
