@@ -109,11 +109,12 @@ if ($result->num_rows == 1) {
                                     <tbody>
                                         <?php
                                         $ret = "SELECT * FROM user_profile
-                                                    WHERE role = 'City Admin' OR role = 'Previous City Admin'";
+                                         WHERE role = 'City Admin' OR role = 'Previous City Admin'";
                                         $stmt = $db->prepare($ret);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
                                         $cnt = 1;
+
                                         while ($row = $result->fetch_assoc()) {
                                             $cityAdminID = $row['user_id'];
 
@@ -128,6 +129,7 @@ if ($result->num_rows == 1) {
                                             mysqli_stmt_execute($city_statement);
                                             mysqli_stmt_bind_result($city_statement, $city_name);
                                             mysqli_stmt_fetch($city_statement);
+                                            mysqli_stmt_close($city_statement); // Close the prepared statement
 
                                             echo "<td>" . $city_name . "</td>";
                                             echo "<td>" . $row['role'] . "</td>";
@@ -136,13 +138,13 @@ if ($result->num_rows == 1) {
                                         ?>
                                                 <td>
                                                     <a href="viewAdminProfile.php?user_id=<?php echo $cityAdminID; ?>">
-                                                        <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp;&nbsp;</button>
                                                     </a>
                                                     <a href="editCityAdmin.php?user_id=<?php echo $cityAdminID; ?>">
-                                                        <button><i class="fa fa-pencil"></i>&nbsp;Edit&nbsp;</button>
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-pencil"></i>&nbsp;Edit&nbsp;&nbsp;</button>
                                                     </a>
                                                     <a href="removeCityAdmin.php?user_id=<?php echo $cityAdminID; ?>">
-                                                        <button><i class="fa fa-ban"></i>&nbsp;Remove&nbsp;</button>
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-ban"></i>&nbsp;Remove&nbsp;&nbsp;</button>
                                                     </a>
                                                 </td>
                                             <?php
@@ -150,25 +152,23 @@ if ($result->num_rows == 1) {
                                             ?>
                                                 <td>
                                                     <a href="viewAdminProfile.php?user_id=<?php echo $cityAdminID; ?>">
-                                                        <button><i class="fa fa-eye"></i>&nbsp;View&nbsp;</button>
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;View&nbsp&nbsp;;</button>
                                                     </a>
                                                     <a href="editCityAdmin.php?user_id=<?php echo $cityAdminID; ?>">
-                                                        <button><i class="fa fa-pencil"></i>&nbsp;Edit&nbsp;</button>
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-pencil"></i>&nbsp;Edit&nbsp;&nbsp;</button>
                                                     </a>
                                                     <a href="addCityAdmin.php?user_id=<?php echo $cityAdminID; ?>">
-                                                        <button><i class="fa fa-check"></i>&nbsp;Add&nbsp;</button>
+                                                        <button>&nbsp;&nbsp;<i class="fa fa-check"></i>&nbsp;Add&nbsp;&nbsp;</button>
                                                     </a>
                                                 </td>
-                                            <?php
-                                            }
-                                            ?>
-
                                     <?php
+                                            }
                                             echo "</tr>";
                                             $cnt++;
                                         }
                                     }
                                     ?>
+
 
                                     </tbody>
                                 </table>
