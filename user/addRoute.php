@@ -100,8 +100,6 @@ $userid = $_SESSION['user_id'];
                                         <div class="mr-5"><span class="badge" style="background-color: #EAAA00;"><i class="fas fa-route"></i>&nbsp;&nbsp;<?php echo $previousRoutes; ?></span> Previous Routes</div>
                                     </div>
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
