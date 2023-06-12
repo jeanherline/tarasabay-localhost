@@ -6,95 +6,77 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 include('../db.php');
-
-if (isset($_GET['user_id'])) {
-    $user_id = $_GET['user_id'];
-}
-$stmt = $db->prepare("SELECT * FROM user_profile WHERE user_id = ?");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows == 1) {
-    $row = $result->fetch_assoc();
-    $id = $row['user_id'];
-    $first_name = $row['first_name'];
-    $last_name = $row['last_name'];
-    $email = $row['email'];
-    $pswd = $row['password'];
-    $profile_photo = $row['profile_photo'];
-    $middle_name = $row['middle_name'];
-    $city_id = $row['city_id'];
-    $nationality = $row['nationality'];
-    $gender = $row['gender'];
-    $birthdate = $row['birthdate'];
-    $ticket_balance = $row['ticket_balance'];
-    $role = $row['role'];
-    $is_vaxxed = $row['is_vaxxed'];
-    $vax_card = $row['vax_card'];
-}
-
-
 if (isset($_GET['user_id'])) {
     $user_id = $_GET['user_id'];
 
+    $stmt = $db->prepare("SELECT * FROM user_profile WHERE user_id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows == 1) {
+        $row = $result->fetch_assoc();
+        $id = $row['user_id'];
+        $first_name = $row['first_name'];
+        $last_name = $row['last_name'];
+        $email = $row['email'];
+        $pswd = $row['password'];
+        $profile_photo = $row['profile_photo'];
+        $middle_name = $row['middle_name'];
+        $city_id = $row['city_id'];
+        $nationality = $row['nationality'];
+        $gender = $row['gender'];
+        $birthdate = $row['birthdate'];
+        $ticket_balance = $row['ticket_balance'];
+        $role = $row['role'];
+        $is_vaxxed = $row['is_vaxxed'];
+        $vax_card = $row['vax_card'];
+
+        if ($role == 'Driver') {
+            $ret = "SELECT car.*, car_identification.*, user_profile.*, driver_identification.*, city.city_name
+            FROM car
+            INNER JOIN user_profile ON car.user_id = user_profile.user_id
+            INNER JOIN driver_identification ON car.user_id = driver_identification.user_id
+            INNER JOIN car_identification ON car.user_id = driver_identification.user_id
+            INNER JOIN city ON user_profile.city_id = city.city_id
+            WHERE user_profile.user_id = ?";
+            $stmt = $db->prepare($ret);
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $cnt = 1;
+
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $car_status = $row['car_status'];
+
+                $disability = $row['disability'];
+                $pwd_docx = $row['pwd_docx'];
+                $license_front = $row['license_front'];
+                $license_back = $row['license_back'];
+                $license_expiration = $row['license_expiration'];
+                $nbi_police_cbi = $row['nbi_police_cbi'];
+                $cbi_date_issued = $row['cbi_date_issued'];
+                $years_experience = $row['years_experience'];
+
+                $car_photo = $row['car_photo'];
+                $brand = $row['brand'];
+                $model = $row['model'];
+                $color = $row['color'];
+                $type = $row['type'];
+                $seat_count = $row['seat_count'];
+
+                $or_photo = $row['or_photo'];
+                $or_number = $row['or_number'];
+                $cr_photo = $row['cr_photo'];
+                $cr_number = $row['cr_number'];
+                $sales_invoice = $row['sales_invoice'];
+                $plate_number = $row['plate_number'];
+                $plate_expiration = $row['plate_expiration'];
+            }
+        }
+    }
 }
-$ret = "SELECT car.*, car_identification.*, user_profile.*, driver_identification.*, city.city_name
-        FROM car
-        INNER JOIN user_profile ON car.user_id = user_profile.user_id
-        INNER JOIN driver_identification ON car.user_id = driver_identification.user_id
-        INNER JOIN car_identification ON car.user_id = driver_identification.user_id
-        INNER JOIN city ON user_profile.city_id = city.city_id
-        WHERE user_profile.user_id = '$user_id'";
-$stmt = $db->prepare($ret);
-$stmt->execute();
-$result = $stmt->get_result();
-$cnt = 1;
-
-while ($row = $result->fetch_assoc()) {
-    $row = $result->fetch_assoc();
-    $id = $row['user_id'];
-    $first_name = $row['first_name'];
-    $last_name = $row['last_name'];
-    $email = $row['email'];
-    $pswd = $row['password'];
-    $profile_photo = $row['profile_photo'];
-    $middle_name = $row['middle_name'];
-    $city_id = $row['city_id'];
-    $nationality = $row['nationality'];
-    $gender = $row['gender'];
-    $birthdate = $row['birthdate'];
-    $ticket_balance = $row['ticket_balance'];
-    $role = $row['role'];
-    $is_vaxxed = $row['is_vaxxed'];
-    $vax_card = $row['vax_card'];
-    $car_status = $row['car_status'];
-
-    $disability = $row['disability'];
-    $pwd_docx = $row['pwd_docx'];
-    $license_front = $row['license_front'];
-    $license_back = $row['license_back'];
-    $license_expiration = $row['license_expiration'];
-    $nbi_police_cbi = $row['nbi_police_cbi'];
-    $cbi_date_issued = $row['cbi_date_issued'];
-    $years_experience = $row['years_experience'];
-
-    $car_photo = $row['car_photo'];
-    $brand = $row['brand'];
-    $model = $row['model'];
-    $color = $row['color'];
-    $type = $row['type'];
-    $seat_count = $row['seat_count'];
-
-    $or_photo = $row['or_photo'];
-    $or_number = $row['or_number'];
-    $cr_photo = $row['cr_photo'];
-    $cr_number = $row['cr_number'];
-    $sales_invoice = $row['sales_invoice'];
-    $plate_number = $row['plate_number'];
-    $plate_expiration = $row['plate_expiration'];
-}
-
 
 $stmt = $db->prepare("SELECT * FROM city WHERE city_id = ?");
 $stmt->bind_param("s", $city_id);

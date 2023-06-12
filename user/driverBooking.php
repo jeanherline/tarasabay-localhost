@@ -124,7 +124,6 @@ if ($result->num_rows == 1) {
                                         while ($row = $result->fetch_assoc()) {
                                             $seat_id = $row['seat_id'];
 
-                                            // Fetch the passenger's user_id from the seat table
                                             $passenger_user_id = null;
                                             $seat_user_id_query = "SELECT user_id FROM booking WHERE seat_id = ?";
                                             $seat_stmt = $db->prepare($seat_user_id_query);
@@ -135,9 +134,19 @@ if ($result->num_rows == 1) {
                                                 $passenger_user_id = $seat_row['user_id'];
                                             }
 
+                                            $passenger_profile_query = "SELECT * FROM user_profile WHERE user_id = ?";
+                                            $passenger_profile_stmt = $db->prepare($passenger_profile_query);
+                                            $passenger_profile_stmt->bind_param("i", $passenger_user_id);
+                                            $passenger_profile_stmt->execute();
+                                            $passenger_profile_result = $passenger_profile_stmt->get_result();
+                                            if ($passenger_profile_row = $passenger_profile_result->fetch_assoc()) {
+                                                $passenger_first_name = $passenger_profile_row['first_name'];
+                                                $passenger_last_name = $passenger_profile_row['last_name'];
+                                            }
+                                
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
-                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                                            echo "<td>" .  $passenger_first_name . " " . $passenger_last_name . "</td>";;
                                             echo "<td>" . $row['seat_type'] . "</td>";
                                             echo "<td>" . $row['fare'] . "</td>";
                                             echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
@@ -233,7 +242,6 @@ if ($result->num_rows == 1) {
                                         while ($row = $result->fetch_assoc()) {
                                             $seat_id = $row['seat_id'];
 
-                                            // Fetch the passenger's user_id from the seat table
                                             $passenger_user_id = null;
                                             $seat_user_id_query = "SELECT user_id FROM booking WHERE seat_id = ?";
                                             $seat_stmt = $db->prepare($seat_user_id_query);
@@ -244,9 +252,19 @@ if ($result->num_rows == 1) {
                                                 $passenger_user_id = $seat_row['user_id'];
                                             }
 
+                                            $passenger_profile_query = "SELECT * FROM user_profile WHERE user_id = ?";
+                                            $passenger_profile_stmt = $db->prepare($passenger_profile_query);
+                                            $passenger_profile_stmt->bind_param("i", $passenger_user_id);
+                                            $passenger_profile_stmt->execute();
+                                            $passenger_profile_result = $passenger_profile_stmt->get_result();
+                                            if ($passenger_profile_row = $passenger_profile_result->fetch_assoc()) {
+                                                $passenger_first_name = $passenger_profile_row['first_name'];
+                                                $passenger_last_name = $passenger_profile_row['last_name'];
+                                            }
+
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
-                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                                            echo "<td>" .  $passenger_first_name . " " . $passenger_last_name . "</td>";
                                             echo "<td>" . $row['seat_type'] . "</td>";
                                             echo "<td>" . $row['fare'] . "</td>";
                                             echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
@@ -297,7 +315,7 @@ if ($result->num_rows == 1) {
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -331,7 +349,6 @@ if ($result->num_rows == 1) {
                                         while ($row = $result->fetch_assoc()) {
                                             $seat_id = $row['seat_id'];
 
-                                            // Fetch the passenger's user_id from the seat table
                                             $passenger_user_id = null;
                                             $seat_user_id_query = "SELECT user_id FROM booking WHERE seat_id = ?";
                                             $seat_stmt = $db->prepare($seat_user_id_query);
@@ -342,9 +359,19 @@ if ($result->num_rows == 1) {
                                                 $passenger_user_id = $seat_row['user_id'];
                                             }
 
+                                            $passenger_profile_query = "SELECT * FROM user_profile WHERE user_id = ?";
+                                            $passenger_profile_stmt = $db->prepare($passenger_profile_query);
+                                            $passenger_profile_stmt->bind_param("i", $passenger_user_id);
+                                            $passenger_profile_stmt->execute();
+                                            $passenger_profile_result = $passenger_profile_stmt->get_result();
+                                            if ($passenger_profile_row = $passenger_profile_result->fetch_assoc()) {
+                                                $passenger_first_name = $passenger_profile_row['first_name'];
+                                                $passenger_last_name = $passenger_profile_row['last_name'];
+                                            }
+
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
-                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                                            echo "<td>" . $passenger_profile_row['first_name'] . " " . $passenger_profile_row['last_name'] . "</td>";
                                             echo "<td>" . $row['seat_type'] . "</td>";
                                             echo "<td>" . $row['fare'] . "</td>";
                                             echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
@@ -396,7 +423,7 @@ if ($result->num_rows == 1) {
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -441,9 +468,18 @@ if ($result->num_rows == 1) {
                                                 $passenger_user_id = $seat_row['user_id'];
                                             }
 
+                                            $passenger_profile_query = "SELECT * FROM user_profile WHERE user_id = ?";
+                                            $passenger_profile_stmt = $db->prepare($passenger_profile_query);
+                                            $passenger_profile_stmt->bind_param("i", $passenger_user_id);
+                                            $passenger_profile_stmt->execute();
+                                            $passenger_profile_result = $passenger_profile_stmt->get_result();
+                                            if ($passenger_profile_row = $passenger_profile_result->fetch_assoc()) {
+                                                $passenger_first_name = $passenger_profile_row['first_name'];
+                                                $passenger_last_name = $passenger_profile_row['last_name'];
+                                            }
                                             echo "<tr>";
                                             echo "<td>" . $cnt . "</td>";
-                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                                            echo "<td>" .  $passenger_first_name . " " . $passenger_last_name . "</td>";;
                                             echo "<td>" . $row['seat_type'] . "</td>";
                                             echo "<td>" . $row['fare'] . "</td>";
                                             echo "<td>" . substr($row['pickup_loc'], 0, 15) . "...</td>";
