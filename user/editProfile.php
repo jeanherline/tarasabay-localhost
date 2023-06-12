@@ -491,12 +491,9 @@ $stmt->close();
                                     <label for="address">Address</label>
                                     <input type="text" class="form-control" placeholder="Enter Address" value="<?php echo isset($_POST['address']) ? $_POST['address'] : ''; ?>" name="address"><br>
                                 </div>
-
-
                             <?php
                             }
                             ?>
-
 
                             <?php
                             // Check if the form is submitted
@@ -546,7 +543,6 @@ $stmt->close();
                                     echo 'Error: ' . $stmt->error; // Print any error message
                                 }
 
-                                // Update or insert emergency contact
                                 $stmt = $db->prepare("SELECT * FROM emergency WHERE user_id=?");
                                 $stmt->bind_param("i", $userid);
                                 $stmt->execute();

@@ -431,7 +431,7 @@ if ($result->num_rows == 1) {
                             </div>
                         </form>
                         <br>
-                        <em>Reviews</em><br><br>
+                        <em>All Reviews</em><br><br>
                         <div class="card mb-3">
                             <div class="card-header">
                                 <i class="fas fa-table"></i>
@@ -450,19 +450,21 @@ if ($result->num_rows == 1) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $ret = "SELECT DISTINCT r.*, rev.comment, p.ticket_amount, p.payment_to, p.payment_status, up.first_name, up.last_name
-        FROM route r
-        INNER JOIN seat s ON r.route_id = s.route_id
-        INNER JOIN booking b ON s.seat_id = b.seat_id
-        INNER JOIN review rev ON b.booking_id = rev.booking_id
-        INNER JOIN payment p ON b.booking_id = p.booking_id
-        INNER JOIN user_profile up ON b.user_id = up.user_id
-        WHERE r.car_id = ?";
+                                            $ret = "SELECT rev.comment, up.first_name, up.last_name, rev.created_at
+                                                    FROM review rev
+                                                    INNER JOIN booking b ON rev.booking_id = b.booking_id
+                                                    INNER JOIN seat s ON b.seat_id = s.seat_id
+                                                    INNER JOIN route r ON s.route_id = r.route_id
+                                                    INNER JOIN car c ON r.car_id = c.car_id
+                                                    INNER JOIN user_profile up ON b.user_id = up.user_id
+                                                    WHERE c.user_id = ?";
+
                                             $stmt = $db->prepare($ret);
-                                            $stmt->bind_param("i", $car_id);
+                                            $stmt->bind_param("i", $user_id);
                                             $stmt->execute();
                                             $result = $stmt->get_result();
                                             $cnt = 1;
+
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
                                                 echo "<td>" . $cnt . "</td>";
@@ -473,7 +475,6 @@ if ($result->num_rows == 1) {
                                                 $cnt++;
                                             }
                                             ?>
-
                                         </tbody>
                                     </table>
                                 </div>
@@ -489,10 +490,6 @@ if ($result->num_rows == 1) {
                         <br>
                     </div>
                 </div>
-                <?php
-
-                ?>
-
                 <hr>
 
 

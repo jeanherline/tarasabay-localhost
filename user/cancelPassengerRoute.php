@@ -84,9 +84,26 @@ $userid = $_SESSION['user_id'];
                                     $cancellation_reason = $_POST['cancellation_reason'];
                                     $status = "Cancelled";
 
+                                    // Get the fare amount of the booking
+                                    $fare_query = "SELECT fare FROM seat WHERE seat_id = ?";
+                                    $fare_stmt = $db->prepare($fare_query);
+                                    $fare_stmt->bind_param("i", $seat_id);
+                                    $fare_stmt->execute();
+                                    $fare_result = $fare_stmt->get_result();
+                                    if ($fare_row = $fare_result->fetch_assoc()) {
+                                        $fare = $fare_row['fare'];
+                                    } else {
+                                        exit("Fare not found");
+                                    }
+
                                     $updateSeatSql = "UPDATE seat SET seat_status = 'Available' WHERE seat_id = ?";
                                     $stmt = $db->prepare($updateSeatSql);
                                     $stmt->bind_param("i", $seat_id);
+                                    $stmt->execute();
+
+                                    $updateDriverSql = "UPDATE user_profile SET ticket_balance = ticket_balance + ? WHERE user_id = ?";
+                                    $stmt = $db->prepare($updateDriverSql);
+                                    $stmt->bind_param("ii", $fare, $user_id);
                                     $stmt->execute();
 
                                     $updateBookingSql = "UPDATE booking SET booking_status = 'Cancelled', cancellation_reason = ? WHERE user_id = ? AND seat_id = ?";
@@ -94,9 +111,27 @@ $userid = $_SESSION['user_id'];
                                     $stmt->bind_param("sii", $cancellation_reason, $user_id, $seat_id);
                                     $stmt->execute();
 
+                                    // Check if the route is fully booked
+                                    $routeStatusQuery = "SELECT route_status FROM route WHERE route_id = ?";
+                                    $routeStatusStmt = $db->prepare($routeStatusQuery);
+                                    $routeStatusStmt->bind_param("i", $route_id);
+                                    $routeStatusStmt->execute();
+                                    $routeStatusResult = $routeStatusStmt->get_result();
+                                    if ($routeStatusRow = $routeStatusResult->fetch_assoc()) {
+                                        $route_status = $routeStatusRow['route_status'];
+
+                                        if ($route_status === "Fully Booked") {
+                                            // Mark route as "Active"
+                                            $updateRouteStatusSql = "UPDATE route SET route_status = 'Active' WHERE route_id = ?";
+                                            $routeStmt = $db->prepare($updateRouteStatusSql);
+                                            $routeStmt->bind_param("i", $route_id);
+                                            $routeStmt->execute();
+                                        }
+                                    }
+
                                     echo '<script>
-                                        window.location.href = "passengerBooking.php?list=Booked";
-                                    </script>';
+                                            window.location.href = "passengerBooking.php?list=Booked";
+                                        </script>';
                                     exit();
                                 }
                             }

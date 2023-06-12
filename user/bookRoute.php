@@ -293,7 +293,7 @@ $userid = $_SESSION['user_id'];
 
                                         if ($stmt->execute()) {
                                             echo '<div style="text-align: center;"><h5 style="color: green; font-size:18px;">Route Reservation Successful!</h5></div>';
-                                            echo '<div style="text-align: center;"><p style="font-size:14px;">Please note that the fare amount will only be paid to the driver<br>after confirming that you have been dropped off at the destination.<br><br><em>Thank you for choosing our route reservation service!</em></p></div>';
+                                            echo '<div style="text-align: center;"><p style="font-size:14px;">Please note that the fare amount will only be transferred to the driver<br>after confirming that you have been dropped off at the destination.<br><br><em>Thank you for choosing our route reservation service!</em></p></div>';
 
                                             // Check if all seats for the route are taken
                                             $checkAllSeatsTakenSql = "SELECT COUNT(*) AS total_seats FROM seat WHERE route_id = (SELECT route_id FROM seat WHERE seat_id = ?) AND seat_status != 'Taken'";

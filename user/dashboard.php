@@ -432,17 +432,16 @@ ORDER BY r.route_id";
                       echo "<a href='viewDriverRoute.php?user_id=" . $row['user_id'] . "&list=Active&route_id=" . $route_id . "'>
             <button>&nbsp;&nbsp;<i class='fa fa-eye'></i>&nbsp;View&nbsp;&nbsp;</button>
         </a>";
-
-                      echo "<a onclick='return confirm(\"Are you sure you want to cancel the route?\")' href='cancelRoute.php?user_id=" . $row['user_id'] . "&car_id=" . $car_id . "&route_id=" . $route_id . "'>
-            <button>&nbsp;&nbsp;<i class='fa fa-ban'></i>&nbsp;Cancel&nbsp;&nbsp;</button>
-        </a>";
-
                       if ($droppedOffSeats > 0) {
                         echo "<a onclick='return confirm(\"Are you sure you want to mark the route as done?\")' href='doneRoute.php?list=driverRoute.php?status=Active&user_id=" . $row['user_id'] . "&car_id=" . $car_id . "&route_id=" . $route_id . "'>
                 <button>&nbsp;&nbsp;<i class='fa fa-check' style='color: green'></i>&nbsp;Done&nbsp;&nbsp;</button>
             </a>";
                       } elseif ($availableSeats < $totalSeats && $row['route_status'] === 'Active') {
                         echo "<button onclick='markRouteAsDone(" . $route_id . ");'>&nbsp;&nbsp;<i class='fa fa-check' style='color:red;'></i>&nbsp;Start&nbsp;&nbsp;</button>";
+                      } else {
+                        echo "<a onclick='return confirm(\"Are you sure you want to cancel the route?\")' href='cancelRoute.php?user_id=" . $row['user_id'] . "&car_id=" . $car_id . "&route_id=" . $route_id . "'>
+                        <button>&nbsp;&nbsp;<i class='fa fa-ban'></i>&nbsp;Cancel&nbsp;&nbsp;</button>
+                    </a>";
                       }
                       echo "</td>";
                       echo "</tr>";

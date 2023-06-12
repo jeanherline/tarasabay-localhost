@@ -27,12 +27,6 @@ if (isset($_GET['user_id']) && isset($_GET['seat_id']) && isset($_GET['list'])) 
     $car_id = $row['car_id'];
     $driverName = $row['first_name'] . ' ' . $row['last_name'];
 
-    // Update the ticket balance of the passenger
-    $updatePassengerSql = "UPDATE user_profile SET ticket_balance = ticket_balance - ? WHERE user_id = ?";
-    $stmt = $db->prepare($updatePassengerSql);
-    $stmt->bind_param("ii", $fare, $user_id);
-    $stmt->execute();
-
     // Update the ticket balance of the driver
     $updateDriverSql = "UPDATE user_profile SET ticket_balance = ticket_balance + ? WHERE user_id = 
                         (SELECT user_id FROM car WHERE car_id = ?)";
@@ -57,7 +51,6 @@ if (isset($_GET['user_id']) && isset($_GET['seat_id']) && isset($_GET['list'])) 
         $stmt->bind_param("ids", $bookingId, $fare, $driverName);
         $stmt->execute();
     }
-
     header("Location: $list");
     exit();
 }

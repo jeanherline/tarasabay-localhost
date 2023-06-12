@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 12, 2023 at 10:24 PM
+-- Generation Time: Jun 12, 2023 at 11:40 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -55,7 +55,8 @@ INSERT INTO `booking` (`booking_id`, `user_id`, `seat_id`, `booking_status`, `ca
 (18, 14, 9, 'Cancelled', 'sad', '2023-06-12 13:14:54', '2023-06-12 17:22:30'),
 (19, 14, 17, 'Cancelled', 'asd', '2023-06-12 13:24:00', '2023-06-12 17:21:54'),
 (20, 14, 26, 'Approved', NULL, '2023-06-12 20:21:05', '2023-06-12 20:23:51'),
-(21, 19, 27, 'Approved', NULL, '2023-06-12 20:23:28', '2023-06-12 20:23:52');
+(21, 19, 27, 'Approved', NULL, '2023-06-12 20:23:28', '2023-06-12 20:23:52'),
+(22, 19, 31, 'Dropped-off', NULL, '2023-06-12 20:49:29', '2023-06-12 20:51:40');
 
 -- --------------------------------------------------------
 
@@ -86,7 +87,7 @@ INSERT INTO `car` (`car_id`, `user_id`, `car_photo`, `brand`, `model`, `color`, 
 (9, 15, 'download (6).jpg', 'Toyota', 'M12', 'Red', 'Crossover', 4, 'Active', '9.png', '2023-06-07 13:22:08', '2023-06-11 19:31:31'),
 (10, 15, 'download (6).jpg', 'BMW', 'KD2', 'Black', 'Coupe', 1, 'Denied', NULL, '2023-06-10 01:07:59', '2023-06-10 22:15:04'),
 (14, 15, 'computer.jpg', 'Jeep', 'HD3', 'Gray', 'Crew Cab', 5, 'Active', '14.png', '2023-06-10 01:11:41', '2023-06-12 15:29:25'),
-(15, 15, 'download (6).jpg', 'Jeep', 'M12', 'Gray', 'Coupe', 3, 'Active', NULL, '2023-06-10 06:41:50', '2023-06-10 08:48:46'),
+(15, 15, 'download (6).jpg', 'Jeep', 'M12', 'Gray', 'Coupe', 3, 'Expired', NULL, '2023-06-10 06:41:50', '2023-06-12 21:39:07'),
 (16, 15, '1200px-2017_Toyota_Camry_(ASV50R)_SX_sedan_(2018-11-02)_01.jpg', 'Honda', 'D3X', 'White', 'Sedan', 4, 'Active', '16', '2023-06-10 22:14:00', '2023-06-11 20:01:51'),
 (17, 15, 'download (7).jpg', 'Audi', 'B2S', 'Red', 'Coupe', 1, 'Active', '17.png', '2023-06-11 12:15:17', '2023-06-11 19:31:31'),
 (18, 15, 'download (6).jpg', 'asd', 'asd', 'asd', 'Coupe', 3, 'Active', '18.png', '2023-06-12 15:46:37', '2023-06-12 15:50:38'),
@@ -123,7 +124,7 @@ INSERT INTO `car_identification` (`car_identity_id`, `car_id`, `or_photo`, `or_n
 (9, 9, 'download (11).jpg', '12345678', 'download (12).jpg', '12345678', 'Aircraft-Delivery-Receipt.jpg', 'LSD-123', '2023-08-22', '2023-06-07 13:22:08', '2023-06-09 11:18:04'),
 (10, 10, 'or-385b.jpg', '123456789', 'download (3).jpg', '123456789', 'or-385b.jpg', 'LSD-456', '2023-06-30', '2023-06-10 01:07:59', '2023-06-10 01:07:59'),
 (14, 14, 'download (3).jpg', '321', 'download (4).jpg', '321', 'download (5).jpg', 'asd-321', '2026-06-13', '2023-06-10 01:11:41', '2023-06-12 14:22:15'),
-(15, 15, 'or-385b.jpg', '123', 'or-385b.jpg', '123', '', 'LSD-12345', '2026-06-21', '2023-06-10 06:41:50', '2023-06-10 06:41:50'),
+(15, 15, 'or-385b.jpg', '123', 'download (3).jpg', '123', '', 'LSD-1234', '2026-06-14', '2023-06-10 06:41:50', '2023-06-12 21:35:58'),
 (16, 16, 'or-385b.jpg', '4567', 'download (3).jpg', '4567', '', 'ASD-123', '2026-06-11', '2023-06-10 22:14:00', '2023-06-10 22:14:00'),
 (17, 17, 'or-385b.jpg', '123456789', 'or-385b.jpg', '123456789', '', 'ABC-12345', '2026-06-20', '2023-06-11 12:15:17', '2023-06-11 12:15:17'),
 (18, 18, 'or-385b.jpg', 'asd', 'or-385b.jpg', 'asd', '', 'LSD-456', '2026-06-16', '2023-06-12 15:46:37', '2023-06-12 15:46:37'),
@@ -288,11 +289,10 @@ CREATE TABLE `emergency` (
 --
 
 INSERT INTO `emergency` (`emergency_id`, `user_id`, `name`, `relationship`, `phone`, `address`, `created_at`, `updated_at`) VALUES
-(28, 15, 'Jeanherline Santiago', 'Father', '09567956164', '1082 Ibayo Street', '2023-06-06 18:52:00', '2023-06-12 16:27:06'),
+(28, 15, 'Jeanherline Santiago', '', '09567956164', '1082 Ibayo Street', '2023-06-06 18:52:00', '2023-06-12 21:39:42'),
 (29, 14, 'Jeanherline Santiago', '', '09567956164', '1083 Ibayo Street', '2023-06-10 04:12:40', '2023-06-12 20:22:03'),
 (30, 16, 'Julia Martinez', 'Other', '09567956164', '1082 Ibayo Street, Pinaod', '2023-06-10 04:16:40', '2023-06-10 04:16:40'),
 (31, 17, 'Bruce Willis', '', '09567956164', 'America', '2023-06-10 08:06:29', '2023-06-10 08:06:45'),
-(33, 15, 'Jeanherline Santiago', 'Father', '09567956164', '1082 Ibayo Street', '2023-06-12 14:45:59', '2023-06-12 16:27:06'),
 (34, 19, 'Rovic', 'Other', '09567956164', 'Dito lang', '2023-06-12 18:27:56', '2023-06-12 18:27:56');
 
 -- --------------------------------------------------------
@@ -321,7 +321,8 @@ INSERT INTO `payment` (`payment_id`, `booking_id`, `ticket_amount`, `payment_to`
 (4, 13, '300.00', 'Jeanherline Santiago', 'Paid', '2023-06-12', '2023-06-12 09:55:44', '2023-06-12 09:55:44'),
 (5, 14, '500.00', 'Jeanherline Santiago', 'Paid', '2023-06-12', '2023-06-12 10:03:54', '2023-06-12 10:03:54'),
 (6, 16, '200.00', 'Jeanherline Santiago', 'Paid', '2023-06-12', '2023-06-12 13:21:43', '2023-06-12 13:21:43'),
-(7, 17, '200.00', 'Hello World', 'Paid', '2023-06-12', '2023-06-12 15:28:23', '2023-06-12 15:28:23');
+(7, 17, '200.00', 'Hello World', 'Paid', '2023-06-12', '2023-06-12 15:28:23', '2023-06-12 15:28:23'),
+(8, 22, '100.00', 'Jeanherline Santiago', 'Paid', '2023-06-13', '2023-06-12 20:51:40', '2023-06-12 20:51:40');
 
 -- --------------------------------------------------------
 
@@ -343,7 +344,8 @@ CREATE TABLE `review` (
 
 INSERT INTO `review` (`review_id`, `booking_id`, `comment`, `created_at`, `updated_at`) VALUES
 (3, 14, 'Hello', '2023-06-12 10:30:39', '2023-06-12 10:30:39'),
-(4, 16, '123456', '2023-06-12 15:44:29', '2023-06-12 15:44:29');
+(4, 16, '123456', '2023-06-12 15:44:29', '2023-06-12 15:44:29'),
+(5, 22, 'Thank you po <3', '2023-06-12 20:53:09', '2023-06-12 20:53:09');
 
 -- --------------------------------------------------------
 
@@ -369,14 +371,15 @@ CREATE TABLE `route` (
 --
 
 INSERT INTO `route` (`route_id`, `car_id`, `pickup_loc`, `dropoff_loc`, `departure`, `est_arrival_time`, `route_status`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
-(3, 9, 'Baliwag', 'Manila', '2023-06-09 08:30:00', '10:30:00', 'Start', '', '2023-06-08 14:52:19', '2023-06-12 13:15:09'),
+(3, 9, 'Baliwag', 'Manila', '2023-06-09 08:30:00', '10:30:00', 'Active', '', '2023-06-08 14:52:19', '2023-06-12 21:33:06'),
 (4, 15, 'Cabanatuan', 'Bustos', '2023-06-14 17:30:00', '20:00:00', 'Cancelled', 'Sick', '2023-06-10 09:33:56', '2023-06-10 22:08:52'),
 (5, 9, 'San Rafael', 'Cebu City', '2023-06-11 10:30:00', '12:30:00', 'Done', NULL, '2023-06-10 09:35:52', '2023-06-12 15:35:23'),
-(6, 17, 'Cebu City', 'Cavite', '2023-06-13 04:30:00', '10:20:00', 'Fully Booked', NULL, '2023-06-11 12:17:08', '2023-06-12 13:24:00'),
+(6, 17, 'Cebu City', 'Cavite', '2023-06-13 04:30:00', '10:20:00', 'Active', NULL, '2023-06-11 12:17:08', '2023-06-12 21:18:56'),
 (7, 15, 'Star Arena', 'Zimbabwe', '2023-06-15 10:00:00', '22:00:00', 'Start', NULL, '2023-06-11 14:00:44', '2023-06-12 15:26:24'),
 (8, 17, 'San Ildefonso', 'Makati', '2023-06-11 22:11:00', '22:11:00', 'Done', NULL, '2023-06-11 14:11:28', '2023-06-12 10:21:19'),
 (9, 9, 'Dito', 'Doon', '2023-06-22 21:12:00', '21:12:00', 'Done', NULL, '2023-06-12 13:13:05', '2023-06-12 15:42:03'),
-(10, 21, 'Baliwag', 'Cavite', '2023-06-13 04:20:00', '04:20:00', 'Active', NULL, '2023-06-12 20:20:21', '2023-06-12 20:20:21');
+(10, 21, 'Baliwag', 'Cavite', '2023-06-13 04:20:00', '04:20:00', 'Active', NULL, '2023-06-12 20:20:21', '2023-06-12 20:20:21'),
+(11, 14, 'Jan', 'Don', '2023-06-13 04:48:00', '16:49:00', 'Done', NULL, '2023-06-12 20:49:12', '2023-06-12 20:52:35');
 
 -- --------------------------------------------------------
 
@@ -422,7 +425,12 @@ INSERT INTO `seat` (`seat_id`, `route_id`, `seat_type`, `fare`, `seat_status`, `
 (26, 10, 'Front Passenger Seat', '200', 'Taken', '2023-06-12 20:20:21', '2023-06-12 20:21:05'),
 (27, 10, 'Second Row Left Window Seat', '200', 'Taken', '2023-06-12 20:20:21', '2023-06-12 20:23:28'),
 (28, 10, 'Second Row Middle Seat', '200', 'Available', '2023-06-12 20:20:21', '2023-06-12 20:20:21'),
-(29, 10, 'Second Row Right Window Seat', '200', 'Available', '2023-06-12 20:20:21', '2023-06-12 20:20:21');
+(29, 10, 'Second Row Right Window Seat', '200', 'Available', '2023-06-12 20:20:21', '2023-06-12 20:20:21'),
+(30, 11, 'Front Passenger Seat', '100', 'Available', '2023-06-12 20:49:12', '2023-06-12 20:49:12'),
+(31, 11, 'Front Passenger Middle Seat', '100', 'Taken', '2023-06-12 20:49:12', '2023-06-12 20:49:29'),
+(32, 11, 'Second Row Left Window Seat', '100', 'Available', '2023-06-12 20:49:12', '2023-06-12 20:49:12'),
+(33, 11, 'Second Row Middle Seat', '100', 'Available', '2023-06-12 20:49:12', '2023-06-12 20:49:12'),
+(34, 11, 'Second Row Right Window Seat', '100', 'Available', '2023-06-12 20:49:12', '2023-06-12 20:49:12');
 
 -- --------------------------------------------------------
 
@@ -449,7 +457,6 @@ INSERT INTO `user_identification` (`user_identity_id`, `user_id`, `identity_type
 (14, 15, 'Driver\'s License', 'LF-4324', '2023-06-20', '2023-06-04 14:39:50', '2023-06-04 14:39:50'),
 (15, 16, 'National ID', 'FDS-4324', '2023-06-21', '2023-06-08 14:56:53', '2023-06-08 14:56:53'),
 (16, 17, 'Voter\'s ID', '12345678', '2023-06-24', '2023-06-08 16:35:10', '2023-06-08 16:35:10'),
-(17, 18, 'SSS', '123123', '2023-06-23', '2023-06-12 16:57:36', '2023-06-12 16:57:36'),
 (18, 19, 'Driver\'s License', 'ADS-165', '2026-06-14', '2023-06-12 18:26:37', '2023-06-12 18:26:37');
 
 -- --------------------------------------------------------
@@ -485,11 +492,10 @@ CREATE TABLE `user_profile` (
 
 INSERT INTO `user_profile` (`user_id`, `profile_photo`, `first_name`, `middle_name`, `last_name`, `city_id`, `nationality`, `gender`, `birthdate`, `email`, `password`, `ticket_balance`, `role`, `is_vaxxed`, `vax_card`, `is_agree`, `created_at`, `updated_at`) VALUES
 (14, 'download.png', 'Jyner', '', 'Santiago', 5, 'Filipino', 'Female', '2003-03-29', 'jynerline@gmail.com', '$2y$10$iWP4Hq9nSnb9uYXtDdlOrOJnsRtqsPOt8JELyKoFoXplXXJWLXGGC', '400', 'Passenger', 0, 'download (1).jpg', 1, '2023-06-03 20:55:49', '2023-06-12 20:22:03'),
-(15, 'download (7).jpg', 'Jeanherline', 'Lopez', 'Santiago', 12, 'Filipino', 'Female', '2023-06-15', 'jeanherlinesantiago0329@gmail.com', '$2y$10$4mwq.s/du3mDcpUOVzFHY.olkpUtTjT7RGoE7YOhpZtxh1D9g/9Ta', '250', 'Driver', 1, '0', 1, '2023-06-04 14:39:50', '2023-06-12 20:20:21'),
+(15, 'download.jpg', 'Jeanherline', 'Lopez', 'Santiago', 12, 'Filipino', 'Female', '2023-06-15', 'jeanherlinesantiago0329@gmail.com', '$2y$10$4mwq.s/du3mDcpUOVzFHY.olkpUtTjT7RGoE7YOhpZtxh1D9g/9Ta', '340', 'Driver', 0, 'cr-dca7.jpg', 1, '2023-06-04 14:39:50', '2023-06-12 21:39:42'),
 (16, 'download.jpg', 'Jean', '', 'Reinhart', 12, 'American', 'Male', '1995-06-21', 'cinemi1486@ozatvn.com', '$2y$10$sPauKoqU//HyC7mGSnDafOADwxzKy/mx1JRtb/l/1QcnAkcMEKoPq', '0', 'Main Admin', 1, 'download (1).jpg', 1, '2023-06-08 14:56:53', '2023-06-10 04:16:40'),
 (17, '340472658_1294457027813960_1344329139963814927_n.jpg', 'Jyner', '', 'Lin', 12, 'Argentinean', 'Female', '1966-06-21', 'imureyzdh1@ezztt.com', '$2y$10$UFabKhJtNaJP5E4KRTNiRudKmGeahkgjTBE/BFX5xjaMVYOe5LAGW', '', 'City Admin', 0, 'download (4).jpg', 1, '2023-06-08 16:35:10', '2023-06-10 08:06:45'),
-(18, NULL, 'asd', '', 'Santiago', 10, '', '', '0000-00-00', 'dohihoho@rungel.net', '$2y$10$UjhHLdUrai9wZvyTB7sV3eThpi3X8dREkqjXPi.mNvwwccM.nb586', '', 'City Admin', 0, NULL, 1, '2023-06-12 16:57:36', '2023-06-12 16:57:36'),
-(19, 'boset.png', 'Juan', '', 'Dela Cruz', 5, '', '', '0000-00-00', 'coviqive@gotgel.org', '$2y$10$dkc8qLsLGk2OQ1tggbGJkO1McaKe1qrf40QR.tvTZ0gjZVnqssx5.', '250', 'Passenger', 1, '0', 1, '2023-06-12 18:26:37', '2023-06-12 20:23:28');
+(19, 'boset.png', 'Juan', '', 'Dela Cruz', 5, '', '', '0000-00-00', 'coviqive@gotgel.org', '$2y$10$dkc8qLsLGk2OQ1tggbGJkO1McaKe1qrf40QR.tvTZ0gjZVnqssx5.', '150', 'Passenger', 1, '0', 1, '2023-06-12 18:26:37', '2023-06-12 20:49:29');
 
 -- --------------------------------------------------------
 
@@ -645,7 +651,7 @@ ALTER TABLE `user_temp`
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `car`
@@ -693,25 +699,25 @@ ALTER TABLE `emergency`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `review`
 --
 ALTER TABLE `review`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `route`
 --
 ALTER TABLE `route`
-  MODIFY `route_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `route_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `seat`
 --
 ALTER TABLE `seat`
-  MODIFY `seat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `seat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `user_identification`
