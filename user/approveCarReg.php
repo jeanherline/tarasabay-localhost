@@ -1,6 +1,6 @@
 <?php
 include('../db.php');
-include('../phpqrcode/qrlib.php'); // Include the QR code library
+include('../phpqrcode/qrlib.php');
 
 if (isset($_GET['user_id']) && isset($_GET['car_id']) && isset($_GET['status'])) {
     $user_id = $_GET['user_id'];
@@ -14,17 +14,58 @@ if (isset($_GET['user_id']) && isset($_GET['car_id']) && isset($_GET['status']))
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
+        // Check if the user's role is not "Driver"
+        $checkRoleQuery = "SELECT role FROM user_profile WHERE user_id = ?";
+        $checkRoleStmt = $db->prepare($checkRoleQuery);
+        $checkRoleStmt->bind_param("i", $user_id);
+        $checkRoleStmt->execute();
+        $checkRoleResult = $checkRoleStmt->get_result();
+
+        if ($checkRoleRow = $checkRoleResult->fetch_assoc()) {
+            $role = $checkRoleRow['role'];
+            if ($role !== "Driver") {
+                // Update the role to "Driver"
+                $updateRoleQuery = "UPDATE user_profile SET role = 'Driver' WHERE user_id = ?";
+                $updateRoleStmt = $db->prepare($updateRoleQuery);
+                $updateRoleStmt->bind_param("i", $user_id);
+                $updateRoleStmt->execute();
+            }
+        }
+
         // Generate QR code image
-        $qrCodeData = $car_id; // You can modify the data to include any relevant information
-        $qrCodePath = "../assets/img/qr_codes/" . $car_id . '.png'; // Specify the path where the QR code image will be saved
-        QRcode::png($qrCodeData, $qrCodePath, QR_ECLEVEL_L, 5); // Generate the QR code image and save it to the specified path
+        $qrCodeData = $car_id;
+        $qrCodePath = "../assets/img/qr_codes/" . $car_id . '.png';
+        QRcode::png($qrCodeData, $qrCodePath, QR_ECLEVEL_L, 5);
 
         $dbcar = $car_id . ".png";
-        // Update the car entry with the QR code path
         $updateQrCodeQuery = "UPDATE car SET qr_code = ? WHERE user_id = ? AND car_id = ?";
         $updateQrCodeStmt = $db->prepare($updateQrCodeQuery);
         $updateQrCodeStmt->bind_param("sii", $dbcar, $user_id, $car_id);
         $updateQrCodeStmt->execute();
+
+        // Check if it is the first car registered by the driver
+        $checkFirstCarQuery = "SELECT COUNT(*) AS car_count FROM car WHERE user_id = ?";
+        $checkFirstCarStmt = $db->prepare($checkFirstCarQuery);
+        $checkFirstCarStmt->bind_param("i", $user_id);
+        $checkFirstCarStmt->execute();
+        $checkFirstCarResult = $checkFirstCarStmt->get_result();
+
+        if ($checkFirstCarRow = $checkFirstCarResult->fetch_assoc()) {
+            $carCount = $checkFirstCarRow['car_count'];
+            if ($carCount === 1) {
+                // Add 40 tickets
+                $addTicketsQuery = "UPDATE user_profile SET ticket_balance = ticket_balance + 40 WHERE user_id = ?";
+                $addTicketsStmt = $db->prepare($addTicketsQuery);
+                $addTicketsStmt->bind_param("i", $user_id);
+                $addTicketsStmt->execute();
+            }
+        }
+
+        // Update driver_stat to "Active"
+        $updateDriverStatQuery = "UPDATE driver_identification SET driver_stat = 'Active' WHERE user_id = ?";
+        $updateDriverStatStmt = $db->prepare($updateDriverStatQuery);
+        $updateDriverStatStmt->bind_param("i", $user_id);
+        $updateDriverStatStmt->execute();
 
         header("Location: carReg.php?status=$status");
         exit();
